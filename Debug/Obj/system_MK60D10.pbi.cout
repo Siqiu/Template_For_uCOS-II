@@ -18,7 +18,15 @@ C:\work\Template_For_uCOS-II\Software\uCOS-II\core
 -I
 C:\work\Template_For_uCOS-II\Software\uCOS-II\port
 -I
+C:\work\Template_For_uCOS-II\Software\App\Module_CAN
+-I
+C:\work\Template_For_uCOS-II\Software\App\Module_Protocol
+-I
+C:\work\Template_For_uCOS-II\Software\App\Module_Init
+-I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\INC\c
+-I
+C:\work\Template_For_uCOS-II\Software\App\Module_BSP
 -I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc
 -I
@@ -40,10 +48,19 @@ C:\work\Template_For_uCOS-II\Software\uCOS-II\core
 -I
 C:\work\Template_For_uCOS-II\Software\uCOS-II\port
 -I
+C:\work\Template_For_uCOS-II\Software\App\Module_CAN
+-I
+C:\work\Template_For_uCOS-II\Software\App\Module_Protocol
+-I
+C:\work\Template_For_uCOS-II\Software\App\Module_Init
+-I
 C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\INC\c
+-I
+C:\work\Template_For_uCOS-II\Software\App\Module_BSP
 -DMK60D10=1
 -DRAVEN=1
 -DDEBUG=1
+-DUART_USE_DMA=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0
@@ -236,8 +253,8 @@ C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\INC\c
 -D__HAS_LOCATED_DECLARATION__=1
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593924
--D__DATE__="Sep 13 2015"
--D__TIME__="10:54:03"
+-D__DATE__="Sep 25 2015"
+-D__TIME__="16:17:35"
 -D__STDC__=1
 -D__STDC_VERSION__=199901L
 -D__STDC_HOSTED__=1

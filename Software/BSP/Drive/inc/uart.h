@@ -4,7 +4,7 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.25
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   * @note    此文件为芯片UART模块的底层功能函数
   ******************************************************************************
   */
@@ -18,7 +18,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
-
+#include "dma.h"
 
 /*!< UART 硬件模块号 */
 #define HW_UART0  (0x00U)  /* 芯片的UART0端口 */
@@ -28,7 +28,7 @@
 #define HW_UART4  (0x04U)
 #define HW_UART5  (0x05U)
 
-/*!< UART 快速初始化宏 */                      
+/*!< UART 快速初始化宏 */
 #define UART1_RX_PE01_TX_PE00   (0x80E1U) //芯片的UART1端口，使用PTE1引脚为接收引脚，使用PTE0引脚为发送引脚
 #define UART0_RX_PF17_TX_PF18   (0xA528U)
 #define UART3_RX_PE05_TX_PE04   (0x88E3U)
@@ -45,31 +45,31 @@
 #define UART3_RX_PC16_TX_PC17   (0xA0D3U)
 #define UART2_RX_PD02_TX_PD03   (0x84DAU)
 #define UART0_RX_PD06_TX_PD07   (0x8CD8U)
-#define UART2_RX_PF13_TX_PF14   (0x9B2AU) 
+#define UART2_RX_PF13_TX_PF14   (0x9B2AU)
 #define UART5_RX_PD08_TX_PD09   (0x90DDU) //芯片的UART5端口，使用PTD8引脚为接收引脚，使用PTD9引脚为发送引脚
 #define UART5_RX_PE08_TX_PE09   (0X90E5U)
 /*!< parity 选择 */
 typedef enum
 {
     kUART_ParityDisabled = 0x0,  // 校验位禁止
-    kUART_ParityEven     = 0x2,  // 1位 奇校验 
-    kUART_ParityOdd      = 0x3,  // 1位 偶校验 
+    kUART_ParityEven     = 0x2,  // 1位 奇校验
+    kUART_ParityOdd      = 0x3,  // 1位 偶校验
 } UART_ParityMode_Type;
 
 /*!< 每帧数据位个数 */
-typedef enum 
+typedef enum
 {
-    kUART_8BitsPerChar  = 0,   // 8-bit 数据 不包括校验位 
-    kUART_9BitsPerChar  = 1,   // 9-bit 数据 不包括校验位 
+    kUART_8BitsPerChar  = 0,   // 8-bit 数据 不包括校验位
+    kUART_9BitsPerChar  = 1,   // 9-bit 数据 不包括校验位
 } UART_BitPerChar_Type;
 
 /*!< 中断及DMA配置 */
 typedef enum
 {
-    kUART_IT_Tx,                // 开启每发送一帧传输完成中断 
-    kUART_DMA_Tx,               // 开启每发送一帧传输完成触发DMA 
-    kUART_IT_Rx,                // 开启每接收一帧传输完成中断 
-    kUART_DMA_Rx,               // 开启每接收一帧传输完成触发DMA 
+    kUART_IT_Tx,                // 开启每发送一帧传输完成中断
+    kUART_DMA_Tx,               // 开启每发送一帧传输完成触发DMA
+    kUART_IT_Rx,                // 开启每接收一帧传输完成中断
+    kUART_DMA_Rx,               // 开启每接收一帧传输完成触发DMA
 }UART_ITDMAConfig_Type;
 
 /*!< UART初始化结构 */
@@ -77,10 +77,36 @@ typedef struct
 {
     uint32_t                srcClock;       // 时钟源频率
     uint8_t                 instance;       // UART 模块号 HW_UART0~HW_UART5
-    uint32_t                baudrate;       // UART 波特率 
-    UART_ParityMode_Type    parityMode;     // UART 校验位 
-    UART_BitPerChar_Type    bitPerChar;     // UART 每一帧含多少位数据 
+    uint32_t                baudrate;       // UART 波特率
+    UART_ParityMode_Type    parityMode;     // UART 校验位
+    UART_BitPerChar_Type    bitPerChar;     // UART 每一帧含多少位数据
 }UART_InitTypeDef;
+
+//uart dma
+#define	COMM_IDLE		0x00
+#define	TXD_BEG			(1<<0)
+#define	TXD_ING			(1<<1)
+#define	TXD_SPACE		(1<<2)
+#define	TXD_ENABLE		(1<<3)
+#define	RXD_WAIT		(1<<4)
+#define	RXD_ING			(1<<5)
+#define	RXD_END			(1<<6)
+#define	RXD_TIME_OVER	(1<<7)
+/*!< 串口通讯控制块 */
+typedef struct
+{
+	unsigned char	CommStatus;		//通讯状态
+	unsigned char	RxdPackDelayCnt;
+	unsigned char	TxdDelay;
+	unsigned short	RxdByteCnt;		//接收字节记数
+	unsigned short	TxdPackByteCnt;
+	unsigned short	TxdPackLength;	//发送包长度
+}USART_CtrolBlock;
+
+/*!< UART DMA */
+void UART_SetDMATxMode(uint32_t instance, bool status);
+void UART_DMASendByte(uint32_t instance, uint8_t* buf, uint32_t size);
+
 
 /*!< UART 回调函数声明 */
 typedef void (*UART_CallBackTxType)(uint16_t * pbyteToSend);
@@ -131,6 +157,56 @@ void UART_DMAGetRemain(uint32_t instacne, uint32_t dir);
 #ifdef __cplusplus
 }
 #endif
+
+//!< UART dma
+/* UART 模块数据寄存器 */
+static const void* UART_DataPortAddrTable[] =
+{
+    (void*)&UART0->D,
+    (void*)&UART1->D,
+    (void*)&UART2->D,
+    (void*)&UART3->D,
+    (void*)&UART4->D,
+    (void*)&UART5->D,
+};
+/* UART 发送触发源编号 */
+static const uint32_t UART_SendDMATriggerSourceTable[] =
+{
+    UART0_TRAN_DMAREQ,
+    UART1_TRAN_DMAREQ,
+    UART2_TRAN_DMAREQ,
+    UART3_TRAN_DMAREQ,
+    UART4_TRAN_DMAREQ,
+    UART5_TRAN_DMAREQ,
+};
+/* UART 接收触发源编号 */
+static const uint32_t UART_RevDMATriggerSourceTable[] =
+{
+    UART0_REV_DMAREQ,
+    UART1_REV_DMAREQ,
+    UART2_REV_DMAREQ,
+    UART3_REV_DMAREQ,
+    UART4_REV_DMAREQ,
+    UART5_REV_DMAREQ,
+};
+
+/* 定义使用的DMA通道号 */
+#define DMA_SEND_CH             HW_DMA_CH2
+#define DMA_REV_CH              HW_DMA_CH3
+/* Public functions ---------------------------------------------------------*/
+
+uint32_t UART_SendWithDMA(uint32_t dmaChl, const uint8_t *buf, uint32_t size);
+
+void UART_DMASendInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * txBuf);
+
+void UART_DMARevInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * rxBuf);
+
+void DMA_ISR(void);
+
+/* Private functions ---------------------------------------------------------*/
+
+
+
 
 #endif
 

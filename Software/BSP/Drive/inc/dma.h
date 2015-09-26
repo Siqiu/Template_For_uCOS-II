@@ -4,13 +4,13 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.26
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   * @note    此文件为芯片DMA模块的底层功能函数
   ******************************************************************************
   */
 #ifndef __CH_LIB_DMA_H__
 #define __CH_LIB_DMA_H__
-  
+
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -53,7 +53,7 @@
 #define FTM3_CH0_DMAREQ         36
 #define FTM3_CH1_DMAREQ         37
 #define FTM3_CH2_DMAREQ         38
-#define FTM3_CH3_DMAREQ         39  
+#define FTM3_CH3_DMAREQ         39
 #define ADC0_DMAREQ             40
 #define ADC1_DMAREQ             41
 #define CMP0_DMAREQ             42
@@ -96,10 +96,10 @@ typedef enum
     kDMA_DataWidthBit_8,   /* 8 bit data width */
     kDMA_DataWidthBit_16,  /* 16 bit data width */
     kDMA_DataWidthBit_32,  /* 32 bit data width*/
-}DMA_DataWidthBit_Type; 
+}DMA_DataWidthBit_Type;
 
 //!< DMA Moduluo 设置
-typedef enum 
+typedef enum
 {
     kDMA_ModuloDisable = 0x0U,
     kDMA_Modulo2bytes = 0x1U,
@@ -136,9 +136,9 @@ typedef enum
 } DMA_Modulo_Type;
 
 //!< 初始化结构体
-typedef struct 
+typedef struct
 {
-    uint8_t                     chl;                                /* DMA通道号0~15 */       
+    uint8_t                     chl;                                /* DMA通道号0~15 */
     uint8_t                     chlTriggerSource;                   /* DMA触发源选择 */
     uint16_t                    minorLoopByteCnt;                   /* MINOR LOOP 中一次传输的字节数 */
     uint16_t                    majorLoopCnt;                       /* MAJOR LOOP 循环次数 */
@@ -150,11 +150,11 @@ typedef struct
     int32_t                     sLastAddrAdj;               /* 所有MAJOR LOOP循环完成后 源地址偏移量 */
     DMA_Modulo_Type             sMod;                       /* Modulo 设置 参见 AN2898 */
     /* 目标地址属性配置 */
-    int32_t                     dAddrOffset;                
-    uint32_t                    dAddr;                      
-    DMA_DataWidthBit_Type       dDataWidth;                 
-    int32_t                     dLastAddrAdj;               
-    DMA_Modulo_Type             dMod;                       
+    int32_t                     dAddrOffset;
+    uint32_t                    dAddr;
+    DMA_DataWidthBit_Type       dDataWidth;
+    int32_t                     dLastAddrAdj;
+    DMA_Modulo_Type             dMod;
 }DMA_InitTypeDef;
 
 
@@ -163,20 +163,20 @@ typedef enum
 {
     kDMA_IT_Half,               //传输一半中断开启
     kDMA_IT_Major,              //传输完成中断开启
-}DMA_ITConfig_Type;  
+}DMA_ITConfig_Type;
 
 //!< Callback Type
 typedef void (*DMA_CallBackType)(void);
 
 //!< API functions
-uint32_t DMA_ChlAlloc(void);
-void DMA_ChlFree(uint32_t chl);
-uint32_t DMA_Init(DMA_InitTypeDef *DMA_InitStruct);
+uint32_t	DMA_ChlAlloc(void);
+void		DMA_ChlFree(uint32_t chl);
+uint32_t	DMA_Init(DMA_InitTypeDef *DMA_InitStruct);
 /* get vars and status */
-uint32_t DMA_GetDestAddress(uint8_t ch);
-uint32_t DMA_GetSourceAddress(uint8_t ch);
-uint8_t DMA_IsMajorLoopComplete(uint8_t chl);
-uint32_t DMA_GetMajorLoopCount(uint8_t chl);
+uint32_t	DMA_GetDestAddress(uint8_t ch);
+uint32_t	DMA_GetSourceAddress(uint8_t ch);
+uint8_t		DMA_IsMajorLoopComplete(uint8_t chl);
+uint32_t	DMA_GetMajorLoopCount(uint8_t chl);
 /* control */
 void DMA_SetMajorLoopCounter(uint8_t chl, uint32_t val);
 void DMA_CancelTransfer(void);
@@ -193,4 +193,4 @@ void DMA_EnableMajorLink(uint8_t chl , uint8_t linkChl, bool flag);
 
 
 #endif
-  
+

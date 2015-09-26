@@ -40,6 +40,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <stdbool.h>
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
@@ -57,6 +59,7 @@
 //#include  <lib_math.h>
 //#include  <lib_mem.h>
 //#include  <lib_str.h>
+
 
 
 /*
@@ -83,7 +86,6 @@
 *                                                 OTHER
 *********************************************************************************************************
 */
-
 
 
 /*

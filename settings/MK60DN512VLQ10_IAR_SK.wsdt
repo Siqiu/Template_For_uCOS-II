@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>MK60DN512VLQ10_IAR_SK/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>176</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1155</ColumnWidth1><ColumnWidth2>308</ColumnWidth2><ColumnWidth3>77</ColumnWidth3></Build>
+      <TerminalIO/>
+    <Find-in-Files><ColumnWidth0>473</ColumnWidth0><ColumnWidth1>78</ColumnWidth1><ColumnWidth2>710</ColumnWidth2><ColumnWidth3>315</ColumnWidth3></Find-in-Files><Select-Ambiguous-Definitions><ColumnWidth0>552</ColumnWidth0><ColumnWidth1>78</ColumnWidth1><ColumnWidth2>946</ColumnWidth2></Select-Ambiguous-Definitions><Debug-Log><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1541</ColumnWidth1></Debug-Log></Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-8325-5661</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        <Tab><Identity>TabID-18983-28278</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-10454-11635</Identity><TabName>Ambiguous Definitions</TabName><Factory>Select-Ambiguous-Definitions</Factory><Session/></Tab><Tab><Identity>TabID-32339-25842</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd2><Tabs><Tab><Identity>TabID-10235-21181</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>MK60DN512VLQ10_IAR_SK</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/App</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP/Drive</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP/Drive/src</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/Output</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/UCOS-II</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd2></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\BSP\Drive\src\flash.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>3</YPos2><SelStart2>749</SelStart2><SelEnd2>749</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\BSP\Drive\inc\flash.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>418</SelStart2><SelEnd2>418</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>164</YPos2><SelStart2>6874</SelStart2><SelEnd2>6874</SelEnd2></Tab><ActiveTab>2</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\BSP\Drive\src\uart.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>382</YPos2><SelStart2>11267</SelStart2><SelEnd2>11267</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\BSP\Drive\src\wdog.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>144</YPos2><SelStart2>4642</SelStart2><SelEnd2>4654</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\Module_Init\Module_Init.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>8</YPos2><SelStart2>619</SelStart2><SelEnd2>619</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-026810B8><key>iaridepm.enu1</key></Toolbar-026810B8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>592</Bottom><Right>267</Right><x>-2</x><y>-2</y><xscreen>823</xscreen><yscreen>514</yscreen><sizeHorzCX>568370</sizeHorzCX><sizeHorzCY>621524</sizeHorzCY><sizeVertCX>185773</sizeVertCX><sizeVertCY>718259</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>190</Bottom><Right>1450</Right><x>-2</x><y>-2</y><xscreen>1452</xscreen><yscreen>192</yscreen><sizeHorzCX>1002762</sizeHorzCX><sizeHorzCY>232164</sizeHorzCY><sizeVertCX>516575</sizeVertCX><sizeVertCY>628779</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

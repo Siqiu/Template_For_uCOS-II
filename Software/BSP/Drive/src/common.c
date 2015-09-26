@@ -4,8 +4,8 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2013.12.25
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
-	* @note    此文件为内部文件，用户无需调用和修改  
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
+	* @note    此文件为内部文件，用户无需调用和修改
   ******************************************************************************
   */
 #include "common.h"
@@ -77,7 +77,7 @@ void EnterSTOPMode(bool enSleepOnExit)
     {
         SCB->SCR &= ~SCB_SCR_SLEEPONEXIT_Msk;
     }
-    
+
     /* WFI instruction will start entry into STOP mode */
     __ASM("WFI");
 }
@@ -93,7 +93,7 @@ uint32_t QuickInitEncode(map_t * type)
     return *(uint32_t*)type;
 }
 
-uint32_t GetUID(void) 
+uint32_t GetUID(void)
 {
     return SIM->UIDL ^ SIM->UIDML ^ SIM->UIDMH;
 }
@@ -109,14 +109,14 @@ uint32_t GetUID(void)
 void QuickInitDecode(uint32_t map, map_t * type)
 {
     map_t * pMap = (map_t*)&(map);
-    memcpy(type, pMap, sizeof(map_t));  
+    memcpy(type, pMap, sizeof(map_t));
 }
 
 void DWT_DelayInit(void)
 {
     /* enable DEM */
     CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-    
+
     /* enable counter */
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
@@ -125,11 +125,11 @@ void DWT_DelayUs(uint32_t us)
 {
     uint32_t startts, endts, ts;
     startts = DWT->CYCCNT;
-    ts =  us * (SystemCoreClock /(1000*1000) ); 
-    endts = startts + ts;      
-    if(endts > startts)  
+    ts =  us * (SystemCoreClock /(1000*1000) );
+    endts = startts + ts;
+    if(endts > startts)
     {
-        while(DWT->CYCCNT < endts);       
+        while(DWT->CYCCNT < endts);
     }
     else
     {

@@ -4,10 +4,10 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.26
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   ******************************************************************************
   */
-	
+
 #ifndef __CH_LIB_CRC_H__
 #define __CH_LIB_CRC_H__
 
@@ -57,6 +57,10 @@ void CRC_QuickInit(CRC_ProtocolType type);
 void CRC_Init(CRC_InitTypeDef * CRC_InitStruct);
 //uint16_t CRC16_GenerateSoftware(const uint8_t *src, uint32_t len);
 uint32_t CRC_Generate(uint8_t* data, uint32_t len);
+
+
+uint8_t	crcCheck(uint32_t size, uint8_t* ptr );
+uint32_t crcCheck16(uint32_t size, uint8_t* ptr );
 
 #endif
 

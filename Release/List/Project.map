@@ -1,0 +1,727 @@
+###############################################################################
+#
+# IAR ELF Linker V7.20.2.7424/W32 for ARM                 23/Sep/2015  13:44:59
+# Copyright 2007-2014 IAR Systems AB.
+#
+#    Output file  =  C:\work\Template_For_uCOS-II\Release\Exe\Project.out
+#    Map file     =  C:\work\Template_For_uCOS-II\Release\List\Project.map
+#    Command line =  
+#        C:\work\Template_For_uCOS-II\Release\Obj\adc.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\can.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\cmp.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\common.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\cpuidy.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\crc.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\dac.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\dma.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\enet.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\flash.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\flexbus.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\ftm.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\gpio.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\i2c.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\i2s.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\lptmr.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\main.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\Module_Can.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\Module_Init.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\Module_Protocol.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\nfc.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_core.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_cpu_a_iar.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_cpu_c.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_dbg.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_flag.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_mbox.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_mem.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_mutex.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_q.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_sem.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_task.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_time.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\os_tmr.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\pdb.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\pit.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\rtc.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\sd.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\spi.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\startup_MK60D10.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\system_MK60D10.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\systick.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\tsi.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\uart.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\vref.o
+#        C:\work\Template_For_uCOS-II\Release\Obj\wdog.o -o
+#        C:\work\Template_For_uCOS-II\Release\Exe\Project.out --map
+#        C:\work\Template_For_uCOS-II\Release\List\Project.map --config
+#        "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        7.0\arm\config\linker\Freescale\MK60xN512_10.icf" --semihosting
+#        --entry __iar_program_start --vfe
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A1":  place at 0x00000000 { ro section .intvec };
+"P2":  place in [from 0x00000000 to 0x000003ff] |
+                [from 0x00000410 to 0x0007ffff] { ro };
+"P3":  place in [from 0x1fff0000 to 0x1fffffff repeat 2] {
+          rw, block CSTACK, block HEAP };
+
+  Section            Kind        Address    Size  Object
+  -------            ----        -------    ----  ------
+"A1":                                      0x410
+  .intvec            ro code  0x00000000   0x410  startup_MK60D10.o [1]
+                            - 0x00000410   0x410
+
+"P2":                                     0x35d0
+  .text              ro code  0x00000410   0x814  os_core.o [1]
+  CODE               ro code  0x00000c24    0xac  os_cpu_a_iar.o [1]
+  .text              ro code  0x00000cd0    0xde  os_cpu_c.o [1]
+  .text              ro code  0x00000dae    0x2e  copy_init3.o [4]
+  .text              ro code  0x00000ddc    0x6a  os_flag.o [1]
+  .text              ro code  0x00000e46    0x22  zero_init3.o [4]
+  .text              ro code  0x00000e68    0x44  os_mem.o [1]
+  .text              ro code  0x00000eac    0x38  os_q.o [1]
+  .text              ro code  0x00000ee4   0x230  os_tmr.o [1]
+  .text              ro code  0x00001114    0xd4  os_time.o [1]
+  .text              ro code  0x000011e8   0x448  os_task.o [1]
+  .text              ro code  0x00001630   0x198  os_sem.o [1]
+  .text              ro code  0x000017c8   0x5bc  uart.o [1]
+  .text              ro code  0x00001d84    0x7c  common.o [1]
+  .text              ro code  0x00001e00   0x2b4  gpio.o [1]
+  .text              ro code  0x000020b4   0x23c  dma.o [1]
+  .text              ro code  0x000022f0   0x1cc  system_MK60D10.o [1]
+  .text              ro code  0x000024bc   0x4d8  xprintfsmall_nomb.o [3]
+  .text              ro code  0x00002994    0x16  strchr.o [4]
+  .text              ro code  0x000029ac    0x36  strlen.o [4]
+  .text              ro code  0x000029e4    0x58  memchr.o [4]
+  .text              ro code  0x00002a3c   0x446  can.o [1]
+  .text              ro code  0x00002e84   0x1e4  main.o [1]
+  .text              ro code  0x00003068    0x6c  systick.o [1]
+  .text              ro code  0x000030d4    0x4c  os_mbox.o [1]
+  .text              ro code  0x00003120   0x118  Module_Protocol.o [1]
+  .text              ro code  0x00003238   0x19c  Module_Can.o [1]
+  .text              ro code  0x000033d4    0x24  printf.o [3]
+  .text              ro code  0x000033f8    0x10  Module_Init.o [1]
+  .text              ro code  0x00003408     0x6  ABImemclr4.o [4]
+  .text              ro code  0x00003410    0x56  ABImemcpy_unaligned.o [4]
+  .text              ro code  0x00003468    0x24  crc.o [1]
+  .text              ro code  0x0000348c    0x32  ABImemset48.o [4]
+  .text              ro code  0x000034c0    0xcc  ftm.o [1]
+  .text              ro code  0x0000358c    0x60  dac.o [1]
+  .text              ro code  0x000035ec    0x3c  enet.o [1]
+  .text              ro code  0x00003628    0x3c  rtc.o [1]
+  .text              ro code  0x00003664    0x3c  spi.o [1]
+  .text              ro code  0x000036a0    0x38  pit.o [1]
+  .text              ro code  0x000036d8    0x28  tsi.o [1]
+  .text              ro code  0x00003700    0x28  putchar.o [3]
+  .text              ro code  0x00003728    0x28  data_init.o [4]
+  .iar.init_table    const    0x00003750    0x24  - Linker created -
+  .text              ro code  0x00003774    0x20  lptmr.o [1]
+  .text              ro code  0x00003794    0x20  pdb.o [1]
+  .text              ro code  0x000037b4    0x20  wdog.o [1]
+  .text              ro code  0x000037d4    0x1c  adc.o [1]
+  .text              ro code  0x000037f0    0x1a  cmain.o [4]
+  .text              ro code  0x0000380a     0x4  low_level_init.o [3]
+  .text              ro code  0x0000380e     0x4  exit.o [3]
+  .text              ro code  0x00003814     0xa  cexit.o [4]
+  .text              ro code  0x00003820    0x14  exit.o [5]
+  .text              ro code  0x00003834    0x16  xprout.o [3]
+  .rodata            const    0x0000384c    0x14  uart.o [1]
+  .text              ro code  0x00003860    0x10  startup_MK60D10.o [1]
+  .text              ro code  0x00003870     0xc  cstartup_M.o [4]
+  .text              ro code  0x0000387c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003880     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003884     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003888     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000388c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003890     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003894     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003898     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000389c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038a0     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038a4     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038a8     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038ac     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038b0     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038b4     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038b8     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038bc     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038c0     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038c4     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038c8     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038cc     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038d0     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038d4     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038d8     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038dc     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038e0     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038e4     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038e8     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038ec     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038f0     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038f4     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038f8     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x000038fc     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003900     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003904     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003908     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000390c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003910     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003914     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003918     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000391c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003920     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003924     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003928     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000392c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003930     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003934     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003938     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000393c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003940     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003944     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003948     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000394c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003950     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003954     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003958     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000395c     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003960     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003964     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x00003968     0x4  startup_MK60D10.o [1]
+  .text              ro code  0x0000396c     0x4  startup_MK60D10.o [1]
+  .rodata            const    0x00003970     0x0  zero_init3.o [4]
+  .rodata            const    0x00003970     0x0  copy_init3.o [4]
+  Initializer bytes  ro data  0x00003970    0x70  <for P3 s0>
+                            - 0x000039e0  0x35d0
+
+"P3":                                     0x4150
+  P3 s0                       0x1fff0000    0x70  <Init block>
+    .data            inited   0x1fff0000    0x2c  uart.o [1]
+    .data            inited   0x1fff002c    0x20  main.o [1]
+    .data            inited   0x1fff004c    0x18  Module_Protocol.o [1]
+    .data            inited   0x1fff0064     0x8  uart.o [1]
+    .data            inited   0x1fff006c     0x4  system_MK60D10.o [1]
+  .bss               zero     0x1fff0070   0x808  main.o [1]
+  .bss               zero     0x1fff0878   0x7c8  os_core.o [1]
+  .bss               zero     0x1fff1040   0x280  os_core.o [1]
+  .bss               zero     0x1fff12c0   0x208  os_cpu_c.o [1]
+  .bss               zero     0x1fff14c8   0x200  main.o [1]
+  .bss               zero     0x1fff16c8   0x200  os_core.o [1]
+  .bss               zero     0x1fff18c8   0x200  os_core.o [1]
+  .bss               zero     0x1fff1ac8   0x200  os_core.o [1]
+  .bss               zero     0x1fff1cc8   0x100  os_core.o [1]
+  .bss               zero     0x1fff1dc8    0xf4  os_core.o [1]
+  .bss               zero     0x1fff1ebc    0x78  os_core.o [1]
+  .bss               zero     0x1fff1f34    0x60  os_core.o [1]
+  .bss               zero     0x1fff1f94    0x50  os_core.o [1]
+  .bss               zero     0x1fff1fe4    0x40  dma.o [1]
+  .bss               zero     0x1fff2024    0x40  os_core.o [1]
+  .bss               zero     0x1fff2064    0x30  uart.o [1]
+  .bss               zero     0x1fff2094    0x14  gpio.o [1]
+  .bss               zero     0x1fff20a8    0x10  main.o [1]
+  .bss               zero     0x1fff20b8    0x10  pit.o [1]
+  .bss               zero     0x1fff20c8     0xc  ftm.o [1]
+  .bss               zero     0x1fff20d4     0xc  spi.o [1]
+  .bss               zero     0x1fff20e0     0x8  adc.o [1]
+  .bss               zero     0x1fff20e8     0x8  can.o [1]
+  .bss               zero     0x1fff20f0     0x8  dac.o [1]
+  .bss               zero     0x1fff20f8     0x8  Module_Init.o [1]
+  .bss               zero     0x1fff2100     0x8  systick.o [1]
+  .bss               zero     0x1fff2108     0x4  dma.o [1]
+  .bss               zero     0x1fff210c     0x4  enet.o [1]
+  .bss               zero     0x1fff2110     0x4  enet.o [1]
+  .bss               zero     0x1fff2114     0x4  lptmr.o [1]
+  .bss               zero     0x1fff2118     0x4  Module_Can.o [1]
+  .bss               zero     0x1fff211c     0x4  os_core.o [1]
+  .bss               zero     0x1fff2120     0x4  os_core.o [1]
+  .bss               zero     0x1fff2124     0x4  os_core.o [1]
+  .bss               zero     0x1fff2128     0x4  os_core.o [1]
+  .bss               zero     0x1fff212c     0x4  os_core.o [1]
+  .bss               zero     0x1fff2130     0x4  os_core.o [1]
+  .bss               zero     0x1fff2134     0x4  os_core.o [1]
+  .bss               zero     0x1fff2138     0x4  pdb.o [1]
+  .bss               zero     0x1fff213c     0x4  rtc.o [1]
+  .bss               zero     0x1fff2140     0x4  tsi.o [1]
+  .bss               zero     0x1fff2144     0x4  wdog.o [1]
+  .bss               zero     0x1fff2148     0x2  os_core.o [1]
+  .bss               zero     0x1fff214a     0x2  os_core.o [1]
+  CSTACK                      0x1fff2150  0x2000  <Block>
+    CSTACK           uninit   0x1fff2150  0x2000  <Block tail>
+                            - 0x1fff4150  0x4150
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0x20dc:
+          0x1fff0070  0x20dc
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0x70:
+          0x00003970    0x70
+    1 destination range, total size 0x70:
+          0x1fff0000    0x70
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module                 ro code  ro data  rw data
+    ------                 -------  -------  -------
+C:\work\Template_For_uCOS-II\Release\Obj: [1]
+    Module_Can.o               412                 4
+    Module_Init.o               16                 8
+    Module_Protocol.o          280       24       24
+    adc.o                       28                 8
+    can.o                    1 094                 8
+    common.o                   124
+    crc.o                       36
+    dac.o                       96                 8
+    dma.o                      572                68
+    enet.o                      60                 8
+    ftm.o                      204                12
+    gpio.o                     692                20
+    lptmr.o                     32                 4
+    main.o                     484       32    2 616
+    os_core.o                2 068             5 060
+    os_cpu_a_iar.o             172
+    os_cpu_c.o                 222               520
+    os_flag.o                  106
+    os_mbox.o                   76
+    os_mem.o                    68
+    os_q.o                      56
+    os_sem.o                   408
+    os_task.o                1 096
+    os_time.o                  212
+    os_tmr.o                   560
+    pdb.o                       32                 4
+    pit.o                       56                16
+    rtc.o                       60                 4
+    spi.o                       60                12
+    startup_MK60D10.o        1 300
+    system_MK60D10.o           460        4        4
+    systick.o                  108                 8
+    tsi.o                       40                 4
+    uart.o                   1 468       72      100
+    wdog.o                      32                 4
+    ------------------------------------------------
+    Total:                  12 790      132    8 524
+
+command line: [2]
+    ------------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    exit.o                       4
+    low_level_init.o             4
+    printf.o                    36
+    putchar.o                   40
+    xprintfsmall_nomb.o      1 240
+    xprout.o                    22
+    ------------------------------------------------
+    Total:                   1 346
+
+rt7M_tl.a: [4]
+    ABImemclr4.o                 6
+    ABImemcpy_unaligned.o       86
+    ABImemset48.o               50
+    cexit.o                     10
+    cmain.o                     26
+    copy_init3.o                46
+    cstartup_M.o                12
+    data_init.o                 40
+    memchr.o                    88
+    strchr.o                    22
+    strlen.o                    54
+    zero_init3.o                34
+    ------------------------------------------------
+    Total:                     474
+
+shb_l.a: [5]
+    exit.o                      20
+    ------------------------------------------------
+    Total:                      20
+
+    Gaps                        16        2
+    Linker created                       36    8 192
+----------------------------------------------------
+    Grand Total:            14 646      170   16 716
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+?main                   0x000037f1         Code  Gb  cmain.o [4]
+ADC0_IRQHandler         0x000037d5    0xc  Code  Gb  adc.o [1]
+ADC1_IRQHandler         0x000037e1    0xc  Code  Gb  adc.o [1]
+ADC_CallBackTable       0x1fff20e0    0x8  Data  Lc  adc.o [1]
+APP_MBOX_STK            0x1fff0078  0x200  Data  Gb  main.o [1]
+APP_POST_STK            0x1fff0478  0x200  Data  Gb  main.o [1]
+APP_SEM_STK             0x1fff0278  0x200  Data  Gb  main.o [1]
+APP_START_STK           0x1fff14c8  0x200  Data  Gb  main.o [1]
+APP_TIME_STK            0x1fff0678  0x200  Data  Gb  main.o [1]
+App_Task_Mbox           0x00002f09   0x16  Code  Gb  main.o [1]
+App_Task_Post           0x00002f45   0x1c  Code  Gb  main.o [1]
+App_Task_Sem            0x00002f21   0x22  Code  Gb  main.o [1]
+App_Task_Start          0x00002ea9   0x5e  Code  Lc  main.o [1]
+App_Task_Time           0x00002f61   0x18  Code  Gb  main.o [1]
+CAN0_ORed_Message_buffer_IRQHandler
+                        0x00002e1d    0xc  Code  Gb  can.o [1]
+CAN1_ORed_Message_buffer_IRQHandler
+                        0x00002e29    0xc  Code  Gb  can.o [1]
+CANBase                 0x00002e60    0x8  Data  Gb  can.o [1]
+CAN_CallBackTable       0x1fff20e8    0x8  Data  Lc  can.o [1]
+CAN_CallbackInstall     0x00002d07    0xc  Code  Gb  can.o [1]
+CAN_IRQnTable           0x00002e80    0x2  Data  Lc  can.o [1]
+CAN_ISR                 0x00003239   0x68  Code  Gb  Module_Can.o [1]
+CAN_ITDMAConfig         0x00002d13   0x7e  Code  Gb  can.o [1]
+CAN_Init                0x00002b3b   0xb6  Code  Gb  can.o [1]
+CAN_QuickInit           0x00002bf1   0x3e  Code  Gb  can.o [1]
+CAN_ReadData            0x00002d91   0x8c  Code  Gb  can.o [1]
+CAN_SetBaudrate         0x00002a51   0x76  Code  Lc  can.o [1]
+CAN_SetRxMB             0x00002b0b   0x30  Code  Gb  can.o [1]
+CAN_WriteData           0x00002c53   0xb4  Code  Gb  can.o [1]
+CSTACK$$Base            0x1fff2150          --   Gb  - Linker created -
+CSTACK$$Limit           0x1fff4150          --   Gb  - Linker created -
+CheckPack_True_win      0x00003121   0x12  Code  Gb  Module_Protocol.o [1]
+ClkTbl                  0x00002e68   0x18  Data  Lc  can.o [1]
+ClkTbl                  0x00001d00   0x48  Data  Lc  uart.o [1]
+DAC0_IRQHandler         0x000035dd    0x4  Code  Gb  dac.o [1]
+DAC1_IRQHandler         0x000035e1    0x4  Code  Gb  dac.o [1]
+DAC_CallBackTable       0x1fff20f0    0x8  Data  Lc  dac.o [1]
+DAC_IRQHandler          0x0000358d   0x4a  Code  Lc  dac.o [1]
+DAC_InstanceTable       0x000035e4    0x8  Data  Lc  dac.o [1]
+DMA0_IRQHandler         0x000022b1    0x4  Code  Gb  dma.o [1]
+DMA10_IRQHandler        0x000022d9    0x4  Code  Gb  dma.o [1]
+DMA11_IRQHandler        0x000022dd    0x4  Code  Gb  dma.o [1]
+DMA12_IRQHandler        0x000022e1    0x4  Code  Gb  dma.o [1]
+DMA13_IRQHandler        0x000022e5    0x4  Code  Gb  dma.o [1]
+DMA14_IRQHandler        0x000022e9    0x4  Code  Gb  dma.o [1]
+DMA15_IRQHandler        0x000022ed    0x4  Code  Gb  dma.o [1]
+DMA1_IRQHandler         0x000022b5    0x4  Code  Gb  dma.o [1]
+DMA2UARTChlTable        0x1fff0000   0x14  Data  Lc  uart.o [1]
+DMA2_IRQHandler         0x000022b9    0x4  Code  Gb  dma.o [1]
+DMA3_IRQHandler         0x000022bd    0x4  Code  Gb  dma.o [1]
+DMA4_IRQHandler         0x000022c1    0x4  Code  Gb  dma.o [1]
+DMA5_IRQHandler         0x000022c5    0x4  Code  Gb  dma.o [1]
+DMA6_IRQHandler         0x000022c9    0x4  Code  Gb  dma.o [1]
+DMA7_IRQHandler         0x000022cd    0x4  Code  Gb  dma.o [1]
+DMA8_IRQHandler         0x000022d1    0x4  Code  Gb  dma.o [1]
+DMA9_IRQHandler         0x000022d5    0x4  Code  Gb  dma.o [1]
+DMAChlMAP               0x1fff2108    0x4  Data  Lc  dma.o [1]
+DMA_CallBackTable       0x1fff1fe4   0x40  Data  Lc  dma.o [1]
+DMA_CallbackInstall     0x00002259    0xc  Code  Gb  dma.o [1]
+DMA_ChlAlloc            0x00002183   0x24  Code  Gb  dma.o [1]
+DMA_ChlFree             0x000021a7   0x12  Code  Gb  dma.o [1]
+DMA_DisableRequest      0x000021f3    0xa  Code  Gb  dma.o [1]
+DMA_EnableAutoDisableRequest
+                        0x000021fd   0x22  Code  Gb  dma.o [1]
+DMA_EnableMajorLink     0x0000221f   0x3a  Code  Gb  dma.o [1]
+DMA_EnableRequest       0x000021e9    0xa  Code  Gb  dma.o [1]
+DMA_GetMajorLoopCount   0x000021b9   0x12  Code  Gb  dma.o [1]
+DMA_GetSourceAddress    0x0000226d    0x8  Code  Gb  dma.o [1]
+DMA_IRQHandler          0x00002275   0x16  Code  Lc  dma.o [1]
+DMA_Init                0x000020b5   0xce  Code  Gb  dma.o [1]
+DMA_SetMajorLoopCounter
+                        0x000021cb   0x1e  Code  Gb  dma.o [1]
+DMA_SetSourceAddress    0x00002265    0x8  Code  Gb  dma.o [1]
+DWT_DelayInit           0x00001dd5   0x16  Code  Gb  common.o [1]
+DelayInit               0x00001dfd    0x2  Code  Wk  common.o [1]
+ENET_CallBackRxTable    0x1fff2110    0x4  Data  Lc  enet.o [1]
+ENET_CallBackTxTable    0x1fff210c    0x4  Data  Lc  enet.o [1]
+ENET_Receive_IRQHandler
+                        0x00003603   0x16  Code  Gb  enet.o [1]
+ENET_Transmit_IRQHandler
+                        0x000035ed   0x16  Code  Gb  enet.o [1]
+FTM0_IRQHandler         0x000034c1   0x3e  Code  Gb  ftm.o [1]
+FTM1_IRQHandler         0x000034ff   0x3e  Code  Gb  ftm.o [1]
+FTM2_IRQHandler         0x0000353d   0x3e  Code  Gb  ftm.o [1]
+FTM_CallBackTable       0x1fff20c8    0xc  Data  Lc  ftm.o [1]
+GPIO_CallBackTable      0x1fff2094   0x14  Data  Lc  gpio.o [1]
+GPIO_Init               0x00001f29   0xde  Code  Gb  gpio.o [1]
+GPIO_InstanceTable      0x00002078   0x14  Data  Lc  gpio.o [1]
+GPIO_PinConfig          0x00001ef1   0x36  Code  Gb  gpio.o [1]
+GPIO_QuickInit          0x00002007   0x1a  Code  Gb  gpio.o [1]
+GPIO_ToggleBit          0x00002021   0x16  Code  Gb  gpio.o [1]
+GetClock                0x00001d85   0x50  Code  Gb  common.o [1]
+Init_Timer_Cnt          0x000033f9   0x10  Code  Gb  Module_Init.o [1]
+LPTMR_CallBackTable     0x1fff2114    0x4  Data  Lc  lptmr.o [1]
+LPTimer_IRQHandler      0x00003775   0x16  Code  Gb  lptmr.o [1]
+LoadInt                 0x00002845   0x4c  Code  Lc  xprintfsmall_nomb.o [3]
+NMI_Handler             0x00001dff    0x2  Code  Gb  common.o [1]
+NVIC_EnableIRQ          0x00002a3d   0x14  Code  Lc  can.o [1]
+NVIC_EnableIRQ          0x000017c9   0x14  Code  Lc  uart.o [1]
+OSCPUUsage              0x1fff0878    0x1  Data  Gb  os_core.o [1]
+OSCtxSw                 0x00000c57         Code  Gb  os_cpu_a_iar.o [1]
+OSCtxSwCtr              0x1fff088c    0x4  Data  Gb  os_core.o [1]
+OSEventFreeList         0x1fff1dc8    0x4  Data  Gb  os_core.o [1]
+OSEventNameSet          0x00000411   0x4a  Code  Gb  os_core.o [1]
+OSEventTbl              0x1fff1dcc   0xf0  Data  Gb  os_core.o [1]
+OSFlagFreeList          0x1fff211c    0x4  Data  Gb  os_core.o [1]
+OSFlagTbl               0x1fff1f94   0x50  Data  Gb  os_core.o [1]
+OSIdleCtr               0x1fff0898    0x4  Data  Gb  os_core.o [1]
+OSIdleCtrMax            0x1fff0890    0x4  Data  Gb  os_core.o [1]
+OSIdleCtrRun            0x1fff0894    0x4  Data  Gb  os_core.o [1]
+OSInit                  0x0000045b   0x36  Code  Gb  os_core.o [1]
+OSInitHookBegin         0x00000cd1   0x22  Code  Gb  os_cpu_c.o [1]
+OSInitHookEnd           0x00000cf3    0x2  Code  Gb  os_cpu_c.o [1]
+OSIntCtxSw              0x00000c5f         Code  Gb  os_cpu_a_iar.o [1]
+OSIntEnter              0x00000491   0x16  Code  Gb  os_core.o [1]
+OSIntExit               0x000004a7   0x56  Code  Gb  os_core.o [1]
+OSIntNesting            0x1fff087a    0x1  Data  Gb  os_core.o [1]
+OSLockNesting           0x1fff087b    0x1  Data  Gb  os_core.o [1]
+OSMboxCreate            0x000030d5   0x40  Code  Gb  os_mbox.o [1]
+OSMemFreeList           0x1fff2120    0x4  Data  Gb  os_core.o [1]
+OSMemTbl                0x1fff1ebc   0x78  Data  Gb  os_core.o [1]
+OSPrioCur               0x1fff087c    0x1  Data  Gb  os_core.o [1]
+OSPrioHighRdy           0x1fff087d    0x1  Data  Gb  os_core.o [1]
+OSQFreeList             0x1fff2124    0x4  Data  Gb  os_core.o [1]
+OSQTbl                  0x1fff1f34   0x60  Data  Gb  os_core.o [1]
+OSRdyGrp                0x1fff087e    0x1  Data  Gb  os_core.o [1]
+OSRdyTbl                0x1fff0884    0x8  Data  Gb  os_core.o [1]
+OSRunning               0x1fff087f    0x1  Data  Gb  os_core.o [1]
+OSSchedLock             0x000004fd   0x2a  Code  Gb  os_core.o [1]
+OSSchedUnlock           0x00000527   0x4a  Code  Gb  os_core.o [1]
+OSSemCreate             0x00001631   0x40  Code  Gb  os_sem.o [1]
+OSSemPend               0x00001671   0xe6  Code  Gb  os_sem.o [1]
+OSSemPost               0x0000176d   0x5c  Code  Gb  os_sem.o [1]
+OSStart                 0x00000571   0x2a  Code  Gb  os_core.o [1]
+OSStartHighRdy          0x00000c33         Code  Gb  os_cpu_a_iar.o [1]
+OSStatInit              0x0000059b   0x32  Code  Gb  os_core.o [1]
+OSStatRdy               0x1fff0879    0x1  Data  Gb  os_core.o [1]
+OSTCBCur                0x1fff089c    0x4  Data  Gb  os_core.o [1]
+OSTCBFreeList           0x1fff08a0    0x4  Data  Gb  os_core.o [1]
+OSTCBHighRdy            0x1fff08a4    0x4  Data  Gb  os_core.o [1]
+OSTCBInitHook           0x00000d7b    0x2  Code  Gb  os_cpu_c.o [1]
+OSTCBList               0x1fff08a8    0x4  Data  Gb  os_core.o [1]
+OSTCBPrioTbl            0x1fff1cc8  0x100  Data  Gb  os_core.o [1]
+OSTCBTbl                0x1fff08b0  0x790  Data  Gb  os_core.o [1]
+OSTaskCreate            0x000011e9   0x92  Code  Gb  os_task.o [1]
+OSTaskCreateExt         0x0000127b   0xac  Code  Gb  os_task.o [1]
+OSTaskCreateHook        0x00000cf5    0x2  Code  Gb  os_cpu_c.o [1]
+OSTaskCtr               0x1fff0880    0x1  Data  Gb  os_core.o [1]
+OSTaskDel               0x00001327  0x144  Code  Gb  os_task.o [1]
+OSTaskDelHook           0x00000cf7    0x2  Code  Gb  os_cpu_c.o [1]
+OSTaskIdleHook          0x00000cf9    0x2  Code  Gb  os_cpu_c.o [1]
+OSTaskIdleStk           0x1fff18c8  0x200  Data  Gb  os_core.o [1]
+OSTaskNameSet           0x0000146b   0x64  Code  Gb  os_task.o [1]
+OSTaskReturnHook        0x00000cfb    0x2  Code  Gb  os_cpu_c.o [1]
+OSTaskStatHook          0x00000cfd    0x2  Code  Gb  os_cpu_c.o [1]
+OSTaskStatStk           0x1fff16c8  0x200  Data  Gb  os_core.o [1]
+OSTaskStkChk            0x000014cf   0x76  Code  Gb  os_task.o [1]
+OSTaskStkInit           0x00000cff   0x7a  Code  Gb  os_cpu_c.o [1]
+OSTaskSuspend           0x0000154d   0x90  Code  Gb  os_task.o [1]
+OSTaskSwHook            0x00000d79    0x2  Code  Gb  os_cpu_c.o [1]
+OSTickStepState         0x1fff0881    0x1  Data  Gb  os_core.o [1]
+OSTime                  0x1fff08ac    0x4  Data  Gb  os_core.o [1]
+OSTimeDly               0x00001115   0x4e  Code  Gb  os_time.o [1]
+OSTimeDlyHMSM           0x00001163   0x70  Code  Gb  os_time.o [1]
+OSTimeTick              0x000005cd   0xa8  Code  Gb  os_core.o [1]
+OSTimeTickHook          0x00000d7d   0x18  Code  Gb  os_cpu_c.o [1]
+OSTmrCtr                0x1fff12c0    0x2  Data  Lc  os_cpu_c.o [1]
+OSTmrFree               0x1fff2148    0x2  Data  Gb  os_core.o [1]
+OSTmrFreeList           0x1fff2134    0x4  Data  Gb  os_core.o [1]
+OSTmrSem                0x1fff212c    0x4  Data  Gb  os_core.o [1]
+OSTmrSemSignal          0x1fff2130    0x4  Data  Gb  os_core.o [1]
+OSTmrSignal             0x00000ee5    0x8  Code  Gb  os_tmr.o [1]
+OSTmrTaskStk            0x1fff1ac8  0x200  Data  Gb  os_core.o [1]
+OSTmrTbl                0x1fff1040  0x280  Data  Gb  os_core.o [1]
+OSTmrTime               0x1fff2128    0x4  Data  Gb  os_core.o [1]
+OSTmrUsed               0x1fff214a    0x2  Data  Gb  os_core.o [1]
+OSTmrWheelTbl           0x1fff2024   0x40  Data  Gb  os_core.o [1]
+OSTmr_Init              0x00000eed   0x8c  Code  Gb  os_tmr.o [1]
+OSTmr_InitTask          0x00000f79   0x3a  Code  Lc  os_tmr.o [1]
+OSTmr_Link              0x00000fb3   0x52  Code  Lc  os_tmr.o [1]
+OSTmr_Task              0x0000104d   0x68  Code  Lc  os_tmr.o [1]
+OSTmr_Unlink            0x00001005   0x46  Code  Lc  os_tmr.o [1]
+OSUnMapTbl              0x00000b24  0x100  Data  Gb  os_core.o [1]
+OS_CPU_ExceptStk        0x1fff12c8  0x200  Data  Gb  os_cpu_c.o [1]
+OS_CPU_ExceptStkBase    0x1fff12c4    0x4  Data  Gb  os_cpu_c.o [1]
+OS_CPU_PendSVHandler    0x00000c67         Code  Gb  os_cpu_a_iar.o [1]
+OS_CPU_SR_Restore       0x00000c2d         Code  Gb  os_cpu_a_iar.o [1]
+OS_CPU_SR_Save          0x00000c25         Code  Gb  os_cpu_a_iar.o [1]
+OS_Dummy                0x00000675    0x2  Code  Gb  os_core.o [1]
+OS_EventTaskRdy         0x00000677   0x6c  Code  Gb  os_core.o [1]
+OS_EventTaskRemove      0x0000072d   0x22  Code  Gb  os_core.o [1]
+OS_EventTaskRemoveMulti
+                        0x0000074f   0x2c  Code  Gb  os_core.o [1]
+OS_EventTaskWait        0x000006e3   0x4a  Code  Gb  os_core.o [1]
+OS_EventWaitListInit    0x0000077b   0x14  Code  Gb  os_core.o [1]
+OS_FlagInit             0x00000ddd   0x36  Code  Gb  os_flag.o [1]
+OS_FlagUnlink           0x00000e21   0x26  Code  Gb  os_flag.o [1]
+OS_InitEventList        0x0000078f   0x3e  Code  Lc  os_core.o [1]
+OS_InitMisc             0x000007cd   0x1a  Code  Lc  os_core.o [1]
+OS_InitRdyList          0x000007e7   0x20  Code  Lc  os_core.o [1]
+OS_InitTCBList          0x0000087b   0x4e  Code  Lc  os_core.o [1]
+OS_InitTaskIdle         0x00000807   0x3a  Code  Lc  os_core.o [1]
+OS_InitTaskStat         0x00000841   0x3a  Code  Lc  os_core.o [1]
+OS_MemClr               0x000008c9   0x12  Code  Gb  os_core.o [1]
+OS_MemInit              0x00000e69   0x34  Code  Gb  os_mem.o [1]
+OS_QInit                0x00000ead   0x2c  Code  Gb  os_q.o [1]
+OS_Sched                0x000008db   0x40  Code  Gb  os_core.o [1]
+OS_SchedNew             0x0000091b   0x18  Code  Lc  os_core.o [1]
+OS_TCBInit              0x000009f1   0xfa  Code  Gb  os_core.o [1]
+OS_TaskIdle             0x00000935   0x18  Code  Gb  os_core.o [1]
+OS_TaskReturn           0x000015dd   0x12  Code  Gb  os_task.o [1]
+OS_TaskStat             0x0000094d   0x68  Code  Gb  os_core.o [1]
+OS_TaskStatStkChk       0x000009b5   0x36  Code  Gb  os_core.o [1]
+OS_TaskStkClr           0x00001619   0x18  Code  Gb  os_task.o [1]
+PDB0_IRQHandler         0x00003795   0x16  Code  Gb  pdb.o [1]
+PDB_CallBackTable       0x1fff2138    0x4  Data  Lc  pdb.o [1]
+PIT0_IRQHandler         0x000036c9    0x4  Code  Gb  pit.o [1]
+PIT1_IRQHandler         0x000036cd    0x4  Code  Gb  pit.o [1]
+PIT2_IRQHandler         0x000036d1    0x4  Code  Gb  pit.o [1]
+PIT3_IRQHandler         0x000036d5    0x4  Code  Gb  pit.o [1]
+PIT_CallBackTable       0x1fff20b8   0x10  Data  Lc  pit.o [1]
+PIT_IRQHandler          0x000036a1   0x1c  Code  Lc  pit.o [1]
+PORTA_IRQHandler        0x00002065    0x4  Code  Gb  gpio.o [1]
+PORTB_IRQHandler        0x00002069    0x4  Code  Gb  gpio.o [1]
+PORTC_IRQHandler        0x0000206d    0x4  Code  Gb  gpio.o [1]
+PORTD_IRQHandler        0x00002071    0x4  Code  Gb  gpio.o [1]
+PORTE_IRQHandler        0x00002075    0x4  Code  Gb  gpio.o [1]
+PORT_IRQHandler         0x00002037   0x24  Code  Lc  gpio.o [1]
+PORT_InstanceTable      0x0000208c   0x14  Data  Lc  gpio.o [1]
+PORT_PinMuxConfig       0x00001e01   0x3c  Code  Gb  gpio.o [1]
+PORT_PinOpenDrainConfig
+                        0x00001eb9   0x38  Code  Gb  gpio.o [1]
+PORT_PinPullConfig      0x00001e3d   0x7c  Code  Gb  gpio.o [1]
+Pile_Send               0x000032ad   0xd2  Code  Gb  Module_Can.o [1]
+Pile_State              0x1fff20f8    0x1  Data  Gb  Module_Init.o [1]
+RTC_CallBackTable       0x1fff213c    0x4  Data  Lc  rtc.o [1]
+RTC_IRQHandler          0x00003629   0x30  Code  Gb  rtc.o [1]
+Region$$Table$$Base     0x00003750          --   Gb  - Linker created -
+Region$$Table$$Limit    0x00003774          --   Gb  - Linker created -
+SIM_GPIOClockGateTable  0x000020a0   0x14  Data  Lc  gpio.o [1]
+SPI0_IRQHandler         0x00003689    0x4  Code  Gb  spi.o [1]
+SPI1_IRQHandler         0x0000368d    0x4  Code  Gb  spi.o [1]
+SPI2_IRQHandler         0x00003691    0x4  Code  Gb  spi.o [1]
+SPI_CallBackTable       0x1fff20d4    0xc  Data  Lc  spi.o [1]
+SPI_IRQHandler          0x00003665   0x1e  Code  Lc  spi.o [1]
+SPI_InstanceTable       0x00003694    0xc  Data  Gb  spi.o [1]
+SYSTICK_Cmd             0x00003097   0x18  Code  Gb  systick.o [1]
+SYSTICK_ITConfig        0x000030af   0x18  Code  Gb  systick.o [1]
+SYSTICK_Init            0x00003069   0x2e  Code  Gb  systick.o [1]
+Static_Time             0x1fff20fc    0x4  Data  Gb  Module_Init.o [1]
+SysTick_Handler         0x00000d9d   0x12  Code  Gb  os_cpu_c.o [1]
+SystemCoreClock         0x1fff006c    0x4  Data  Gb  system_MK60D10.o [1]
+SystemCoreClockUpdate   0x00002379  0x11e  Code  Gb  system_MK60D10.o [1]
+SystemInit              0x000022f1   0x88  Code  Gb  system_MK60D10.o [1]
+TSI0_IRQHandler         0x000036d9   0x1e  Code  Gb  tsi.o [1]
+TSI_CallBackTable       0x1fff2140    0x4  Data  Lc  tsi.o [1]
+UART0_RX_TX_IRQHandler  0x00001bef    0x4  Code  Gb  uart.o [1]
+UART1_RX_TX_IRQHandler  0x00001bf3    0x4  Code  Gb  uart.o [1]
+UART2_RX_TX_IRQHandler  0x00001bf7    0x4  Code  Gb  uart.o [1]
+UART3_RX_TX_IRQHandler  0x00001bfb    0x4  Code  Gb  uart.o [1]
+UART4_RX_TX_IRQHandler  0x00001bff    0x4  Code  Gb  uart.o [1]
+UART5_RX_TX_IRQHandler  0x00001c03    0x4  Code  Gb  uart.o [1]
+UARTBase                0x00001ce8   0x18  Data  Lc  uart.o [1]
+UART_Buffer             0x1fff20a8   0x10  Data  Lc  main.o [1]
+UART_CallBackRxTable    0x1fff207c   0x18  Data  Lc  uart.o [1]
+UART_CallBackTxTable    0x1fff2064   0x18  Data  Lc  uart.o [1]
+UART_DMARevByte         0x00001cb1   0x28  Code  Gb  uart.o [1]
+UART_DMARevInit         0x00003199   0x62  Code  Gb  Module_Protocol.o [1]
+UART_DMASendByte        0x00001c85   0x2c  Code  Gb  uart.o [1]
+UART_DMASendInit        0x00003133   0x66  Code  Gb  Module_Protocol.o [1]
+UART_DataPortAddrTable  0x1fff004c   0x18  Data  Lc  Module_Protocol.o [1]
+UART_DebugInstance      0x1fff0064    0x1  Data  Lc  uart.o [1]
+UART_EnableRxFIFO       0x000019ed   0x1e  Code  Gb  uart.o [1]
+UART_EnableTxFIFO       0x000019cf   0x1e  Code  Gb  uart.o [1]
+UART_GetTxFIFOSize      0x00001a0b   0x18  Code  Gb  uart.o [1]
+UART_IRQ_Handler        0x00001b91   0x5e  Code  Lc  uart.o [1]
+UART_IRQnTable          0x00001d48    0x8  Data  Lc  uart.o [1]
+UART_ITDMAConfig        0x00001a63   0xd0  Code  Gb  uart.o [1]
+UART_Init               0x00001817  0x1b8  Code  Gb  uart.o [1]
+UART_QuickInit          0x00001b33   0x5e  Code  Gb  uart.o [1]
+UART_RevDMATriggerSourceTable
+                        0x00003220   0x18  Data  Lc  Module_Protocol.o [1]
+UART_SendDMATriggerSourceTable
+                        0x00003208   0x18  Data  Lc  Module_Protocol.o [1]
+UART_SetDMATxMode       0x00001c07   0x7e  Code  Gb  uart.o [1]
+UART_TIFOSizeTable      0x00001d50   0x1c  Data  Lc  uart.o [1]
+UART_WriteByte          0x00001a23   0x40  Code  Gb  uart.o [1]
+WDOG_CallBackTable      0x1fff2144    0x4  Data  Lc  wdog.o [1]
+Watchdog_IRQHandler     0x000037b5   0x16  Code  Gb  wdog.o [1]
+_DMA_UARTTrigTable      0x00001d6c   0x18  Data  Lc  uart.o [1]
+_LitobSmallNoMb         0x00002891   0xce  Code  Lc  xprintfsmall_nomb.o [3]
+_PrintfSmallNoMb        0x000024bd  0x382  Code  Gb  xprintfsmall_nomb.o [3]
+_Prout                  0x00003835   0x16  Code  Gb  xprout.o [3]
+_PutcharsSmallNoMb      0x0000295f   0x2e  Code  Lc  xprintfsmall_nomb.o [3]
+_UART_DMA_sAddrTable    0x1fff0014   0x18  Data  Lc  uart.o [1]
+__Vectors               0x00000000          --   Gb  startup_MK60D10.o [1]
+__Vectors_End           0x00000400         Data  Gb  startup_MK60D10.o [1]
+__Vectors_Size {Abs}    0x00000400          --   Gb  startup_MK60D10.o [1]
+__aeabi_memclr4         0x00003409         Code  Gb  ABImemclr4.o [4]
+__as_entries_start      0xffffffff          --   Gb  command line/config [2]
+__as_table_start        0xffffffff          --   Gb  command line/config [2]
+__cmain                 0x000037f1         Code  Gb  cmain.o [4]
+__exit                  0x00003821   0x14  Code  Gb  exit.o [5]
+__iar_Memchr            0x000029e5         Code  Gb  memchr.o [4]
+__iar_Memset4_word      0x0000348d         Code  Gb  ABImemset48.o [4]
+__iar_Memset8_word      0x0000348d         Code  Gb  ABImemset48.o [4]
+__iar_Strchr            0x00002995         Code  Gb  strchr.o [4]
+__iar_copy_init3        0x00000daf   0x2e  Code  Gb  copy_init3.o [4]
+__iar_data_init3        0x00003729   0x28  Code  Gb  data_init.o [4]
+__iar_program_start     0x00003871         Code  Gb  cstartup_M.o [4]
+__iar_unaligned___aeabi_memcpy4
+                        0x00003411         Code  Gb  ABImemcpy_unaligned.o [4]
+__iar_unaligned___aeabi_memcpy8
+                        0x00003411         Code  Gb  ABImemcpy_unaligned.o [4]
+__iar_zero_init3        0x00000e47   0x22  Code  Gb  zero_init3.o [4]
+__low_level_init        0x0000380b    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x00000000         Data  Gb  startup_MK60D10.o [1]
+__write                 0x000017dd   0x3a  Code  Wk  uart.o [1]
+_call_main              0x000037fd         Code  Gb  cmain.o [4]
+_exit                   0x00003815         Code  Gb  cexit.o [4]
+_main                   0x00003807         Code  Gb  cmain.o [4]
+a                       0x00002f79    0x8  Code  Gb  main.o [1]
+bsp_init                0x00002f81   0xaa  Code  Gb  main.o [1]
+crcCheck                0x00003469   0x24  Code  Gb  crc.o [1]
+exit                    0x0000380f    0x4  Code  Gb  exit.o [3]
+fac_ms                  0x1fff2104    0x4  Data  Lc  systick.o [1]
+fac_us                  0x1fff2100    0x4  Data  Lc  systick.o [1]
+is_mb_idle              0x00002c2f   0x24  Code  Lc  can.o [1]
+main                    0x00002e85   0x24  Code  Gb  main.o [1]
+memchr                  0x000029e5         Code  Gb  memchr.o [4]
+msg_test                0x1fff0070    0x4  Data  Gb  main.o [1]
+printf                  0x000033d5   0x24  Code  Gb  printf.o [3]
+putchar                 0x00003701   0x28  Code  Gb  putchar.o [3]
+sem_test                0x1fff0074    0x4  Data  Gb  main.o [1]
+set_id                  0x00002ac7   0x44  Code  Lc  can.o [1]
+strchr                  0x00002995         Code  Gb  strchr.o [4]
+strlen                  0x000029ad         Code  Gb  strlen.o [4]
+
+
+[1] = C:\work\Template_For_uCOS-II\Release\Obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = rt7M_tl.a
+[5] = shb_l.a
+
+  14 646 bytes of readonly  code memory
+     170 bytes of readonly  data memory
+  16 716 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

@@ -4,10 +4,10 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.4.10
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   ******************************************************************************
   */
-  
+
 #ifndef __CH_LIB_CAN_H__
 #define __CH_LIB_CAN_H__
 
@@ -16,15 +16,16 @@
 #endif
 
 #include <stdint.h>
-#include "common.h"  
+#include "common.h"
 
 //!< hardware instances
 #define HW_CAN0  (0x00U)  //CAN0模块
-#define HW_CAN1  (0x01U)  //CAN1模块  
-     
+#define HW_CAN1  (0x01U)  //CAN1模块
+
 //CAN总线速度选择
-typedef enum 
+typedef enum
 {
+    kCAN_20K,
 	kCAN_25K,
 	kCAN_50K,
 	kCAN_100K,
@@ -54,7 +55,7 @@ typedef enum
     kCAN_IT_Tx_Disable,  //关闭发送中断
     kCAN_IT_Rx_Disable,  //关闭接收中断
     kCAN_IT_Tx,          //开启发送中断
-    kCAN_IT_RX,          //开启发送中断
+    kCAN_IT_RX,          //开启接收中断
 }CAN_ITDMAConfig_Type;
 
 /*!< CAN 回调函数声明 */

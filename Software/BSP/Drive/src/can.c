@@ -4,10 +4,10 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.4.10
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   ******************************************************************************
   */
-  
+
 #include "can.h"
 #include "gpio.h"
 
@@ -35,7 +35,7 @@ static const Reg_t ClkTbl[] =
 #endif
 };
 
-static const IRQn_Type CAN_IRQnTable[] = 
+static const IRQn_Type CAN_IRQnTable[] =
 {
     CAN0_ORed_Message_buffer_IRQn,
 #ifdef CAN1
@@ -72,7 +72,7 @@ typedef enum
 
 /**
  * @brief  Set CAN baudrate
- * @note   
+ * @note
  * @param  can           :CANÍ¨ÐÅÄ£¿éºÅ
  * @param  baudrate      :CAN speed
 
@@ -82,13 +82,23 @@ static uint32_t CAN_SetBaudrate(CAN_Type *CANx, CAN_Baudrate_Type baudrate)
 {
     switch(baudrate)
     {
+        case kCAN_20K:
+			 // 50M/250= 1M sclock, 10Tq
+			 // PROPSEG = 3, LOM = 0x0, LBUF = 0x0, TSYNC = 0x0, SAMP = 1
+			 // RJW = 3, PSEG1 = 3, PSEG2 = 3, PRESDIV = 50
+			CANx->CTRL1 |= (0| CAN_CTRL1_PROPSEG(2)
+							 | CAN_CTRL1_RJW(2)
+							 | CAN_CTRL1_PSEG1(2)
+							 | CAN_CTRL1_PSEG2(2)
+							 | CAN_CTRL1_PRESDIV(249));
+            break;
         case kCAN_25K:
 			 // 50M/125 = 400k sclock, 16Tq
 			 // PROPSEG = 5, LOM = 0x0, LBUF = 0x0, TSYNC = 0x0, SAMP = 1
 			 // RJW = 3, PSEG1 = 5, PSEG2 = 5,PRESDIV = 125
-			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(4) 
+			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(4)
 							 | CAN_CTRL1_RJW(2)
-							 | CAN_CTRL1_PSEG1(4) 
+							 | CAN_CTRL1_PSEG1(4)
 							 | CAN_CTRL1_PSEG2(4)
 							 | CAN_CTRL1_PRESDIV(119));
             break;
@@ -96,63 +106,63 @@ static uint32_t CAN_SetBaudrate(CAN_Type *CANx, CAN_Baudrate_Type baudrate)
 			 // 50M/100= 500K sclock, 10Tq
 			 // PROPSEG = 3, LOM = 0x0, LBUF = 0x0, TSYNC = 0x0, SAMP = 1
 			 // RJW = 3, PSEG1 = 3, PSEG2 = 3, PRESDIV = 100
-			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2) 
+			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2)
 							 | CAN_CTRL1_RJW(2)
-							 | CAN_CTRL1_PSEG1(2) 
+							 | CAN_CTRL1_PSEG1(2)
 							 | CAN_CTRL1_PSEG2(2)
-							 | CAN_CTRL1_PRESDIV(99));	
+							 | CAN_CTRL1_PRESDIV(99));
             break;
 		case kCAN_100K:
 			 // 50M/50= 1M sclock, 10Tq
 			 // PROPSEG = 3, LOM = 0x0, LBUF = 0x0, TSYNC = 0x0, SAMP = 1
 			 // RJW = 3, PSEG1 = 3, PSEG2 = 3, PRESDIV = 50
-			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2) 
+			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2)
 							 | CAN_CTRL1_RJW(2)
-							 | CAN_CTRL1_PSEG1(2) 
+							 | CAN_CTRL1_PSEG1(2)
 							 | CAN_CTRL1_PSEG2(2)
-							 | CAN_CTRL1_PRESDIV(49));	
+							 | CAN_CTRL1_PRESDIV(49));
             break;
 		case kCAN_125K:
 			 // 50M/25 = 2000k sclock, 16Tq
 			 // PROPSEG = 5, LOM = 0x0, LBUF = 0x0, TSYNC = 0x0, SAMP = 1
 			 // RJW = 3, PSEG1 = 5, PSEG2 = 5,PRESDIV = 25
-			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(4) 
+			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(4)
 							 | CAN_CTRL1_RJW(2)
-							 | CAN_CTRL1_PSEG1(4) 
+							 | CAN_CTRL1_PSEG1(4)
 							 | CAN_CTRL1_PSEG2(4)
-							 | CAN_CTRL1_PRESDIV(24));	
+							 | CAN_CTRL1_PRESDIV(24));
             break;
 		case kCAN_250K:
 			 // 50M/20= 2500K sclock, 10Tq
 			 // PROPSEG = 3, LOM = 0x0, LBUF = 0x0, TSYNC = 0x0, SAMP = 1
 			 // RJW = 3, PSEG1 = 3, PSEG2 = 3, PRESDIV = 20
-			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2) 
+			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2)
 							 | CAN_CTRL1_RJW(2)
-							 | CAN_CTRL1_PSEG1(2) 
+							 | CAN_CTRL1_PSEG1(2)
 							 | CAN_CTRL1_PSEG2(2)
-							 | CAN_CTRL1_PRESDIV(19));			
+							 | CAN_CTRL1_PRESDIV(19));
             break;
 		case kCAN_500K:
 			 // 50M/10= 5000K sclock, 10Tq
 			 // PROPSEG = 3, LOM = 0x0, LBUF = 0x0, TSYNC = 0x0, SAMP = 1
 			 // RJW = 3, PSEG1 = 3, PSEG2 = 3, PRESDIV = 20
-			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2) 
+			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2)
 							 | CAN_CTRL1_RJW(2)
-							 | CAN_CTRL1_PSEG1(2) 
+							 | CAN_CTRL1_PSEG1(2)
 							 | CAN_CTRL1_PSEG2(2)
-							 | CAN_CTRL1_PRESDIV(9));				
+							 | CAN_CTRL1_PRESDIV(9));
             break;
 		case kCAN_1000K:
 			 // 50M/5= 10000K sclock, 10Tq
 			 // PROPSEG = 2, LOM = 0x0, LBUF = 0x0, TSYNC = 0x0, SAMP = 1
 			 // RJW = 2, PSEG1 = 3, PSEG2 = 3, PRESDIV = 20
-			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2) 
+			CANx->CTRL1 |= (0 | CAN_CTRL1_PROPSEG(2)
 							 | CAN_CTRL1_RJW(2)
-							 | CAN_CTRL1_PSEG1(2) 
+							 | CAN_CTRL1_PSEG1(2)
 							 | CAN_CTRL1_PSEG2(2)
-							 | CAN_CTRL1_PRESDIV(4));	
+							 | CAN_CTRL1_PRESDIV(4));
             break;
-		default: 
+		default:
             return 1;
 	}
 	return 0;
@@ -163,12 +173,12 @@ static uint32_t set_id(uint32_t instance, uint32_t mb, uint32_t id)
     if(id > 0x7FF)
     {
         CANBase[instance]->MB[mb].ID = (id & (CAN_ID_STD_MASK | CAN_ID_EXT_MASK));  /* ID [28-0]*/
-        CANBase[instance]->MB[mb].CS |= (CAN_CS_SRR_MASK | CAN_CS_IDE_MASK);  
+        CANBase[instance]->MB[mb].CS |= (CAN_CS_SRR_MASK | CAN_CS_IDE_MASK);
     }
     else
     {
         CANBase[instance]->MB[mb].ID = CAN_ID_STD(id);  /* ID[28-18] */
-        CANBase[instance]->MB[mb].CS &= ~(CAN_CS_IDE_MASK | CAN_CS_SRR_MASK); 
+        CANBase[instance]->MB[mb].CS &= ~(CAN_CS_IDE_MASK | CAN_CS_SRR_MASK);
     }
     return 0;
 }
@@ -184,16 +194,16 @@ static uint32_t set_id(uint32_t instance, uint32_t mb, uint32_t id)
 void CAN_SetRxFilterMask(uint32_t instance, uint32_t mb, uint32_t mask)
 {
     CANBase[instance]->MCR |= (CAN_MCR_FRZ_MASK | CAN_MCR_HALT_MASK);
-	while(!(CAN_MCR_FRZACK_MASK & (CANBase[instance]->MCR))) {}; 
+	while(!(CAN_MCR_FRZACK_MASK & (CANBase[instance]->MCR))) {};
     if(mask > 0x7FF)
-    {	 
-        CANBase[instance]->RXIMR[mb] = CAN_ID_EXT(mask); 
+    {
+        CANBase[instance]->RXIMR[mb] = CAN_ID_EXT(mask);
     }
     else
     {
-        CANBase[instance]->RXIMR[mb] = CAN_ID_STD(mask); 
+        CANBase[instance]->RXIMR[mb] = CAN_ID_STD(mask);
     }
-    
+
     CANBase[instance]->MCR &= ~(CAN_MCR_FRZ_MASK | CAN_MCR_HALT_MASK);
 	while((CAN_MCR_FRZACK_MASK & (CANBase[instance]->MCR)));
 }
@@ -211,7 +221,7 @@ void CAN_SetRxFilterMask(uint32_t instance, uint32_t mb, uint32_t mask)
 void CAN_SetRxMB(uint32_t instance, uint32_t mb, uint32_t id)
 {
     set_id(instance, mb, id);
-    CANBase[instance]->MB[mb].CS &= ~CAN_CS_CODE_MASK; 
+    CANBase[instance]->MB[mb].CS &= ~CAN_CS_CODE_MASK;
 	CANBase[instance]->MB[mb].CS |= CAN_CS_CODE(kFlexCanRX_Empty);
 }
 
@@ -227,26 +237,26 @@ void CAN_Init(CAN_InitTypeDef* Init)
 {
     uint32_t i;
     CAN_Type *CANx;
-    
+
     /* enable clock gate */
     IP_CLK_ENABLE(Init->instance);
-  
+
     CANx = CANBase[Init->instance];
-    
+
     /* set clock source is bus clock */
     CANx->CTRL1 |= CAN_CTRL1_CLKSRC_MASK;
 
     /* enable module */
     CANx->MCR &= ~CAN_MCR_MDIS_MASK;
-    
+
     /* software reset */
-	CANx->MCR |= CAN_MCR_SOFTRST_MASK;	
-	while(CAN_MCR_SOFTRST_MASK & (CANx->MCR)) {}; 
-        
+	CANx->MCR |= CAN_MCR_SOFTRST_MASK;
+	while(CAN_MCR_SOFTRST_MASK & (CANx->MCR)) {};
+
     /* halt mode */
     CANx->MCR |= (CAN_MCR_FRZ_MASK | CAN_MCR_HALT_MASK);
-	while(!(CAN_MCR_FRZACK_MASK & (CANx->MCR))) {}; 
-        
+	while(!(CAN_MCR_FRZACK_MASK & (CANx->MCR))) {};
+
     /* init all mb */
     for(i = 0; i < CAN_MB_MAX; i++)
 	{
@@ -259,19 +269,19 @@ void CAN_Init(CAN_InitTypeDef* Init)
         CANx->IFLAG1 = 0xFFFFFFFF;
 	}
 	/* set all masks */
-	//CANx->RXMGMASK = CAN_ID_EXT(CAN_RXMGMASK_MG_MASK); 
-   // CANx->RX14MASK = CAN_ID_EXT(CAN_RX14MASK_RX14M_MASK); 
+	//CANx->RXMGMASK = CAN_ID_EXT(CAN_RXMGMASK_MG_MASK);
+   // CANx->RX14MASK = CAN_ID_EXT(CAN_RX14MASK_RX14M_MASK);
    // CANx->RX15MASK = CAN_ID_EXT(CAN_RX15MASK_RX15M_MASK);
     /* use indviual mask, do not use RXMGMASK, RX14MASK and RX15MASK */
     CANx->MCR |= CAN_MCR_IRMQ_MASK;
     CANx->MCR &= ~CAN_MCR_IDAM_MASK;
-    
+
     /* setting baudrate */
 	CAN_SetBaudrate(CANx, Init->baudrate);
-    
+
     /* bypass the frame sended by itself */
-    CANx->MCR |= CAN_MCR_SRXDIS_MASK; 
-    
+    CANx->MCR |= CAN_MCR_SRXDIS_MASK;
+
     /* enable module */
     CANx->MCR &= ~(CAN_MCR_FRZ_MASK | CAN_MCR_HALT_MASK);
 	while((CAN_MCR_FRZACK_MASK & (CANx->MCR)));
@@ -288,7 +298,7 @@ void CAN_Init(CAN_InitTypeDef* Init)
 uint32_t CAN_QuickInit(uint32_t CANxMAP, CAN_Baudrate_Type baudrate)
 {
 	uint32_t i;
-    map_t * pq = (map_t*)&(CANxMAP); 
+    map_t * pq = (map_t*)&(CANxMAP);
     CAN_InitTypeDef CAN_InitSturct1;
     CAN_InitSturct1.instance = pq->ip;
     CAN_InitSturct1.baudrate = baudrate;
@@ -296,7 +306,7 @@ uint32_t CAN_QuickInit(uint32_t CANxMAP, CAN_Baudrate_Type baudrate)
     /* init pinmux */
     for(i = 0; i < pq->pin_cnt; i++)
     {
-        PORT_PinMuxConfig(pq->io, pq->pin_start + i, (PORT_PinMux_Type) pq->mux); 
+        PORT_PinMuxConfig(pq->io, pq->pin_start + i, (PORT_PinMux_Type) pq->mux);
     }
     return pq->ip;
 }
@@ -338,32 +348,32 @@ uint32_t CAN_WriteData(uint32_t instance, uint32_t mb, uint32_t id, uint8_t* buf
     uint32_t i;
 	uint32_t word[2] = {0};
     CAN_Type *CANx;
-    
+
     CANx = CANBase[instance];
-    
+
     if(is_mb_idle(instance, mb))
     {
         return 2;
     }
-    
+
     /* setting data */
 	for(i = 0; i < len; i++)
 	{
         if(i<4)
             word[0] |= (*(buf+i)<<((3-i)*8));
         else
-            word[1] |= (*(buf+i)<<((7-i)*8));  
+            word[1] |= (*(buf+i)<<((7-i)*8));
 	}
     CANx->MB[mb].WORD0 = word[0];
     CANx->MB[mb].WORD1 = word[1];
-    
+
     /* DLC field */
     CANx->MB[mb].CS &= ~CAN_CS_DLC_MASK;
     CANx->MB[mb].CS |= CAN_CS_DLC(len);
-    
+
     /* clear RTR */
     CANx->MB[mb].CS &= ~CAN_CS_RTR_MASK;
-    
+
     /* ID and IDE */
     set_id(instance, mb, id);
 
@@ -386,9 +396,9 @@ uint32_t CAN_WriteData(uint32_t instance, uint32_t mb, uint32_t id, uint8_t* buf
 uint32_t CAN_WriteRemote(uint32_t instance, uint32_t mb, uint32_t id, uint8_t len)
 {
     CAN_Type *CANx;
-    
+
     CANx = CANBase[instance];
-    
+
     uint32_t ret;
     ret = is_mb_idle(instance, mb);
     if(ret)
@@ -398,12 +408,12 @@ uint32_t CAN_WriteRemote(uint32_t instance, uint32_t mb, uint32_t id, uint8_t le
     /* DLC field, remote frame still has DLC filed */
     CANx->MB[mb].CS &= ~CAN_CS_DLC_MASK;
     CANx->MB[mb].CS |= CAN_CS_DLC(len);
-    
+
     CANx->MB[mb].CS |= CAN_CS_RTR_MASK;
-    
+
     /* ID and IDE */
     set_id(instance, mb, id);
-    
+
     CANx->MB[mb].CS &= ~CAN_CS_CODE_MASK;
     CANx->MB[mb].CS |= CAN_CS_CODE(kFlexCanTX_Remote);
     return 0;
@@ -479,10 +489,10 @@ uint32_t CAN_ReadData(uint32_t instance, uint32_t mb, uint32_t *id, uint8_t *buf
 	uint32_t word[2] = {0};
     code = CAN_GET_MB_CODE(CANBase[instance]->MB[mb].CS);
     if((code & 0x01))
-    { 
+    {
         return 1; /* MB is busy and controlled by hardware */
     }
-    
+
     if(CANBase[instance]->IFLAG1 & (1<<mb))
     {
         /* clear IT pending bit */
@@ -492,10 +502,10 @@ uint32_t CAN_ReadData(uint32_t instance, uint32_t mb, uint32_t *id, uint8_t *buf
         word[0] = CANBase[instance]->MB[mb].WORD0;
         word[1] = CANBase[instance]->MB[mb].WORD1;
         for(i = 0; i < *len; i++)
-        {  
+        {
             if(i < 4)
             (*(buf + i))=(word[0]>>((3-i)*8));
-            else							
+            else
             (*(buf + i))=(word[1]>>((7-i)*8));
         }
         *id = (CANBase[instance]->MB[mb].ID & (CAN_ID_EXT_MASK | CAN_ID_STD_MASK));
@@ -524,7 +534,7 @@ void CAN1_ORed_Message_buffer_IRQHandler(void)
     if(CAN_CallBackTable[HW_CAN1])
     {
         CAN_CallBackTable[HW_CAN1]();
-    } 
+    }
 }
 
 #endif

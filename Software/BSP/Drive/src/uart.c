@@ -4,13 +4,15 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.25
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   ******************************************************************************
   */
 
 #include "common.h"
 #include "uart.h"
 #include "gpio.h"
+
+extern uint16_t	debug;
 
 #if (!defined(UART_BASES))
 #ifdef  UART2
@@ -19,7 +21,7 @@
     #define UART_BASES {UART0, UART1, UART2, UART3}
 #elif   UART4
     #define UART_BASES {UART0, UART1, UART2, UART3, UART4}
-#elif   UART5 
+#elif   UART5
     #define UART_BASES {UART0, UART1, UART2, UART3, UART4, UART5}
 #else
     #define UART_BASES {UART0, UART1}
@@ -37,7 +39,7 @@ static uint8_t UART_DebugInstance;
 
 static const Reg_t ClkTbl[] =
 {
-    
+
     {(void*)&(SIM->SCGC4), SIM_SCGC4_UART0_MASK},
     {(void*)&(SIM->SCGC4), SIM_SCGC4_UART1_MASK},
     {(void*)&(SIM->SCGC4), SIM_SCGC4_UART2_MASK},
@@ -45,14 +47,14 @@ static const Reg_t ClkTbl[] =
     {(void*)&(SIM->SCGC4), SIM_SCGC4_UART3_MASK},
 #endif
 #ifdef UART4
-    {(void*)&(SIM->SCGC1), SIM_SCGC1_UART4_MASK}, 
+    {(void*)&(SIM->SCGC1), SIM_SCGC1_UART4_MASK},
 #endif
 #ifdef UART5
     {(void*)&(SIM->SCGC1), SIM_SCGC1_UART5_MASK},
 #endif
 };
 /* interrupt handler table */
-static const IRQn_Type UART_IRQnTable[] = 
+static const IRQn_Type UART_IRQnTable[] =
 {
     UART0_RX_TX_IRQn,
     UART1_RX_TX_IRQn,
@@ -73,17 +75,17 @@ static const uint32_t UART_TIFOSizeTable[] = {1, 4, 8, 16, 32, 64, 128};
 #ifdef __cplusplus
  extern "C" {
 #endif
-     
-     
+
+
 #ifdef __CC_ARM // MDK Support
-struct __FILE 
-{ 
+struct __FILE
+{
 	int handle;
-	/* Whatever you require here. If the only file you are using is */ 
-	/* standard output using printf() for debugging, no file handling */ 
-	/* is required. */ 
-}; 
-/* FILE is typedef’ d in stdio.h. */ 
+	/* Whatever you require here. If the only file you are using is */
+	/* standard output using printf() for debugging, no file handling */
+	/* is required. */
+};
+/* FILE is typedef’ d in stdio.h. */
 FILE __stdout;
 FILE __stdin;
 __weak int fputc(int ch,FILE *f)
@@ -175,7 +177,7 @@ static void printn(unsigned int n, unsigned int b)
     if (n / b)
     {
         a = n / b;
-        printn(a, b);  
+        printn(a, b);
     }
     m = n % b;
     UART_WriteByte(UART_DebugInstance, ntab[m]);
@@ -216,8 +218,23 @@ _loop:
 //! @brief UART API functions
 //! @{
 
+/*******************************************************************************
+ * @函数名称	InitUartParam
+ * @函数说明	初始化串口程序
+ * @输入参数	无
+ * @输出参数	无
+ * @返回参数	无
+ *******************************************************************************/
+void	InitUartParam(void)
+{
+//	STM_USARTCB.CommStatus	= (TXD_ENABLE | RXD_WAIT);
+//	STM_USARTCB.RxdByteCnt	= 0;
+//	STM_USARTCB.TxdPackLength	= 0;
+	//DMA_UartRxd();
+}
+
 /**
- * @brief  初始化UART模块 
+ * @brief  初始化UART模块
  * @note   用户需自己进行引脚的复用配置
  * @code
  *      //使用UART0模块 使用115200波特率进行通信
@@ -245,7 +262,7 @@ void UART_Init(UART_InitTypeDef* Init)
     uint8_t brfa;
     uint32_t clock;
     static bool is_fitst_init = true;
-    
+
     /* src clock */
     clock = GetClock(kBusClock);
     if((Init->instance == HW_UART0) || (Init->instance == HW_UART1))
@@ -253,25 +270,25 @@ void UART_Init(UART_InitTypeDef* Init)
         clock = GetClock(kCoreClock); /* UART0 UART1 are use core clock */
     }
     Init->srcClock = clock;
-    
+
     IP_CLK_ENABLE(Init->instance);
-    
+
     /* disable Tx Rx first */
     UARTBase[Init->instance]->C2 &= ~((UART_C2_TE_MASK)|(UART_C2_RE_MASK));
-    
+
     /* baud rate generation */
     sbr = (uint16_t)((Init->srcClock)/((Init->baudrate)*16));
     brfa = ((32*Init->srcClock)/((Init->baudrate)*16)) - 32*sbr;
-    
+
     /* config baudrate */
     UARTBase[Init->instance]->BDH &= ~UART_BDH_SBR_MASK;
     UARTBase[Init->instance]->BDL &= ~UART_BDL_SBR_MASK;
     UARTBase[Init->instance]->C4 &= ~UART_C4_BRFA_MASK;
-    
-    UARTBase[Init->instance]->BDH |= UART_BDH_SBR(sbr>>8); 
-    UARTBase[Init->instance]->BDL = UART_BDL_SBR(sbr); 
+
+    UARTBase[Init->instance]->BDH |= UART_BDH_SBR(sbr>>8);
+    UARTBase[Init->instance]->BDL = UART_BDL_SBR(sbr);
     UARTBase[Init->instance]->C4 |= UART_C4_BRFA(brfa);
-    
+
     /* parity */
     switch(Init->parityMode)
     {
@@ -290,7 +307,7 @@ void UART_Init(UART_InitTypeDef* Init)
         default:
             break;
     }
-    
+
     /* bit per char */
     /* note: Freescale's bit size config in register are including parity bit! */
     switch(Init->bitPerChar)
@@ -300,12 +317,12 @@ void UART_Init(UART_InitTypeDef* Init)
             {
                 /* parity is enabled it's actually 9bit*/
                 UARTBase[Init->instance]->C1 |= UART_C1_M_MASK;
-                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;    
+                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;
             }
             else
             {
                 UARTBase[Init->instance]->C1 &= ~UART_C1_M_MASK;
-                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;    
+                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;
             }
             break;
         case kUART_9BitsPerChar:
@@ -313,22 +330,22 @@ void UART_Init(UART_InitTypeDef* Init)
             {
                 /* parity is enabled it's actually 10 bit*/
                 UARTBase[Init->instance]->C1 |= UART_C1_M_MASK;
-                UARTBase[Init->instance]->C4 |= UART_C4_M10_MASK;  
-            } 
+                UARTBase[Init->instance]->C4 |= UART_C4_M10_MASK;
+            }
             else
             {
                 UARTBase[Init->instance]->C1 |= UART_C1_M_MASK;
-                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;      
+                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;
             }
             break;
         default:
             break;
     }
     UARTBase[Init->instance]->S2 &= ~UART_S2_MSBF_MASK; /* LSB */
-    
+
     /* enable Tx Rx */
     UARTBase[Init->instance]->C2 |= ((UART_C2_TE_MASK)|(UART_C2_RE_MASK));
-    
+
     /* link debug instance */
     /* if it's first initalized ,link getc and putc to it */
     if(is_fitst_init)
@@ -342,11 +359,11 @@ void UART_DeInit(uint32_t instance)
 {
     /* waitting sending complete */
     while(!(UARTBase[instance]->S1 & UART_S1_TDRE_MASK));
-	
+
     /* disable Tx Rx */
     UARTBase[instance]->C2 &= ~((UART_C2_TE_MASK)|(UART_C2_RE_MASK));
-    
-    
+
+
     IP_CLK_DISABLE(instance);
 }
 
@@ -360,11 +377,11 @@ void UART_EnableTxFIFO(uint32_t instance, bool status)
 {
     /* waitting for all data has been shifted out */
     //while(!(UARTBase[instance]->S1 & UART_S1_TDRE_MASK));
-    
+
     (status)?
     (UARTBase[instance]->PFIFO |= UART_PFIFO_TXFE_MASK):
     (UARTBase[instance]->PFIFO &= ~UART_PFIFO_TXFE_MASK);
-    
+
 }
 
 void UART_EnableRxFIFO(uint32_t instance, bool status)
@@ -431,9 +448,9 @@ void UART_WriteByte(uint32_t instance, uint16_t ch)
         /* no buffer is used */
         while(!(UARTBase[instance]->S1 & UART_S1_TDRE_MASK));
     }
-    
+
     UARTBase[instance]->D = (uint8_t)(ch & 0xFF);
-    
+
     /* config ninth bit */
     uint8_t ninth_bit = (ch >> 8) & 0x01U;
     (ninth_bit)?(UARTBase[instance]->C3 |= UART_C3_T8_MASK):(UARTBase[instance]->C3 &= ~UART_C3_T8_MASK);
@@ -466,8 +483,8 @@ uint8_t UART_ReadByte(uint32_t instance, uint16_t *ch)
         /* get ninth bit */
         temp = (UARTBase[instance]->C3 & UART_C3_R8_MASK) >> UART_C3_R8_SHIFT;
         *ch = temp << 8;
-        *ch |= (uint8_t)(UARTBase[instance]->D);	
-        return 0; 		  
+        *ch |= (uint8_t)(UARTBase[instance]->D);
+        return 0;
     }
     return 1;
 }
@@ -503,7 +520,7 @@ void UART_ITDMAConfig(uint32_t instance, UART_ITDMAConfig_Type config, bool stat
             (UARTBase[instance]->C2 |= UART_C2_TIE_MASK):
             (UARTBase[instance]->C2 &= ~UART_C2_TIE_MASK);
             NVIC_EnableIRQ(UART_IRQnTable[instance]);
-            break; 
+            break;
         case kUART_IT_Rx:
             (status)?
             (UARTBase[instance]->C2 |= UART_C2_RIE_MASK):
@@ -546,7 +563,7 @@ void UART_ITDMAConfig(uint32_t instance, UART_ITDMAConfig_Type config, bool stat
  */
 void UART_CallbackTxInstall(uint32_t instance, UART_CallBackTxType AppCBFun)
 {
-    
+
     IP_CLK_ENABLE(instance);
     if(AppCBFun != NULL)
     {
@@ -569,9 +586,9 @@ void UART_CallbackTxInstall(uint32_t instance, UART_CallBackTxType AppCBFun)
  */
 void UART_CallbackRxInstall(uint32_t instance, UART_CallBackRxType AppCBFun)
 {
-    
+
     IP_CLK_ENABLE(instance);
-    
+
     if(AppCBFun != NULL)
     {
         UART_CallBackRxTable[instance] = AppCBFun;
@@ -598,20 +615,20 @@ uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate)
     Init.instance = pq->ip;
     Init.parityMode = kUART_ParityDisabled;
     Init.bitPerChar = kUART_8BitsPerChar;
-    
+
     /* init pinmux */
     for(i = 0; i < pq->pin_cnt; i++)
     {
-        PORT_PinMuxConfig(pq->io, pq->pin_start + i, (PORT_PinMux_Type) pq->mux); 
+        PORT_PinMuxConfig(pq->io, pq->pin_start + i, (PORT_PinMux_Type) pq->mux);
     }
-    
+
     /* init UART */
     UART_Init(&Init);
-    
+
     /* default: disable hardware buffer */
     UART_EnableTxFIFO(pq->ip, false);
     UART_EnableRxFIFO(pq->ip, false);
-    
+
     return pq->ip;
 }
 
@@ -714,79 +731,59 @@ static const map_t UART_QuickInitTable[] =
 #include "dma.h"
 static uint32_t DMA2UARTChlTable[5];
 
-static const uint32_t _DMA_UARTTrigTable[] =
-{
-    UART0_TRAN_DMAREQ,
-    UART1_TRAN_DMAREQ,
-    UART2_TRAN_DMAREQ,
-    UART3_TRAN_DMAREQ,
-    UART4_TRAN_DMAREQ,
-    UART5_TRAN_DMAREQ
-};
-
-static const void* _UART_DMA_sAddrTable[] = 
-{
-    (void*)&UART0->D,
-    (void*)&UART1->D,
-#ifdef  UART2   
-    (void*)&UART2->D,
-#endif
-#ifdef  UART3   
-    (void*)&UART3->D,
-#endif 
-#ifdef  UART4
-    (void*)&UART4->D,
-#endif
-#ifdef  UART5
-    (void*)&UART5->D,    
-#endif
-};
 
 void UART_SetDMATxMode(uint32_t instance, bool status)
 {
     /* init DMA */
     uint8_t dma_chl;
-    
+
     if(status)
     {
         dma_chl = DMA_ChlAlloc();
         DMA_InitTypeDef DMA_InitStruct;
         DMA_InitStruct.chl = dma_chl;
-        DMA_InitStruct.chlTriggerSource = _DMA_UARTTrigTable[instance];
+        DMA_InitStruct.chlTriggerSource = UART_SendDMATriggerSourceTable[instance];
         DMA_InitStruct.triggerSourceMode = kDMA_TriggerSource_Normal;
         DMA_InitStruct.minorLoopByteCnt = 1;
         DMA_InitStruct.majorLoopCnt = 0;
-            
+
         DMA_InitStruct.sAddr = NULL;
-        DMA_InitStruct.sLastAddrAdj = 0; 
+        DMA_InitStruct.sLastAddrAdj = 0;
         DMA_InitStruct.sAddrOffset = 1;
         DMA_InitStruct.sDataWidth = kDMA_DataWidthBit_8;
         DMA_InitStruct.sMod = kDMA_ModuloDisable;
-        
-        DMA_InitStruct.dAddr = (uint32_t)_UART_DMA_sAddrTable[instance]; 
+
+        DMA_InitStruct.dAddr = (uint32_t)UART_DataPortAddrTable[instance];
         DMA_InitStruct.dLastAddrAdj = 0;
         DMA_InitStruct.dAddrOffset = 0;
         DMA_InitStruct.dDataWidth = kDMA_DataWidthBit_8;
         DMA_InitStruct.dMod = kDMA_ModuloDisable;
 
         DMA_Init(&DMA_InitStruct);
-        DMA2UARTChlTable[instance] = dma_chl; 
+        DMA2UARTChlTable[instance] = dma_chl;
     }
     else
     {
         DMA_ChlFree(DMA2UARTChlTable[instance]);
     }
-    
+
     /* */
     UART_ITDMAConfig(instance, kUART_DMA_Tx, status);
 }
-
-
+/*******************************************************************************
+  * @函数名称	UART_SendWithDMA
+  * @函数说明	DMA 发送函数
+  * @输入参数	dmaChl:DMA通道号
+				buf:要发送的缓存
+				size:要发送的缓存大小
+  * @输出参数	无
+  * @返回参数	无
+*******************************************************************************/
 void UART_DMASendByte(uint32_t instance, uint8_t* buf, uint32_t size)
 {
     DMA_SetSourceAddress(DMA2UARTChlTable[instance], (uint32_t)buf);
     DMA_SetMajorLoopCounter(DMA2UARTChlTable[instance], size);
-    
+
     /* start transfer */
     DMA_EnableRequest(DMA2UARTChlTable[instance]);
 }
@@ -796,5 +793,83 @@ uint32_t UART_DMAGetRemainByte(uint32_t instance)
     return DMA_GetMajorLoopCount(DMA2UARTChlTable[instance]);
 }
 
+/*******************************************************************************
+  * @函数名称	UART_DMASendInit
+  * @函数说明	DMA 串口发送 配置
+  * @输入参数	uartInstnace:串口编号
+				dmaChl:DMA通道号
+				rxBuf:接收的缓存
+  * @输出参数	无
+  * @返回参数	无
+*******************************************************************************/
+void UART_DMASendInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * txBuf)
+{
+    DMA_InitTypeDef DMA_InitStruct1 = {0};
+    DMA_InitStruct1.chl = dmaChl; /* DMA通道号 */
+    DMA_InitStruct1.chlTriggerSource = UART_SendDMATriggerSourceTable[uartInstnace];  /* DMA触发源选择 */
+    DMA_InitStruct1.triggerSourceMode = kDMA_TriggerSource_Normal; /* 触发模式选择 */
+    DMA_InitStruct1.minorLoopByteCnt = 1;  /* MINOR LOOP 中一次传输的字节数 */
+    DMA_InitStruct1.majorLoopCnt = 0;//1;   /* MAJOR LOOP 循环次数 */
 
+    DMA_InitStruct1.sAddr = NULL;//(uint32_t)txBuf;  /* 数据源地址 */
+    DMA_InitStruct1.sLastAddrAdj = 0;//-1;
+    DMA_InitStruct1.sAddrOffset = 1;
+    DMA_InitStruct1.sDataWidth = kDMA_DataWidthBit_8;  /* 数据源地址数据宽度 8 16 32 */
+    DMA_InitStruct1.sMod = kDMA_ModuloDisable;   /* Modulo 设置 参见 AN2898 */
+
+    DMA_InitStruct1.dAddr = (uint32_t)UART_DataPortAddrTable[uartInstnace];
+    DMA_InitStruct1.dLastAddrAdj = 0;
+    DMA_InitStruct1.dAddrOffset = 0;
+    DMA_InitStruct1.dDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct1.dMod = kDMA_ModuloDisable;
+    DMA_Init(&DMA_InitStruct1);
+}
+
+/*******************************************************************************
+  * @函数名称	UART_DMARevInit
+  * @函数说明	DMA 串口接收 配置
+  * @输入参数	uartInstnace:串口编号
+				dmaChl:DMA通道号
+				rxBuf:接收的缓存
+  * @输出参数	无
+  * @返回参数	无
+*******************************************************************************/
+void UART_DMARevInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * rxBuf)
+{
+    DMA_InitTypeDef DMA_InitStruct1 = {0};
+    DMA_InitStruct1.chl = dmaChl;
+    DMA_InitStruct1.chlTriggerSource = UART_RevDMATriggerSourceTable[uartInstnace];
+    DMA_InitStruct1.triggerSourceMode = kDMA_TriggerSource_Normal;
+    DMA_InitStruct1.minorLoopByteCnt = 1;
+    DMA_InitStruct1.majorLoopCnt = 10;
+
+    DMA_InitStruct1.sAddr = (uint32_t)&UART0->D;
+    DMA_InitStruct1.sLastAddrAdj = 0;
+    DMA_InitStruct1.sAddrOffset = 0;
+    DMA_InitStruct1.sDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct1.sMod = kDMA_ModuloDisable;
+
+    DMA_InitStruct1.dAddr = (uint32_t)rxBuf;
+    DMA_InitStruct1.dLastAddrAdj = -10;
+    DMA_InitStruct1.dAddrOffset = 1;
+    DMA_InitStruct1.dDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct1.dMod = kDMA_ModuloDisable;
+    DMA_Init(&DMA_InitStruct1);
+    /* 完成 Major Loop 后不停止 Request 继续等待DMA硬件触发源触发 */
+    DMA_EnableAutoDisableRequest(dmaChl, false);
+}
+
+/*******************************************************************************
+  * @函数名称	DMA_ISR
+  * @函数说明	DMA中断函数
+  * @输入参数	无
+  * @输出参数	无
+  * @返回参数	无
+*******************************************************************************/
+void DMA_ISR(void)
+{
+	debug++;
+	printf("DMA_GetMajorLoopCount:%d\n",DMA_GetMajorLoopCount(DMA_REV_CH));
+	printf("DMA INT: %d\r\n",debug);
+}
 #endif
