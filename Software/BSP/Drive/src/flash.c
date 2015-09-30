@@ -1,67 +1,162 @@
-/**
-  ******************************************************************************
-  * @file    falsh.c
-  * @author  YANDLD
-  * @version V2.4
-  * @date    2013.6.23
-  * @brief   超核K60固件库 片内flash 驱动文件
-  ******************************************************************************
-  */
 #include "flash.h"
 #include "common.h"
-/***********************************************************************************************
- 功能：内部函数 检查命令是否完成
- 形参：0
- 返回：FLASH_OK 成功    FLASH_ERROR 失败
- 详解：
-************************************************************************************************/
-static uint8_t CommandLaunch(void)
+
+
+/* flash commands */
+#define RD1BLK    0x00  /* read 1 block */
+#define RD1SEC    0x01  /* read 1 section */
+#define PGMCHK    0x02  /* program check */
+#define RDRSRC    0x03  /* read resource */
+#define PGM4      0x06  /* program phase program 4 byte */
+#define PGM8      0x07  /* program phase program 8 byte */
+#define ERSBLK    0x08  /* erase flash block */
+#define ERSSCR    0x09  /* erase flash sector */
+#define PGMSEC    0x0B  /* program section */
+#define RD1ALL    0x40  /* read 1s all block */
+#define RDONCE    0x41  /* read once */
+#define PGMONCE   0x43  /* program once */
+#define ERSALL    0x44  /* erase all blocks */
+#define VFYKEY    0x45  /* verift backdoor key */
+#define PGMPART   0x80  /* program paritition */
+#define SETRAM    0x81  /* set flexram function */
+#define NORMAL_LEVEL 0x0
+
+
+
+
+/* disable interrupt before lunch command */
+#define CCIF    (1<<7)
+#define ACCERR  (1<<5)
+#define FPVIOL  (1<<4)
+#define MGSTAT0 (1<<0)
+
+#if defined(FTFL)
+#define FTF    FTFL
+#define SECTOR_SIZE     (2048)
+#define PROGRAM_CMD      PGM4
+#elif defined(FTFE)
+#define FTF    FTFE
+#define SECTOR_SIZE     (4096)
+#define PROGRAM_CMD      PGM8
+#elif defined(FTFA)
+#define SECTOR_SIZE     (1024)
+#define PROGRAM_CMD      PGM4
+#define FTF    FTFA
+#endif
+
+
+static uint8_t _CommandLaunch(void)
 {
-    // 清除访问错误标志位和非法访问标志位
-    FTFL->FSTAT |=(FTFL_FSTAT_ACCERR_MASK|FTFL_FSTAT_FPVIOL_MASK|FTFL_FSTAT_RDCOLERR_MASK);
-    // 启动命令
-    FTFL->FSTAT |= FTFL_FSTAT_CCIF_MASK;
-    // 等待命令结束
-    while((FTFL->FSTAT &FTFL_FSTAT_CCIF_MASK)==0);
-    // 检查错误标志
-    if(FTFL->FSTAT & (FTFL_FSTAT_ACCERR_MASK|FTFL_FSTAT_FPVIOL_MASK|FTFL_FSTAT_MGSTAT0_MASK|FTFL_FSTAT_RDCOLERR_MASK))
-    return(FLASH_ERROR); //出错
-    return (FLASH_OK); //成功
+    /* Clear command result flags */
+    FTF->FSTAT = ACCERR | FPVIOL;
+
+    /* Launch Command */
+    FTF->FSTAT = CCIF;
+
+    /* wait command end */
+    while(!(FTF->FSTAT & CCIF));
+
+    /*check for errors*/
+    if(FTF->FSTAT & (ACCERR | FPVIOL | MGSTAT0)) return FLASH_ERROR;
+
+    /*No errors retur OK*/
+    return FLASH_OK;
+
 }
 
-/***********************************************************************************************
- 功能：初始化片内Flash模块
- 形参：0
- 返回：0
- 详解：0
-************************************************************************************************/
+uint32_t FLASH_GetSectorSize(void)
+{
+    return SECTOR_SIZE;
+}
+
+
 void FLASH_Init(void)
 {
-	//清除FMC缓冲区
-	FMC->PFB0CR |= FMC_PFB0CR_S_B_INV_MASK;
-	FMC->PFB1CR |= FMC_PFB0CR_S_B_INV_MASK;
-	// 禁止看门狗
-	WDOG->UNLOCK = 0xC520;
-	WDOG->UNLOCK = 0xD928;
-	WDOG->STCTRLH = 0;    // 禁止看门狗
-	//检查Flash访问错误
-  if(FTFL->FSTAT & FTFL_FSTAT_ACCERR_MASK)
-  {
-    FTFL->FSTAT |= FTFL_FSTAT_ACCERR_MASK;       //清除错误标志
-  }
-  //检查保护错误
-  else if (FTFL->FSTAT & FTFL_FSTAT_FPVIOL_MASK)
-  {
-    FTFL->FSTAT |= FTFL_FSTAT_FPVIOL_MASK;
-  }
-  //检查读冲突错误
-  else if (FTFL->FSTAT & FTFL_FSTAT_RDCOLERR_MASK)
-  {
-    FTFL->FSTAT |= FTFL_FSTAT_RDCOLERR_MASK;
-  }
-  //禁用Flash模块的数据缓存
-  FMC->PFB0CR &= ~FMC_PFB0CR_B0DCE_MASK;
-  FMC->PFB1CR &= ~FMC_PFB1CR_B1DCE_MASK;
+    /* Clear status */
+    FTF->FSTAT = ACCERR | FPVIOL;
+}
+
+
+uint8_t FLASH_EraseSector(uint32_t addr)
+{
+	union
+	{
+		uint32_t  word;
+		uint8_t   byte[4];
+	} dest;
+	dest.word = (uint32_t)addr;
+
+    /* set cmd */
+	FTF->FCCOB0 = ERSSCR;
+	FTF->FCCOB1 = dest.byte[2];
+	FTF->FCCOB2 = dest.byte[1];
+	FTF->FCCOB3 = dest.byte[0];
+
+	if(FLASH_OK == _CommandLaunch())
+	{
+		return FLASH_OK;
+	}
+	else
+	{
+		return FLASH_ERROR;
+	}
+}
+
+uint8_t FLASH_WriteSector(uint32_t addr, const uint8_t *buf, uint32_t len)
+{
+	uint16_t i;
+    uint16_t step;
+	union
+	{
+		uint32_t  word;
+		uint8_t   byte[4];
+	} dest;
+	dest.word = (uint32_t)addr;
+
+	FTF->FCCOB0 = PROGRAM_CMD;
+
+    switch(PROGRAM_CMD)
+    {
+        case PGM4:
+            step = 4;
+            break;
+        case PGM8:
+            step = 8;
+            break;
+        default:
+            LIB_TRACE("FLASH: no program cmd found!\r\n");
+            step = 4;
+            break;
+    }
+
+	for(i=0; i<len; i+=step)
+	{
+        /* set address */
+		FTF->FCCOB1 = dest.byte[2];
+		FTF->FCCOB2 = dest.byte[1];
+		FTF->FCCOB3 = dest.byte[0];
+
+		FTF->FCCOB4 = buf[3];
+		FTF->FCCOB5 = buf[2];
+		FTF->FCCOB6 = buf[1];
+		FTF->FCCOB7 = buf[0];
+
+        if(step == 8)
+        {
+            FTF->FCCOB8 = buf[7];
+            FTF->FCCOB9 = buf[6];
+            FTF->FCCOBA = buf[5];
+            FTF->FCCOBB = buf[4];
+        }
+
+		dest.word += step; buf += step;
+
+		if(FLASH_OK != _CommandLaunch())
+        {
+            return FLASH_ERROR;
+        }
+    }
+    return FLASH_OK;
 }
 
 /***********************************************************************************************
@@ -81,75 +176,64 @@ void FLASH_ReadByte(uint32_t FlashStartAdd,uint32_t len,uint8_t *pbuffer)
 	}
 }
 
-/***********************************************************************************************
- 功能：FALSH写一个扇区
- 形参：sectorNo      : 扇区号(地址/2048)
-       count         : 读取的长度
-       *pbuffer      : 缓存区指针
- 返回：0
- 详解：一个扇区2048字节 所以至少写2048字节
-************************************************************************************************/
-uint8_t FLASH_WriteSector(uint32_t sectorNo,uint16_t count,uint8_t const *buffer)
+uint8_t Flash_Write_Inside(uint16_t secNo, uint8_t* buf, uint16_t write_len)
 {
-	uint16_t i;
-	union
-	{
-		uint32_t  word;
-		uint8_t   byte[4];
-	} dest;
-	dest.word = (uint32_t)(sectorNo*(1<<11));
+#if OS_CRITICAL_METHOD == 3
+	OS_CPU_SR cpu_sr;
+#endif
+	int addr, err = 0, sector_size;
 
-	// 设置写入命令
-	FTFL->FCCOB0 = PGM4;
-	// 四字节对齐
-	for(i=0;i<count;i+=4)
+	sector_size = FLASH_GetSectorSize();
+
+	addr = secNo*sector_size;
+
+	OS_ENTER_CRITICAL();
+
+	err += FLASH_EraseSector(addr);
+
+	err += FLASH_WriteSector(addr, buf, write_len);
+
+	OS_EXIT_CRITICAL();
+	if(err)
 	{
-		// 设置存储地址
-		FTFL->FCCOB1 = dest.byte[2];
-		FTFL->FCCOB2 = dest.byte[1];
-		FTFL->FCCOB3 = dest.byte[0];
-		// 拷贝数据	（此数据排列按照从低位到高位存储）
-		FTFL->FCCOB4 = buffer[3];
-		FTFL->FCCOB5 = buffer[2];
-		FTFL->FCCOB6 = buffer[1];
-		FTFL->FCCOB7 = buffer[0];
-		dest.word+=4; buffer+=4;
-		//检测命令是否执行正常
-		if(FLASH_OK != CommandLaunch())
-		return FLASH_ERROR;
-    }
-    return FLASH_OK;
+		return 0;//printf("issue command failed %d\r\n", err);
+	}
+	return 1;
 }
 
-/***********************************************************************************************
- 功能：FALSH 擦除一个扇区
- 形参：sectorNo      : 扇区号(地址/2048)
- 返回：0
- 详解：0
-************************************************************************************************/
-uint8_t FLASH_EraseSector(uint32_t sectorNo)
-{
-	union
-	{
-		uint32_t  word;
-		uint8_t   byte[4];
-	} dest;
-	dest.word = (uint32_t)(sectorNo*(1<<11));
-	// 设置擦除命令
-	FTFL->FCCOB0 = ERSSCR; // 擦除扇区命令
-	// 设置目标地址
-	FTFL->FCCOB1 = dest.byte[2];
-	FTFL->FCCOB2 = dest.byte[1];
-	FTFL->FCCOB3 = dest.byte[0];
-	//检测命令是否执行正常
 
-	if(FLASH_OK == CommandLaunch())
+uint8_t Flash_Read_Inside(uint16_t secNo, uint8_t* buf, uint16_t read_len)
+{
+	uint16_t i, err = 0, sector_size;
+
+	uint8_t *p;
+
+	sector_size = FLASH_GetSectorSize();
+
+	uint16_t addr = secNo*sector_size;
+
+	p = (uint8_t*)(addr);
+
+	for(i=0;i<read_len;i++)
 	{
-		return FLASH_OK;
+		if(*p != (i%0xFF))
+		{
+			err++;
+			return 0;//printf("[%d]:0x%02X\r\n", i, *p);
+		}
+		else
+		{
+			buf[i] = *p;
+		}
+		*p++;
+	}
+
+	if(!err)
+	{
+		return 1;//printf("verify OK\r\n");
 	}
 	else
 	{
-		return FLASH_ERROR;
+		return 0;//printf("verify ERR\r\n");
 	}
 }
-

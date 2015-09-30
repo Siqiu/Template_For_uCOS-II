@@ -13,6 +13,7 @@
 #include "gpio.h"
 
 extern uint16_t	debug;
+extern bool		Uart1_Rev_Flag;
 
 #if (!defined(UART_BASES))
 #ifdef  UART2
@@ -841,16 +842,16 @@ void UART_DMARevInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * rxBuf)
     DMA_InitStruct1.chlTriggerSource = UART_RevDMATriggerSourceTable[uartInstnace];
     DMA_InitStruct1.triggerSourceMode = kDMA_TriggerSource_Normal;
     DMA_InitStruct1.minorLoopByteCnt = 1;
-    DMA_InitStruct1.majorLoopCnt = 10;
+    DMA_InitStruct1.majorLoopCnt = 33;
 
-    DMA_InitStruct1.sAddr = (uint32_t)&UART0->D;
+    DMA_InitStruct1.sAddr = (uint32_t)&UART5->D;
     DMA_InitStruct1.sLastAddrAdj = 0;
     DMA_InitStruct1.sAddrOffset = 0;
     DMA_InitStruct1.sDataWidth = kDMA_DataWidthBit_8;
     DMA_InitStruct1.sMod = kDMA_ModuloDisable;
 
     DMA_InitStruct1.dAddr = (uint32_t)rxBuf;
-    DMA_InitStruct1.dLastAddrAdj = -10;
+    DMA_InitStruct1.dLastAddrAdj = -33;
     DMA_InitStruct1.dAddrOffset = 1;
     DMA_InitStruct1.dDataWidth = kDMA_DataWidthBit_8;
     DMA_InitStruct1.dMod = kDMA_ModuloDisable;
@@ -868,8 +869,25 @@ void UART_DMARevInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * rxBuf)
 *******************************************************************************/
 void DMA_ISR(void)
 {
-	debug++;
-	printf("DMA_GetMajorLoopCount:%d\n",DMA_GetMajorLoopCount(DMA_REV_CH));
-	printf("DMA INT: %d\r\n",debug);
+	Uart1_Rev_Flag = true;
+//	debug++;
+//	printf("DMA_GetMajorLoopCount:%d\n",DMA_GetMajorLoopCount(DMA_REV_CH));
+//	printf("DMA INT: %d\r\n",debug);
 }
 #endif
+
+
+/*******************************************************************************
+  * @函数名称	UART_SendString
+  * @函数说明	发送一串字符
+  * @输入参数	无
+  * @输出参数	无
+  * @返回参数	无
+*******************************************************************************/
+void UART_SendString(uint32_t instance, uint8_t * str)
+{
+    while(*str != '\0')
+    {
+        UART_WriteByte(instance, *str++);
+    }
+}

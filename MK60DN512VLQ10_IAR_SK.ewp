@@ -39,20 +39,20 @@
         <option>
           <name>Input variant</name>
           <version>3</version>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>Input description</name>
-          <state>Full formatting.</state>
+          <state>Automatic choice of formatter.</state>
         </option>
         <option>
           <name>Output variant</name>
           <version>2</version>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>Output description</name>
-          <state>Full formatting.</state>
+          <state>Automatic choice of formatter.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -726,7 +726,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$PROJ_DIR$\Software\LinkFiles\K60\MK60xN512_10.icf</state>
+          <state>$PROJ_DIR$\Software\LinkFiles\K60\LPLD_K60DN512_FLASH.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -995,20 +995,20 @@
         <option>
           <name>Input variant</name>
           <version>3</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>Input description</name>
-          <state>Automatic choice of formatter.</state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>Output variant</name>
           <version>2</version>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>Output description</name>
-          <state>Automatic choice of formatter.</state>
+          <state>Full formatting.</state>
         </option>
         <option>
           <name>GOutputBinary</name>
@@ -1067,7 +1067,7 @@
         </option>
         <option>
           <name>OGBufferedTerminalOutput</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GenStdoutInterface</name>
@@ -1130,7 +1130,6 @@
           <name>CCDefines</name>
           <state>MK60D10</state>
           <state>RAVEN</state>
-          <state>DEBUG</state>
           <state>UART_USE_DMA</state>
         </option>
         <option>
@@ -1192,7 +1191,7 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>10010100</state>
+          <state>00000000</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
@@ -1272,6 +1271,7 @@
           <state>$PROJ_DIR$\Software\App\Module_Protocol</state>
           <state>$PROJ_DIR$\Software\App\Module_Init</state>
           <state>$TOOLKIT_DIR$\INC\c</state>
+          <state>$PROJ_DIR$\Software\App\Module_BSP</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1291,7 +1291,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>2</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -1300,7 +1300,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>2</state>
+          <state>1</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -1677,11 +1677,11 @@
         </option>
         <option>
           <name>IlinkIcfOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\config\linker\Freescale\MK60xN512_10.icf</state>
+          <state>$PROJ_DIR$\Software\LinkFiles\K60\LPLD_K60DN512_FLASH.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>

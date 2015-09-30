@@ -51,6 +51,7 @@ OS_STK  APP_TIME_STK[TASK_STK_SIZE];
 extern OS_EVENT *key;																	//事件控制块 指针
 extern OS_EVENT * msg_test;                                                            //按键邮箱事件块指针
 extern OS_EVENT * sem_test;                                                            //蜂鸣器信号量指针
+extern	uint16_t	Stitic_Time_Cnt;
 
 
 /*
@@ -164,6 +165,7 @@ static void App_Task_Start(void *pdata)
   * @输出参数		无
   * @返回参数		无
 *******************************************************************************/
+#define SECTOR_NUM  (FLASH_SECTOR_NUM-1)         //尽量用最后面的扇区，确保安全
 void App_Task_Mbox(void *pdata)
 {
 #if OS_CRITICAL_METHOD == 3
@@ -173,21 +175,18 @@ void App_Task_Mbox(void *pdata)
 	for(;;)
 	{
 		WDOG_Refresh();
-
-
-
-
-
-
-
-
-
-
-		OS_ENTER_CRITICAL();
-		CheckPack_True_win();
+/***************************内部flash******************************************/
+//		static uint8_t buf[5] = {0,1,2,3,4};
+//		static uint8_t buf1[5] = {0};
+//		Flash_Write_Inside(20, buf, 2);
+//		Flash_Read_Inside(20, buf1,2);
+/***************************内部flash******************************************/
 		UardDmaFlow();
+		OS_ENTER_CRITICAL();
 		OS_EXIT_CRITICAL();
-        OSTimeDlyHMSM(0, 0, 0, 50);
+
+
+		OSTimeDlyHMSM(0, 0, 0, 10);
 	}
 }
 
@@ -203,7 +202,6 @@ void App_Task_Sem(void *pdata)
     pdata=pdata;
 	for(;;)
 	{
-		//Pcak_Pile_State_All();
 		OSTimeDlyHMSM(0, 0, 20, 500);
 	}
 }
@@ -221,7 +219,7 @@ void App_Task_Post(void *pdata)
 	for(;;)
 	{
 		Pile_Send(0x01,READ_pile_info);
-		OSTimeDlyHMSM(0, 0, 1, 0);
+		OSTimeDlyHMSM(0, 0, 2, 0);
 	}
 }
 
@@ -237,6 +235,15 @@ void App_Task_Time(void *pdata)
 	for(;;)
 	{
         GPIO_ToggleBit(HW_GPIOE, 6);                                            //翻转GPIO,点亮led1来表示发送成功
+		if(Stitic_Time_Cnt>3000)
+		{
+			Stitic_Time_Cnt=0;
+		}
+		else
+		{
+			Stitic_Time_Cnt++;
+		}
+
 		OSTimeDlyHMSM(0, 0, 1, 0);
 	}
 }

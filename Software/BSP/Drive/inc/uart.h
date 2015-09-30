@@ -203,6 +203,8 @@ void UART_DMARevInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * rxBuf);
 
 void DMA_ISR(void);
 
+void UART_SendString(uint32_t instance, uint8_t * str);
+
 /* Private functions ---------------------------------------------------------*/
 
 

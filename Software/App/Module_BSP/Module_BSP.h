@@ -16,6 +16,7 @@
 #include "Module_Init.h"
 #include "dma.h"
 #include "uart.h"
+#include "Module_Init.h"
 
 /* Exported valable -------------------------------------------------------- */
 /* Public functions ---------------------------------------------------------*/

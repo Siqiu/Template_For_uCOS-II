@@ -1,4 +1,4 @@
-"C:\work\Template_For_uCOS-II\Software\App\Module_Init\Module_Init.c"
+"C:\work\Template_For_uCOS-II\Software\App\Module_BSP\Module_BSP.c"
 -std=c99
 -ferror-limit=100
 -I
@@ -59,7 +59,6 @@ C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\INC\c
 C:\work\Template_For_uCOS-II\Software\App\Module_BSP
 -DMK60D10=1
 -DRAVEN=1
--DDEBUG=1
 -DUART_USE_DMA=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
@@ -254,7 +253,7 @@ C:\work\Template_For_uCOS-II\Software\App\Module_BSP
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593924
 -D__DATE__="Sep 30 2015"
--D__TIME__="12:03:32"
+-D__TIME__="11:45:54"
 -D__STDC__=1
 -D__STDC_VERSION__=199901L
 -D__STDC_HOSTED__=1

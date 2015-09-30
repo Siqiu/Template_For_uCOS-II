@@ -22,11 +22,14 @@ extern uint8_t		Can1_Buf_Flag[2];
 extern uint8_t		Pcak_Pile_State_All_Flag;
 extern bool		Can1_Rev_Flag;
 
+extern	uint16_t	Stitic_Time_Cnt;
+
 extern OS_EVENT *key;																	//事件控制块 指针
 extern OS_EVENT * msg_test;                                                            //按键邮箱事件块指针
 extern OS_EVENT * sem_test;                                                            //蜂鸣器信号量指针
 
-
+extern PROTOCOL pile_info[5];
+USART_CtrolBlock uart;
 
 /*******************************************************************************
   * @函数名称		CAN_ISR
@@ -40,52 +43,28 @@ extern OS_EVENT * sem_test;                                                     
 *******************************************************************************/
 void CAN_ISR(void)
 {
-    static uint32_t cnt;
-    uint8_t len;
-    uint32_t id;
-    if(CAN_ReadData(HW_CAN1, 3, &id, Can1_Buf, &len) == 0)
-    {
-        printf("DataReceived:%d   ", cnt++);
-        while(len--)
-        {
-            printf("0x%02X ", Can1_Buf[(7-len)]);
-        }
-        printf("\r\n");
-    }
+#if OS_CRITICAL_METHOD == 3
+	OS_CPU_SR cpu_sr;
+#endif
+	OS_ENTER_CRITICAL();
+	uint8_t len;
+	uint32_t id;
+	if(CAN_ReadData(HW_CAN1, 3, &id, Can1_Buf, &len) == 0)
+	{
+#if	DEBUG
+		static uint32_t cnt;
+		printf("DataReceived:%d   ", cnt++);
+		while(len--)
+		{
+			printf("0x%02X ", Can1_Buf[(7-len)]);
+		}
+		printf("\r\n");
+#endif
+	}
 	Can1_Rev_Flag = true;
-//	if(Can1_Buf_Flag[0]!=Can1_Buf[4])
-//	{
-//		Pile_State_Flag = 1;
-//		if(Can1_Buf_Flag[0]==0xFF & Can1_Buf[4]==0x00)
-//		{
-//			Pile_State_Flag = 2;
-//		}
-//		memcpy(&Can1_Buf_Flag[0],&Can1_Buf[4],1);
-//	}
-//	else
-//	{
-//		Pile_State_Flag = 0;
-//	}
-//
-//	if(Can1_Buf[4]==0x01 & Pile_State_Flag)
-//	{
-//		Pile_State_Open = 1;
-//		Pile_State_Open_Flag = 1;
-//		Pile_State_Close = 0;
-//		Pile_State_Close_Flag = 0;
-//	}
-//	if(Can1_Buf[4]==0x06 & Pile_State_Flag)
-//	{
-//		Pcak_Pile_State_All_Flag = 1;
-//
-//	}
-//	if(Can1_Buf[4]==0x00 & Pile_State_Flag | Pile_State_Flag==2)
-//	{
-//		Pile_State_Open = 0;
-//		Pile_State_Open_Flag = 0;
-//		Pile_State_Close = 1;
-//		Pile_State_Close_Flag = 1;
-//	}
+	CheckPack_Ding_Chong();
+	Pcak_Pile_State();
+	OS_EXIT_CRITICAL();
 }
 
 /*******************************************************************************
@@ -97,18 +76,20 @@ void CAN_ISR(void)
 *******************************************************************************/
 void Pcak_Pile_State_All(void)
 {
-	//Pile_Send(0x01,READ_pile_info);
-	//DelayMs(500);
+	Pile_Send(0x01,READ_pile_info);
+	OSTimeDlyHMSM(0, 0, 0, 220);
+
 	Pile_Send(0x01,READ_card_info);
-	OSTimeDlyHMSM(0, 0, 1, 0);
+	OSTimeDlyHMSM(0, 0, 0, 220);
 
 	Pile_Send(0x01,READ_consume_info);
-	OSTimeDlyHMSM(0, 0, 1, 0);
+	OSTimeDlyHMSM(0, 0, 0, 220);
 
 	Pile_Send(0x01,READ_balance_info);
+	OSTimeDlyHMSM(0, 0, 0, 220);
 
-	static uint8_t String[] = "全部查询结束\r\n";
-	UART_DMASendByte(DMA_SEND_CH, String, sizeof(String));
+	//static uint8_t String[] = "全部查询结束\r\n";
+	//UART_DMASendByte(DMA_SEND_CH, String, sizeof(String));
 }
 
 /*******************************************************************************
@@ -196,47 +177,179 @@ void Pile_Send(uint8_t pile_addr, uint8_t send_type)
 			}
 	};
 
-	CAN_WriteData(HW_CAN1, 2, CAN_TX_ID, send_buf, 8);
+	CAN_WriteData(HW_CAN1, 2, pile_addr, send_buf, 8);
 	//DelayMs(500);
 }
 
 /*******************************************************************************
-  * @函数名称		Pcak_Pile_State
-  * @函数说明		检查桩的开关状态
-  * @输入参数		无
-  * @输出参数		无
-  * @返回参数		无
-*******************************************************************************/
+ * @函数名称		Pcak_Pile_State
+ * @函数说明		检查桩的开关状态
+ * @输入参数		无
+ * @输出参数		无
+ * @返回参数		无
+ *******************************************************************************/
 void Pcak_Pile_State(void)
 {
+#if OS_CRITICAL_METHOD == 3
+	OS_CPU_SR cpu_sr;
+#endif
+	OS_ENTER_CRITICAL();
+	static uint8_t String[40] = {0};
+	static uint8_t ID_Num[12] = {0};
 	if(Pile_State_Open)
 	{
-		if(Pile_State_Open_Flag)
+		if(pile_info[0].user_id|pile_info[1].user_id|pile_info[2].user_id|pile_info[3].user_id)
 		{
-			static uint8_t String[] = "开始充电\r\n";
-			UART_DMASendByte(DMA_SEND_CH, String, sizeof(String));
-			Pile_State_Wait_Flag = 1;
-			Pile_State_Open_Flag = 0;
+			if(Pile_State_Open_Flag)
+			{
+				//static uint8_t String[] = "开始充电\r\n";
+				//2A 2A 54 57 00 01 00 0C 00 14
+				//31 33 38 31 32 33 34 31 32 33 34 00 00 00 00 00 00 00 00 00
+				//0D 00 2D
+				uint8_t For_temp = 0;
+				uint16_t For_temp_1 = 0;
+				uint16_t ID_Num_Len = 0;
+				uint16_t Zero_Fill_Len;
+
+				uint8_t *ptr = String;
+				*ptr++ = 0x2A;
+				*ptr++ = 0x2A;
+				*ptr++ = 0x54;
+				*ptr++ = 0x57;
+				*ptr++ = 0x00;
+				for(;For_temp<5;For_temp++)
+				{
+					if(pile_info[For_temp].pile_state == 0x01)
+					{
+						*ptr++ = pile_info[For_temp].pile_state;
+						*ptr++ = 0x00;
+						*ptr++ = 0x0C;
+						*ptr++ = 0x00;
+						*ptr++ = 0x14;
+						for(;For_temp_1<11;For_temp_1++)
+						{
+							if((pile_info[For_temp].user_id % 10)>=0)
+							{
+								ID_Num[For_temp_1] = pile_info[For_temp].user_id%10+0x30;
+								ID_Num_Len++;
+							}
+
+							if((pile_info[For_temp].user_id /= 10)<=0)
+							{
+								break;
+							}
+						}
+						Zero_Fill_Len = 11 - ID_Num_Len;
+						//补ASCII零
+						for(For_temp_1=0;For_temp_1<Zero_Fill_Len;For_temp_1++)
+						{
+							*ptr++ = 0x30;
+						}
+						//ID的顺序位正序
+						for(;ID_Num_Len>0;ID_Num_Len--)
+						{
+							*ptr++ = ID_Num[ID_Num_Len-1];
+						}
+						//补零
+						Zero_Fill_Len = 9;
+						for(For_temp_1=0;For_temp_1<Zero_Fill_Len;For_temp_1++)
+						{
+							*ptr++ = 0x00;
+						}
+						*ptr++ = 0x0D;//包尾
+						*ptr++ = 0x00;//包尾
+						*ptr++ = crcCheck(31, String);
+						uart.TxdPackLength = 33;
+						UART_DMASendByte(DMA_SEND_CH, String, uart.TxdPackLength);
+					}
+				}
+				Pile_State_Wait_Flag = 1;
+				Pile_State_Open_Flag = 0;
+			}
 		}
 	}
+
 	if(Pile_State_Close)
 	{
-		if(Pile_State_Close_Flag)
+		if(pile_info[0].user_id|pile_info[1].user_id|pile_info[2].user_id|pile_info[3].user_id)
 		{
-			if(Pile_State_Flag==2)
+			if(Pile_State_Close_Flag)
 			{
-				static uint8_t String[] = "待机中！！！\r\n";
-				UART_DMASendByte(DMA_SEND_CH, String, sizeof(String));
+				if(Pile_State_Flag==2)
+				{
+					static uint8_t String[] = "待机中！！！\r\n";
+					UART_DMASendByte(DMA_SEND_CH, String, sizeof(String));
+				}
+				else
+				{
+					//static uint8_t String[] = "结束充电\r\n";
+
+					uint8_t For_temp = 0;
+					uint16_t For_temp_1 = 0;
+					uint16_t ID_Num_Len = 0;
+					uint16_t Zero_Fill_Len;
+
+					uint8_t *ptr = String;
+					*ptr++ = 0x2A;
+					*ptr++ = 0x2A;
+					*ptr++ = 0x54;
+					*ptr++ = 0x57;
+					*ptr++ = 0x00;
+					for(;For_temp<5;For_temp++)
+					{
+						if(pile_info[For_temp].user_id)
+						{
+							*ptr++ = pile_info[For_temp].pile_state;
+							*ptr++ = 0x00;
+							*ptr++ = 0x0D;
+							*ptr++ = 0x00;
+							*ptr++ = 0x14;
+							for(;For_temp_1<11;For_temp_1++)
+							{
+								if((pile_info[For_temp].user_id % 10)>=0)
+								{
+									ID_Num[For_temp_1] = pile_info[For_temp].user_id%10+0x30;
+									ID_Num_Len++;
+								}
+
+								if((pile_info[For_temp].user_id /= 10)<=0)
+								{
+									break;
+								}
+							}
+							Zero_Fill_Len = 11 - ID_Num_Len;
+							//补ASCII零
+							for(For_temp_1=0;For_temp_1<Zero_Fill_Len;For_temp_1++)
+							{
+								*ptr++ = 0x30;
+							}
+							//ID的顺序位正序
+							for(;ID_Num_Len>0;ID_Num_Len--)
+							{
+								*ptr++ = ID_Num[ID_Num_Len-1];
+							}
+							//补零
+							Zero_Fill_Len = 9;
+							for(For_temp_1=0;For_temp_1<Zero_Fill_Len;For_temp_1++)
+							{
+								*ptr++ = 0x00;
+							}
+							String[22] = pile_info[For_temp].pay_power;
+							*ptr++ = 0x0D;//包尾
+							*ptr++ = 0x00;//包尾
+							*ptr++ = crcCheck(31, String);
+							memset(&pile_info[For_temp],0,PROTOCOL_SIZE);
+						}
+					}
+					uart.TxdPackLength = 33;
+					UART_DMASendByte(DMA_SEND_CH, String, uart.TxdPackLength);
+					Pile_State_Wait_Flag = 1;
+				}
+				Pile_State_Close_Flag = false;
 			}
-			else
-			{
-				static uint8_t String[] = "结束充电\r\n";
-				UART_DMASendByte(DMA_SEND_CH, String, sizeof(String));
-				Pile_State_Wait_Flag = 1;
-			}
-			Pile_State_Close_Flag = 0;
 		}
 	}
+	OS_EXIT_CRITICAL();
 }
 
 

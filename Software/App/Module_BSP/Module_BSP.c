@@ -1,8 +1,7 @@
 #include "Module_BSP.h"
 
 
-extern uint8_t UART_Buffer[16];
-
+extern uint8_t UART_Buffer[MAXBUF];
 
 
 void bsp_init(void)
@@ -26,14 +25,16 @@ void bsp_init(void)
 
     /***************************************************************************/
 
-	UART_QuickInit(UART0_RX_PD06_TX_PD07, 115200);								/* 配置串口 */
+	//UART_QuickInit(UART0_RX_PD06_TX_PD07, 115200);								/* 配置串口 */
+
+    UART_QuickInit(UART5_RX_PE09_TX_PE08, 115200);								/* 485 和 普通的TTL 串口 只是后级硬件不同 对于MCU来说，都是串口 */
 #if 1
     /* 配置DMA 打开UART_Tx_DMA功能 */
-	UART_SetDMATxMode(HW_UART0, true);
+	UART_SetDMATxMode(HW_UART5, true);
 
     /* 配置DMA 打开UART_Rx_DMA功能 */
-    UART_ITDMAConfig(HW_UART0, kUART_DMA_Rx, true);
-    UART_DMARevInit(HW_UART0, DMA_REV_CH, UART_Buffer);
+    UART_ITDMAConfig(HW_UART5, kUART_DMA_Rx, true);
+    UART_DMARevInit(HW_UART5, DMA_REV_CH, UART_Buffer);
 
 	DMA_CallbackInstall(DMA_REV_CH, DMA_ISR);									/* 安装回调函数 */
 
@@ -54,7 +55,8 @@ void bsp_init(void)
 
     UART_ITDMAConfig(HW_UART0, kUART_IT_Rx, true);								/* 打开串口接收中断功能 IT 就是中断的意思*/
 #endif
-	FLASH_Init();
 	Init_Timer_Cnt();
+#if	DEBUG
     printf("Bsp_Init_Finish\r\n");												/* 板级初始化完成 */
+#endif
 }

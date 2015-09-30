@@ -14,10 +14,11 @@
 #include "crc.h"
 #include "uart.h"
 #include "chlib_k.h"//printf
-
+#include "Module_Protocol.h"
+#include "Module_Can.h"
 
 /* Exported valable -------------------------------------------------------- */
-#define CAN_TX_ID  0x01
+//#define CAN_TX_ID  0x02
 #define CAN_RX_ID  0x56
 
 //与桩通讯的功能吗

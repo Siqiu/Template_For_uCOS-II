@@ -36,7 +36,7 @@ ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
 [DebugChecksum]
-Checksum=2124744669
+Checksum=-1086928726
 [CodeCoverage]
 Enabled=_ 0
 [Disassembly]
@@ -46,6 +46,7 @@ Path=C:\work\Template_For_uCOS-II\Debug\Exe\Project.out
 [array_types]
 Fmt0=struct <Unnamed 106> *[6]	4	0
 Fmt1=uint8_t[16]	4	0
+Fmt2=uint8_t[20]	4	0
 [SWOTraceWindow]
 PcSampling=0
 InterruptLogs=0

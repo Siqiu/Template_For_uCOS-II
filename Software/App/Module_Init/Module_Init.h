@@ -4,6 +4,6 @@
 
 
 void Init_Timer_Cnt(void);
-
+#define	MAXBUF			1536
 
 #endif	/* __MODULE_INIT_H__ */

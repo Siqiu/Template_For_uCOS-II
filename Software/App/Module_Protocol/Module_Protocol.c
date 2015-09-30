@@ -14,18 +14,26 @@
 */
 #include "Module_Protocol.h"
 
+extern bool	Pile_State_Wait_Flag;
+extern uint8_t	Pcak_Pile_State_All_Flag;
+extern bool	Pile_State_Open;
+extern bool	Pile_State_Open_Flag;
+extern bool	Pile_State_Close;
+extern bool	Pile_State_Close_Flag;
+extern bool	Rev_Flag;
+
+extern bool	Can1_Rev_Flag;
+extern bool	Uart1_Rev_Flag;
+extern uint8_t	Can1_Buf[8];
+extern uint8_t UART_Buffer[MAXBUF];
 
 
-
-extern bool		Pile_State_Wait_Flag;
-extern uint8_t  Pcak_Pile_State_All_Flag;
-extern bool		Pile_State_Open;
-extern bool     Can1_Rev_Flag;
-extern uint8_t  Can1_Buf[8];
 extern OS_EVENT *key;																	//事件控制块 指针
 extern OS_EVENT * msg_test;                                                            //按键邮箱事件块指针
 extern OS_EVENT * sem_test;                                                            //蜂鸣器信号量指针
 
+
+PROTOCOL pile_info[5];
 
 
 
@@ -42,20 +50,97 @@ extern OS_EVENT * sem_test;                                                     
 *******************************************************************************/
 void    CheckPack_True_win(void)
 {
-    //预约充电
-    //预约取消
-    //桩状态查询
-    //桩进入非空闲状态
-    //桩进入待机模式
-    //桩电价查询
-    //桩电价修改
-    //卡账号信息
-    //手机账户余额（待优化）
-    //消费信息
-    //车辆信息（待优化）
-    //充电开始
-	Pcak_Pile_State();
-    //充电结束
+	//0x2A 0x2A 0x54 0x57 0x0001 0x000C 0x000A 13812341234 0x0D校验
+	//2A 2A 54 57 00 01 00 0C 00 14
+	//31 33 38 31 32 33 34 31 32 33 34 00 00 00 00 00 00 00 00 00
+	//0D 00 2D
+	uint8_t*	ptr = UART_Buffer;
+	uint8_t		pile_addr;
+	uint8_t		pile_addr_H;
+	uint8_t		pile_addr_L;
+	uint8_t		func_code;
+	if(0x23 != *ptr++) return;
+	if(0x23 != *ptr++) return;
+	if(0x54 != *ptr++) return;
+	if(0x57 != *ptr++) return;
+	pile_addr_H = (*ptr++<<8);
+	pile_addr_L = *ptr++;
+	pile_addr = pile_addr_H|pile_addr_L;
+    if(UART_Buffer[32] != crcCheck(31,UART_Buffer)) return;
+	*ptr++;
+	func_code = *ptr++;
+	switch(func_code)
+	{
+		case 0x01:
+			//预约充电
+			{
+				break;
+			}
+		case 0x02:
+			//预约取消
+			{
+				break;
+			}
+		case 0x03:
+			//桩状态查询
+			{
+				break;
+			}
+		case 0x04:
+			//桩进入非空闲状态
+			{
+				break;
+			}
+		case 0x05:
+			//桩进入待机模式
+			{
+				break;
+			}
+		case 0x06:
+			//桩电价查询
+			{
+				break;
+			}
+		case 0x07:
+			//桩电价修改
+			{
+				break;
+			}
+		case 0x08:
+			//卡账号信息
+			{
+				break;
+			}
+		case 0x09:
+			//手机账户余额（待优化）
+			{
+				break;
+			}
+		case 0x0A:
+			//消费信息
+			{
+				break;
+			}
+		case 0x0B:
+			//车辆信息（待优化）
+			{
+				break;
+			}
+		case 0x0C:
+			//充电开始/充电结束
+			{
+				//Pcak_Pile_State();
+				Pile_Send(pile_addr,CTRL_pile_open);
+				break;
+			}
+		case 0x0D:
+			//充电开始/充电结束
+			{
+				//Pcak_Pile_State();
+				Pile_Send(pile_addr,CTRL_pile_close);
+				break;
+			}
+	}
 }
 
 /*******************************************************************************
@@ -67,10 +152,16 @@ void    CheckPack_True_win(void)
 *******************************************************************************/
 void    CheckPack_Ding_Chong(void)
 {
+#if OS_CRITICAL_METHOD == 3
+	OS_CPU_SR cpu_sr;
+#endif
+	OS_ENTER_CRITICAL();
 	uint8_t*	ptr = Can1_Buf;
 	uint8_t		pile_addr;
 	uint8_t		func_code;
 	pile_addr = *ptr++;
+	pile_info[pile_addr-0x01].address = pile_addr;
+	pile_addr -= 0x01;//地址为1的数据储存在数组0元素中
     if(Can1_Buf[7] != crcCheck(7,Can1_Buf)) return;
 	func_code = *ptr++;
 	switch(func_code)
@@ -85,36 +176,49 @@ void    CheckPack_Ding_Chong(void)
 			}
 		case READ_pile_info://03(桩信息)0x01 0x03 0x00 0x00 0x00 0x00 0x64 0x66正序
 			{
-                uint8_t		pile_state;
                 uint8_t	    pile_price_H;
                 uint8_t	    pile_price_L;
-                uint16_t    pile_price;
                 ptr+=2;
-                pile_state = *ptr++;
+                pile_info[pile_addr].pile_state = *ptr++;
 				pile_price_H = *ptr++;
 				pile_price_L = *ptr++;
-                pile_price = (pile_price_H<<8)|pile_price_L;
+                pile_info[pile_addr].pile_price = (pile_price_H<<8)|pile_price_L;
+				if(pile_info[pile_addr].pile_state==0x00)
+				{
+					Pile_State_Open = false;
+					Pile_State_Close = true;
+					Pile_State_Open_Flag = true;
+				}
+				if(pile_info[pile_addr].pile_state==0x01)
+				{
+					Pile_State_Open = true;
+					Pile_State_Close = false;
+					Pile_State_Close_Flag = true;
+				}
+				if(pile_info[pile_addr].pile_state==0x06)
+				{
+					Pile_State_Wait_Flag = true;
+					Pcak_Pile_State_All_Flag = true;
+					Pile_State_Close_Flag = true;
+				}
                 break;
             }
 		case READ_card_info://04（卡信息）0x01 0x04 0xB1 0x7F 0x39 0x05 0x00 0xF7倒序
 			{
-                uint32_t ID_card;
-                ID_card = (Can1_Buf[5]<<24|Can1_Buf[4]<<16|Can1_Buf[3]<<8|Can1_Buf[2]);
-                printf("%d\n",ID_card);
+                pile_info[pile_addr].user_id = (Can1_Buf[5]<<24|Can1_Buf[4]<<16|Can1_Buf[3]<<8|Can1_Buf[2]);
 				break;
 			}
 		case READ_consume_info://05（消费信息）0x01 0x05 0x00 0x00 0xC6 0x00 0x02 0xC0
 			{
                 *ptr++;
-                uint8_t pay_amount = (Can1_Buf[3]<<8|Can1_Buf[4]);
-                uint8_t pay_power = (Can1_Buf[5]<<8|Can1_Buf[6]);
+                pile_info[pile_addr].pay_amount = (Can1_Buf[3]<<8|Can1_Buf[4]);//消费金额
+                pile_info[pile_addr].pay_power = (Can1_Buf[5]<<8|Can1_Buf[6]);//消费电量
 				break;
 			}
 		case READ_balance_info://06（卡内金额）0x01 0x06 0x00 0x00 0x0C 0x34 0xFB 0xC4正序
 			{
                 *ptr++;
-                uint32_t ID_card_balance;
-                ID_card_balance = (Can1_Buf[3]<<24|Can1_Buf[4]<<16|Can1_Buf[5]<<8|Can1_Buf[6]);
+                pile_info[pile_addr].ID_card_balance = (Can1_Buf[3]<<24|Can1_Buf[4]<<16|Can1_Buf[5]<<8|Can1_Buf[6]);
 				break;
 			}
 		case READ_time://07（时间）
@@ -134,7 +238,27 @@ void    CheckPack_Ding_Chong(void)
 				break;
 			}
 	}
-	//OSSemPend
+	OS_EXIT_CRITICAL();
+}
+
+
+
+
+
+
+void UardDmaFlow(void)
+{
+	if(Can1_Rev_Flag)
+	{
+		Can1_Rev_Flag = false;
+	}
+
+	if(Uart1_Rev_Flag)
+	{
+		CheckPack_True_win();
+		Uart1_Rev_Flag = false;
+	}
+
 	if(Pile_State_Wait_Flag|Pile_State_Open)
 	{
 		if(Pcak_Pile_State_All_Flag|Pile_State_Open)
@@ -144,8 +268,59 @@ void    CheckPack_Ding_Chong(void)
 			Pcak_Pile_State_All_Flag = 0;
 		}
 	}
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -170,7 +345,9 @@ void UART_TX_ISR(uint16_t * byteToSend)
 */
 void UART_RX_ISR(uint16_t byteReceived)
 {
+#if	DEBUG
 	printf("function:UART_RX_ISR\r\n");
+#endif
     /* 将接收到的数据发送回去 */
     UART_WriteByte(HW_UART0, byteReceived);
 }
@@ -233,14 +410,4 @@ void UART_RX_ISR(uint16_t byteReceived)
 //		// "充电过温保护"
 //	}
 //}
-void UardDmaFlow(void)
-{
-	if(Can1_Rev_Flag)
-	{
-		CheckPack_Ding_Chong();
-		Can1_Rev_Flag = false;
-	}
-}
-
-
 
