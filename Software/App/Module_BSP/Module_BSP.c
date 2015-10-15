@@ -1,7 +1,21 @@
+/**
+  ******************************************************************************
+  * @file    Module_BSP.c
+  * @author  Donatello
+  * @version V1.0
+  * @date    2015.9.16
+  * @brief
+  ******************************************************************************
+  */
+/*
+*********************************************************************************************************
+*                                             INCLUDE FILES
+*********************************************************************************************************
+*/
 #include "Module_BSP.h"
 
-
 extern uint8_t UART_Buffer[MAXBUF];
+
 
 
 void bsp_init(void)
@@ -12,7 +26,14 @@ void bsp_init(void)
 
     SYSTICK_ITConfig(true);														/* 开启SysTick中断 */
 
-    GPIO_QuickInit(HW_GPIOE, 6, kGPIO_Mode_OPP);								/* 配置GPIO */
+    GPIO_QuickInit(HW_GPIOE, 12, kGPIO_Mode_OPP);								/* 配置GPIO */
+	/***************************************************************************/
+
+    WDOG_InitTypeDef WDOG_InitStruct1;											/* 初始化看门狗 */
+    WDOG_InitStruct1.windowInMs = 0;
+    WDOG_InitStruct1.mode = kWDOG_Mode_Normal;									/* 设置看门狗处于正常工作模式 */
+    WDOG_InitStruct1.timeOutInMs = 2000;										/* 时限 2000MS : 2000MS 内没有喂狗则复位 */
+    WDOG_Init(&WDOG_InitStruct1);
     /***************************************************************************/
 
     CAN_QuickInit(CAN1_TX_PE24_RX_PE25, kCAN_20K);								/* 初始化 CAN 使用CAN1模块的PTE24/25引脚，通信速度为125k*/
@@ -49,13 +70,37 @@ void bsp_init(void)
 
     //UART_CallbackTxInstall(HW_UART0,UART_TX_ISR);								/** register callback function*/
 
-    //UART_ITDMAConfig(HW_UART0, kUART_IT_Tx, true);								/** open TX interrupt */
+    //UART_ITDMAConfig(HW_UART0, kUART_IT_Tx, true);							/** open TX interrupt */
 
     UART_CallbackRxInstall(HW_UART0, UART_RX_ISR);								/*  配置UART 中断配置 打开接收中断 安装中断回调函数 */
 
     UART_ITDMAConfig(HW_UART0, kUART_IT_Rx, true);								/* 打开串口接收中断功能 IT 就是中断的意思*/
 #endif
-	Init_Timer_Cnt();
+	FLASH_Init();
+	/***************************************************************************/
+
+	RTC_QuickInit();
+
+    RTC_CallbackInstall(RTC_ISR);												/* 开启中断 */
+    RTC_ITDMAConfig(kRTC_IT_TimeAlarm, true);
+	/***************************************************************************/
+
+	/* 初始化PIT模块 */
+	PIT_InitTypeDef PIT_InitStruct1;											/* 申请结构体变量 */
+	PIT_InitStruct1.chl = HW_PIT_CH0;											/* 使用0号定时器 */
+	PIT_InitStruct1.timeInUs = 1000*1000;										/* 定时周期1S */
+	PIT_Init(&PIT_InitStruct1);													/* pit模块初始化 */
+
+	PIT_CallbackInstall(HW_PIT_CH0, PIT_ISR);									/* 注册PIT 中断回调函数 *///0号定时器的中断处理
+
+	PIT_ITDMAConfig(HW_PIT_CH0, kPIT_IT_TOF, true);								/* 开启PIT0定时器中断 */
+	/***************************************************************************/
+
+    SRAM_Init();                                                                /* SRAM初始化 */
+
+    /***************************************************************************/
+
+	Init_Timer_Cnt();															/* 要放置到bsp_init的最后 */
 #if	DEBUG
     printf("Bsp_Init_Finish\r\n");												/* 板级初始化完成 */
 #endif

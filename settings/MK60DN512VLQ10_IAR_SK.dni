@@ -36,17 +36,23 @@ ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
 [DebugChecksum]
-Checksum=-1086928726
+Checksum=-746911601
 [CodeCoverage]
 Enabled=_ 0
 [Disassembly]
 MixedMode=1
 [RecentFlashDownload]
 Path=C:\work\Template_For_uCOS-II\Debug\Exe\Project.out
+[struct_types]
+Fmt0=msg_t-cmd	4	0
+Fmt1=msg_t-pMessage	4	0
+Fmt2=struct <Unnamed 87>-cmd	4	0
+Fmt3=struct <Unnamed 87>-type	4	0
 [array_types]
 Fmt0=struct <Unnamed 106> *[6]	4	0
-Fmt1=uint8_t[16]	4	0
-Fmt2=uint8_t[20]	4	0
+Fmt1=uint8_t[12]	4	0
+Fmt2=uint8_t[16]	4	0
+Fmt3=uint8_t[20]	4	0
 [SWOTraceWindow]
 PcSampling=0
 InterruptLogs=0
@@ -109,19 +115,22 @@ Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Count=0
+Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\BSP\Library\src\flash.c}.99.2" 0 0 1 "" 0 "" 0
+Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\App\test.c}.41.9" 0 0 1 "" 0 "" 0
+Count=2
 [Aliases]
 A0=_ "C:\Documents and Settings\dengjianhua\桌面\STM32_NEW_1.1\user\src\main.c" ""
 A1=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\App\FW_IAP\IAP.c" ""
 A2=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\App\main.c" ""
 A3=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\CPU\CMSIS\core_cm3.h" ""
-A4=_ "E:\work\ZX_T2_TP\ZX_T2_TP_V1.0_S\FWLIB_ST\CMSIS\core\CM3\startup\iar\startup_stm32f10x_hd.s" ""
-A5=_ "E:\work\ZX_T2_TP\ZX_T2_TP_V1.1.a_S\user\src\main.c" ""
-A6=_ "E:\work\空的ucos\Software\App\Module_IAP\Module_IAP.c" ""
-A7=_ "E:\work\空的ucos\Software\App\main.c" ""
-A8=_ "E:\work\空的ucos\Software\CPU\CMSIS\core_cm3.h" ""
-A9=_ "E:\work备份\空的工程 - ucos\Software\App\FW_IAP\IAP.c" ""
-A10=_ "E:\work备份\空的工程 - ucos\Software\App\main.c" ""
-A11=_ "E:\work备份\空的工程 - ucos\Software\CPU\CMSIS\core_cm3.h" ""
-Count=12
+A4=_ "C:\work\Template_For_uCOS-II\Software\uCOS-II\core\os_core.c" ""
+A5=_ "E:\work\ZX_T2_TP\ZX_T2_TP_V1.0_S\FWLIB_ST\CMSIS\core\CM3\startup\iar\startup_stm32f10x_hd.s" ""
+A6=_ "E:\work\ZX_T2_TP\ZX_T2_TP_V1.1.a_S\user\src\main.c" ""
+A7=_ "E:\work\空的ucos\Software\App\Module_IAP\Module_IAP.c" ""
+A8=_ "E:\work\空的ucos\Software\App\main.c" ""
+A9=_ "E:\work\空的ucos\Software\CPU\CMSIS\core_cm3.h" ""
+A10=_ "E:\work备份\空的工程 - ucos\Software\App\FW_IAP\IAP.c" ""
+A11=_ "E:\work备份\空的工程 - ucos\Software\App\main.c" ""
+A12=_ "E:\work备份\空的工程 - ucos\Software\CPU\CMSIS\core_cm3.h" ""
+Count=13
 SuppressDialog=0

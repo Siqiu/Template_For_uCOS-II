@@ -93,7 +93,45 @@
 *                                            INCLUDES END
 *********************************************************************************************************
 */
+/*******************************************************************************
+ * @宏定义名称	宏进制转换函数
+ *******************************************************************************/
+//BCD转换为十6进制
+#define	BCD2DEC(data)				( ( ( (data) >> 4) * 16) + ((data) & 0x0f))
+//十进制转换为BCD
+#define	DEC2BCD(data)				( ( ( (data) / 10) << 4) + (((data) % 10) & 0x0f))
 
+//10to16
+#define	DEC2HEX(data)				( ( ( (data) >> 4) & 0x0f) + ((data) &0xf))
 
+//10toASCII十位
+#define	DEC2ASC10(data)				(((((((((data) / 10) << 4) + (((data) % 10) & 0x0f))) >> 4  & 0x0f) | 0x30))
+
+//10toASCII个位
+#define	DEC2ASC01(data)				((((((((data) / 10) << 4) + (((data) % 10) & 0x0f))) & 0x0f) | 0x30 ))
+
+//ASCII转换十六进制十位
+#define	ASC2DEC10(data)				(((data) & 0xf) << 4)
+
+//ASCII转换十六进制个位
+#define	ASC2DEC01(data)				((data) & 0xf)
+
+//十六进制2ASCII十位
+#define	HEX2ASC10(data)				((((data) >> 4) & 0xf) + 0x30)
+
+//十六进制2ASCII个位
+#define	HEX2ASC01(data)				(((data)&0xf ) + 0x30)
+
+#define	DATA_LEN					20											//数据体长度
+#define	DATA_ALL_LEN				44											//数据体长度
+
+#define	PROG_DATA_ADDR				0x00005000									//参数起始位置
+#define	PROG_DATA_ADDR_OFFSET		0x00000064									//参数写时候的偏移
+
+#define	PROG_BASE_ADDR				0x00010000
+#define	PROG_BASE_ADDR_1			0x00030000
+
+#define	PROG_BASE_ADDR_2			0x00030000
+#define	PROG_ADDR_END				0x00050000
 #endif
 

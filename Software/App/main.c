@@ -20,6 +20,9 @@
 #include "chlib_k.h"
 #include "Module_BSP.h"
 #include "Module_Protocol.h"
+#if DEBUG
+#include "test.h"
+#endif
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -47,11 +50,12 @@ OS_STK  APP_MBOX_STK[TASK_STK_SIZE];
 OS_STK  APP_SEM_STK[TASK_STK_SIZE];
 OS_STK  APP_POST_STK[TASK_STK_SIZE];
 OS_STK  APP_TIME_STK[TASK_STK_SIZE];
+uint8_t	err;																	//错误信息
 
-extern OS_EVENT *key;																	//事件控制块 指针
-extern OS_EVENT * msg_test;                                                            //按键邮箱事件块指针
-extern OS_EVENT * sem_test;                                                            //蜂鸣器信号量指针
-extern	uint16_t	Stitic_Time_Cnt;
+extern OS_EVENT *key;															//事件控制块 指针
+extern OS_EVENT * msg_test;													//按键邮箱事件块指针
+extern OS_EVENT * sem_test;													//蜂鸣器信号量指针
+
 
 
 /*
@@ -83,6 +87,7 @@ void	bsp_init(void);
 
 int main(void)
 {
+	SCB->VTOR=0x10000UL;//为了配合Bootlaoder程序，更改中断向量表起始地址
 	bsp_init();
 
     OSInit();
@@ -128,23 +133,27 @@ static void App_Task_Start(void *pdata)
     OSTaskCreate(App_Task_Mbox,(void *)0,
                 &APP_MBOX_STK[TASK_STK_SIZE-1],
                 APP_MBOX_TASK_PRIO);
+	OSTaskNameSet(APP_MBOX_TASK_PRIO, (uint8_t*)"UardDmaFlow",&err);
 
-    //建立信号量接收显示任务
-    OSTaskCreate(App_Task_Sem,(void *)0,
-                &APP_SEM_STK[TASK_STK_SIZE-1],
-                APP_SEM_TASK_PRIO);
+	//建立信号量接收显示任务
+	OSTaskCreate(App_Task_Sem,(void *)0,
+				 &APP_SEM_STK[TASK_STK_SIZE-1],
+				 APP_SEM_TASK_PRIO);
+	OSTaskNameSet(APP_SEM_TASK_PRIO, (uint8_t*)"Delay",&err);
 
-    //建立邮箱，信号量投递任务
-    OSTaskCreate(App_Task_Post,(void *)0,
-                &APP_POST_STK[TASK_STK_SIZE-1],
-                APP_POST_TASK_PRIO);
-    //建立时间
-    OSTaskCreate(App_Task_Time,(void *)0,
-                &APP_TIME_STK[TASK_STK_SIZE-1],
-                APP_TIME_TASK_PRIO);
+	//建立邮箱，信号量投递任务
+	OSTaskCreate(App_Task_Post,(void *)0,
+				 &APP_POST_STK[TASK_STK_SIZE-1],
+				 APP_POST_TASK_PRIO);
+	OSTaskNameSet(APP_POST_TASK_PRIO, (uint8_t*)"Can_Post",&err);
 
-    //挂起起始任务.
- 	OSTaskSuspend(APP_START_TASK_PRIO);
+	//建立时间
+	OSTaskCreate(App_Task_Time,(void *)0,
+				 &APP_TIME_STK[TASK_STK_SIZE-1],
+				 APP_TIME_TASK_PRIO);
+	OSTaskNameSet(APP_TIME_TASK_PRIO, (uint8_t*)"Time_to_one",&err);
+	//挂起起始任务.
+	OSTaskSuspend(APP_START_TASK_PRIO);
 }
 
 /*
@@ -180,11 +189,16 @@ void App_Task_Mbox(void *pdata)
 //		static uint8_t buf1[5] = {0};
 //		Flash_Write_Inside(20, buf, 2);
 //		Flash_Read_Inside(20, buf1,2);
-/***************************内部flash******************************************/
-		UardDmaFlow();
-		OS_ENTER_CRITICAL();
-		OS_EXIT_CRITICAL();
+/******************************************************************************/
+#if DEBUG
+        dona_test();
+#endif
 
+		UardDmaFlow();
+
+		OS_ENTER_CRITICAL();
+
+		OS_EXIT_CRITICAL();
 
 		OSTimeDlyHMSM(0, 0, 0, 10);
 	}
@@ -219,6 +233,7 @@ void App_Task_Post(void *pdata)
 	for(;;)
 	{
 		Pile_Send(0x01,READ_pile_info);
+
 		OSTimeDlyHMSM(0, 0, 2, 0);
 	}
 }
@@ -234,17 +249,15 @@ void App_Task_Time(void *pdata)
 {
 	for(;;)
 	{
-        GPIO_ToggleBit(HW_GPIOE, 6);                                            //翻转GPIO,点亮led1来表示发送成功
-		if(Stitic_Time_Cnt>3000)
-		{
-			Stitic_Time_Cnt=0;
-		}
-		else
-		{
-			Stitic_Time_Cnt++;
-		}
+        GPIO_ToggleBit(HW_GPIOE, 12);                                            //翻转GPIO,点亮led1来表示发送成功
 
-		OSTimeDlyHMSM(0, 0, 1, 0);
+		RTC_DateTime_Type td = {0};
+
+		RTC_GetDateTime(&td);
+#if 0
+		printf("%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
+#endif
+		OSTimeDlyHMSM(0, 0, 0, 500);
 	}
 }
 

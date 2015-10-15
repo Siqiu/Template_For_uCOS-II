@@ -34,8 +34,9 @@ extern OS_EVENT * sem_test;                                                     
 
 
 PROTOCOL pile_info[5];
-
-
+extern USART_CtrolBlock uart;
+#define	CRC_DATA	44
+#define	DATA_START	22
 
 /* Public  functions ---------------------------------------------------------*/
 
@@ -51,7 +52,7 @@ PROTOCOL pile_info[5];
 void    CheckPack_True_win(void)
 {
 	//0x2A 0x2A 0x54 0x57 0x0001 0x000C 0x000A 13812341234 0x0D校验
-	//2A 2A 54 57 00 01 00 0C 00 14
+	//2A 2A 54 57 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 0C 00 14
 	//31 33 38 31 32 33 34 31 32 33 34 00 00 00 00 00 00 00 00 00
 	//0D 00 2D
 	uint8_t*	ptr = UART_Buffer;
@@ -63,81 +64,135 @@ void    CheckPack_True_win(void)
 	if(0x23 != *ptr++) return;
 	if(0x54 != *ptr++) return;
 	if(0x57 != *ptr++) return;
+	ptr += 12;
 	pile_addr_H = (*ptr++<<8);
 	pile_addr_L = *ptr++;
 	pile_addr = pile_addr_H|pile_addr_L;
-    if(UART_Buffer[32] != crcCheck(31,UART_Buffer)) return;
+    if(UART_Buffer[CRC_DATA] != crcCheck(CRC_DATA-1,UART_Buffer)) return;
 	*ptr++;
 	func_code = *ptr++;
 	switch(func_code)
 	{
-		case 0x01:
-			//预约充电
+		case 0x01://预约充电
 			{
 				break;
 			}
-		case 0x02:
-			//预约取消
+		case 0x02://预约取消
 			{
 				break;
 			}
-		case 0x03:
-			//桩状态查询
+		case 0x03://桩状态查询
 			{
 				break;
 			}
-		case 0x04:
-			//桩进入非空闲状态
+		case 0x04://桩进入非空闲状态
 			{
 				break;
 			}
-		case 0x05:
-			//桩进入待机模式
+		case 0x05://桩进入待机模式
 			{
 				break;
 			}
-		case 0x06:
-			//桩电价查询
+		case 0x06://桩电价查询
 			{
 				break;
 			}
-		case 0x07:
-			//桩电价修改
+		case 0x07://桩电价修改
 			{
 				break;
 			}
-		case 0x08:
-			//卡账号信息
+		case 0x08://卡账号信息
 			{
 				break;
 			}
-		case 0x09:
-			//手机账户余额（待优化）
+		case 0x09://手机账户余额（待优化）
 			{
 				break;
 			}
-		case 0x0A:
-			//消费信息
+		case 0x0A://消费信息
 			{
 				break;
 			}
-		case 0x0B:
-			//车辆信息（待优化）
+		case 0x0B://车辆信息（待优化）
 			{
 				break;
 			}
-		case 0x0C:
-			//充电开始/充电结束
+		case 0x0C://充电开始/充电结束
 			{
 				//Pcak_Pile_State();
 				Pile_Send(pile_addr,CTRL_pile_open);
 				break;
 			}
-		case 0x0D:
-			//充电开始/充电结束
+		case 0x0D://充电开始/充电结束
 			{
 				//Pcak_Pile_State();
 				Pile_Send(pile_addr,CTRL_pile_close);
+				break;
+			}
+		case 0x0E://读取时间
+			{
+				break;
+			}
+		case 0x0F://校时
+			{
+				uint8_t Temp;
+				ptr+=3;
+				RTC_DateTime_Type td = {0};
+				Temp = *ptr++;
+				td.year = 2000+(Temp);
+				Temp = *ptr++;
+				td.month = BCD2DEC(Temp);
+				Temp = *ptr++;
+				td.day = BCD2DEC(Temp);
+				Temp = *ptr++;
+				td.hour = BCD2DEC(Temp);
+				Temp = *ptr++;
+				td.minute = BCD2DEC(Temp);
+				Temp = *ptr++;
+				td.second = BCD2DEC(Temp);
+				RTC_SetDateTime(&td);
+
+				UART_Buffer[0] = 0x2A;
+				UART_Buffer[1] = 0x2A;
+				memset(&UART_Buffer[10], 0, 20);
+				UART_Buffer[DATA_START] = 0x01;
+				UART_Buffer[CRC_DATA] = crcCheck(CRC_DATA-1, UART_Buffer);
+				uart.TxdPackLength = 25+DATA_LEN;
+				UART_DMASendByte(DMA_SEND_CH, UART_Buffer, uart.TxdPackLength);
+				break;
+			}
+		case 0x10://读取唯一ID
+			{
+				break;
+			}
+		case 0x11://设置唯一ID
+			{
+				static uint8_t Only_ID_Buf[12] = {0};
+				uint16_t For_temp;
+				ptr+=2;
+				/* 唯一ID */
+				for(For_temp=0 ;For_temp<12;For_temp++)
+				{
+					Only_ID_Buf[For_temp] = *ptr++;
+				}
+				Flash_Write_Inside(PROG_DATA_ADDR, Only_ID_Buf,12);
+#if	DEBUG
+				static uint8_t buf[12] = {0};
+				Flash_Read_Inside(PROG_DATA_ADDR,buf,12);
+#endif
+				UART_Buffer[0] = 0x2A;
+				UART_Buffer[1] = 0x2A;
+				uint8_t* Only_ID_Ptr = Only_ID_Buf;
+				/* 唯一ID */
+				for(For_temp=0 ;For_temp<12;For_temp++)
+				{
+					UART_Buffer[4+For_temp] = *Only_ID_Ptr++;
+				}
+				memset(&UART_Buffer[22], 0, 20);
+				UART_Buffer[DATA_START] = 0x01;
+				UART_Buffer[CRC_DATA] = crcCheck(CRC_DATA-1, UART_Buffer);
+				uart.TxdPackLength = 25+DATA_LEN;
+				UART_DMASendByte(DMA_SEND_CH, UART_Buffer, uart.TxdPackLength);
 				break;
 			}
 	}
@@ -235,6 +290,7 @@ void    CheckPack_Ding_Chong(void)
 			}
 		case WRITE_time://12（时间）
 			{
+
 				break;
 			}
 	}
@@ -326,31 +382,6 @@ void UardDmaFlow(void)
 
 
 
-static const char UART_String1[] = "Usart_Send_Ok\r\n";
-/* 串口发送中断回调函数
-在函数中写中断想要做的事情
-*/
-void UART_TX_ISR(uint16_t * byteToSend)
-{
-    static const char *p = UART_String1;
-    *byteToSend = *p++;
-    if((p - UART_String1) == sizeof(UART_String1))
-    {
-        p = UART_String1;
-        UART_ITDMAConfig(HW_UART0, kUART_IT_Tx, false);
-    }
-}
-/* 串口接收中断回调函数
-   在函数中写中断想要做的事情
-*/
-void UART_RX_ISR(uint16_t byteReceived)
-{
-#if	DEBUG
-	printf("function:UART_RX_ISR\r\n");
-#endif
-    /* 将接收到的数据发送回去 */
-    UART_WriteByte(HW_UART0, byteReceived);
-}
 /*******************************************************************************
   * @函数名称		CheckPack_Bms
   * @函数说明		Head Address	CID Data length Data Check Tail

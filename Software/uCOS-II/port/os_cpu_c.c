@@ -16,9 +16,9 @@
 *
 * LICENSING TERMS:
 * ---------------
-*             uC/OS-III is provided in source form to registered licensees ONLY.  It is 
-*             illegal to distribute this source code to any third party unless you receive 
-*             written permission by an authorized Micrium representative.  Knowledge of 
+*             uC/OS-III is provided in source form to registered licensees ONLY.  It is
+*             illegal to distribute this source code to any third party unless you receive
+*             written permission by an authorized Micrium representative.  Knowledge of
 *             the source code may NOT be used to develop a similar product.
 *
 *             Please help us continue to provide the Embedded community with the finest
@@ -401,7 +401,7 @@ void  OSTimeTickHook (void)
 void SysTick_Handler (void)
 {
 	OSIntEnter();		//进入中断
-	OSTimeTick();       //调用ucos的时钟服务程序               
+	OSTimeTick();       //调用ucos的时钟服务程序
 	OSIntExit();        //触发任务切换软中断
 }
 
@@ -420,9 +420,9 @@ void SysTick_Handler (void)
 /*
 void OSTestSysTickInit(uint8_t SysClk)
 {
- 	 SysTick->CTRL=0xFFFFFFFF;	
+ 	 SysTick->CTRL=0xFFFFFFFF;
      SysTick->LOAD=SysClk*1000*(1000/OS_TICKS_PER_SEC);
      SysTick->VAL =0x00;           //清空计数器
-     SysTick->CTRL=0xFFFFFFFF;	          //开始倒数  
+     SysTick->CTRL=0xFFFFFFFF;	          //开始倒数
 }
 */

@@ -21,6 +21,8 @@ extern uint8_t		Can1_Buf[8];
 extern uint8_t		Can1_Buf_Flag[2];
 extern uint8_t		Pcak_Pile_State_All_Flag;
 extern bool		Can1_Rev_Flag;
+extern	uint8_t		Only_ID[12];
+
 
 extern	uint16_t	Stitic_Time_Cnt;
 
@@ -194,7 +196,7 @@ void Pcak_Pile_State(void)
 	OS_CPU_SR cpu_sr;
 #endif
 	OS_ENTER_CRITICAL();
-	static uint8_t String[40] = {0};
+	static uint8_t String[50] = {0};
 	static uint8_t ID_Num[12] = {0};
 	if(Pile_State_Open)
 	{
@@ -216,8 +218,13 @@ void Pcak_Pile_State(void)
 				*ptr++ = 0x2A;
 				*ptr++ = 0x54;
 				*ptr++ = 0x57;
+				/* 唯一ID */
+				for(For_temp=0 ;For_temp<12;For_temp++)
+				{
+					*ptr++ = Only_ID[For_temp];
+				}
 				*ptr++ = 0x00;
-				for(;For_temp<5;For_temp++)
+				for(For_temp=0; For_temp<5;For_temp++)
 				{
 					if(pile_info[For_temp].pile_state == 0x01)
 					{
@@ -226,7 +233,7 @@ void Pcak_Pile_State(void)
 						*ptr++ = 0x0C;
 						*ptr++ = 0x00;
 						*ptr++ = 0x14;
-						for(;For_temp_1<11;For_temp_1++)
+						for(For_temp=0;For_temp_1<11;For_temp_1++)
 						{
 							if((pile_info[For_temp].user_id % 10)>=0)
 							{
@@ -258,8 +265,8 @@ void Pcak_Pile_State(void)
 						}
 						*ptr++ = 0x0D;//包尾
 						*ptr++ = 0x00;//包尾
-						*ptr++ = crcCheck(31, String);
-						uart.TxdPackLength = 33;
+						*ptr++ = crcCheck(DATA_ALL_LEN-1, String);
+						uart.TxdPackLength = DATA_ALL_LEN;
 						UART_DMASendByte(DMA_SEND_CH, String, uart.TxdPackLength);
 					}
 				}
@@ -294,8 +301,13 @@ void Pcak_Pile_State(void)
 					*ptr++ = 0x2A;
 					*ptr++ = 0x54;
 					*ptr++ = 0x57;
+					/* 唯一ID */
+					for(For_temp=0; For_temp<12;For_temp++)
+					{
+						*ptr++ = Only_ID[For_temp];
+					}
 					*ptr++ = 0x00;
-					for(;For_temp<5;For_temp++)
+					for(For_temp=0;For_temp<5;For_temp++)
 					{
 						if(pile_info[For_temp].user_id)
 						{
@@ -337,11 +349,11 @@ void Pcak_Pile_State(void)
 							String[22] = pile_info[For_temp].pay_power;
 							*ptr++ = 0x0D;//包尾
 							*ptr++ = 0x00;//包尾
-							*ptr++ = crcCheck(31, String);
+							*ptr++ = crcCheck(DATA_ALL_LEN-1, String);
 							memset(&pile_info[For_temp],0,PROTOCOL_SIZE);
 						}
 					}
-					uart.TxdPackLength = 33;
+					uart.TxdPackLength = DATA_ALL_LEN;
 					UART_DMASendByte(DMA_SEND_CH, String, uart.TxdPackLength);
 					Pile_State_Wait_Flag = 1;
 				}

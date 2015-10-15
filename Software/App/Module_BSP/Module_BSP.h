@@ -14,14 +14,19 @@
 #include "Module_Can.h"
 #include "Module_Protocol.h"
 #include "Module_Init.h"
+#include "Module_ISR.h"
 #include "dma.h"
 #include "uart.h"
-#include "Module_Init.h"
+#include "IS61WV25616.h"
 
 /* Exported valable -------------------------------------------------------- */
+
 /* Public functions ---------------------------------------------------------*/
+
 void bsp_init(void);
+
 /* private functions---------------------------------------------------------*/
+
 #endif	/* __MODULE_BSP_H__ */
 
 /* Exported valable -------------------------------------------------------- */

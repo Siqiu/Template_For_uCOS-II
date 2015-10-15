@@ -3,7 +3,7 @@
 <Workspace>
   <ConfigDictionary>
     
-  <CurrentConfigs><Project>MK60DN512VLQ10_IAR_SK/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <CurrentConfigs><Project>MK60DN512VLQ10_IAR_SK/Release</Project></CurrentConfigs></ConfigDictionary>
   <Desktop>
     <Static>
       <Workspace>
@@ -12,7 +12,7 @@
           
           
           
-        <Column0>199</Column0><Column1>4</Column1><Column2>27</Column2><Column3>0</Column3></ColumnWidths>
+        <Column0>334</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -35,20 +35,20 @@
           </Tab>
         <Tab><Identity>TabID-18983-28278</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-10454-11635</Identity><TabName>Ambiguous Definitions</TabName><Factory>Select-Ambiguous-Definitions</Factory><Session/></Tab><Tab><Identity>TabID-32339-25842</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1><Tabs><Tab><Identity>TabID-10235-21181</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>MK60DN512VLQ10_IAR_SK</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/App</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP/Drive</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP/Drive/src</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/Output</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/UCOS-II</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd1></Windows>
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1><Tabs><Tab><Identity>TabID-10235-21181</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>MK60DN512VLQ10_IAR_SK</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/App</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd1></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>200</YPos2><SelStart2>8205</SelStart2><SelEnd2>8205</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\Module_CAN\Module_Can.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>33</YPos2><SelStart2>1560</SelStart2><SelEnd2>1560</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\BSP\Drive\inc\common.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>0</YPos2><SelStart2>714</SelStart2><SelEnd2>714</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\CPU\DeviceSupport\MK60D10.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>203</YPos2><SelStart2>12607</SelStart2><SelEnd2>12607</SelEnd2></Tab><ActiveTab>3</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>74</YPos2><SelStart2>3779</SelStart2><SelEnd2>3779</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\Module_Queue\Module_Queue.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>109</YPos2><SelStart2>2093</SelStart2><SelEnd2>2093</SelEnd2></Tab><ActiveTab>1</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\Module_Queue\Module_Queue.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>44</YPos2><SelStart2>914</SelStart2><SelEnd2>914</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\test.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>24</YPos2><SelStart2>697</SelStart2><SelEnd2>697</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\uCOS-II\port\os_cpu.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>140</YPos2><SelStart2>7857</SelStart2><SelEnd2>7857</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-0035F868><key>iaridepm.enu1</key></Toolbar-0035F868></Sizes></Row0></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>592</Bottom><Right>267</Right><x>-2</x><y>-2</y><xscreen>823</xscreen><yscreen>514</yscreen><sizeHorzCX>568370</sizeHorzCX><sizeHorzCY>621524</sizeHorzCY><sizeVertCX>185773</sizeVertCX><sizeVertCY>718259</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>190</Bottom><Right>1450</Right><x>-2</x><y>-2</y><xscreen>1452</xscreen><yscreen>192</yscreen><sizeHorzCX>1002762</sizeHorzCX><sizeHorzCY>232164</sizeHorzCY><sizeVertCX>516575</sizeVertCX><sizeVertCY>628779</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-0075F868><key>iaridepm.enu1</key></Toolbar-0075F868></Sizes></Row0></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>595</Bottom><Right>408</Right><x>-2</x><y>-2</y><xscreen>1083</xscreen><yscreen>716</yscreen><sizeHorzCX>747928</sizeHorzCX><sizeHorzCY>865780</sizeHorzCY><sizeVertCX>283149</sizeVertCX><sizeVertCY>721886</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>187</Bottom><Right>1450</Right><x>-2</x><y>-2</y><xscreen>1452</xscreen><yscreen>189</yscreen><sizeHorzCX>1002762</sizeHorzCX><sizeHorzCY>228537</sizeHorzCY><sizeVertCX>680249</sizeVertCX><sizeVertCY>876663</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 
