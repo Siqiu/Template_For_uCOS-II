@@ -4,7 +4,7 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.26
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   * @note    此文件为芯片IIC模块的底层功能函数
   ******************************************************************************
   */
@@ -14,10 +14,10 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
-	 
+
 #include <stdint.h>
 
-     
+
 typedef struct
 {
     uint32_t instance;    //!< I2C pin select
@@ -46,7 +46,7 @@ typedef enum
     kI2C_Read,                  //!< I2C Master Read Data
     kI2C_Write,                 //!< I2C Master Write Data
     kI2C_DirectionNameCount,
-}I2C_Direction_Type; 
+}I2C_Direction_Type;
 
 typedef enum
 {
@@ -62,10 +62,13 @@ typedef void (*I2C_CallBackType)(void);
 
 
 uint8_t I2C_QuickInit(uint32_t MAP, uint32_t baudrate);
+
 int I2C_BurstWrite(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t addrLen, uint8_t *buf, uint32_t len);
 int I2C_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t data);
+
 int I2C_BurstRead(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t addrLen, uint8_t *buf, uint32_t len);
 int I2C_ReadSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t *data);
+
 int SCCB_ReadSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t* data);
 int SCCB_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t data);
 

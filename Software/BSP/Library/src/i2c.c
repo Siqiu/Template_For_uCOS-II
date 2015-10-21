@@ -4,11 +4,11 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.26
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   * @note    此文件为芯片IIC模块的底层功能函数
   ******************************************************************************
   */
-  
+
 #include "common.h"
 #include "i2c.h"
 #include "gpio.h"
@@ -35,7 +35,7 @@ uint8_t I2C_QuickInit(uint32_t MAP, uint32_t baudrate)
 {
     uint8_t i;
     map_t * pq = (map_t*)&(MAP);
-    
+
     /* open drain and pull up */
     for(i = 0; i < pq->pin_cnt; i++)
     {
@@ -47,7 +47,7 @@ uint8_t I2C_QuickInit(uint32_t MAP, uint32_t baudrate)
 
     /* i2c_gpio struct setup */
     i2c.instace = pq->io;
-    
+
     switch(MAP)
     {
         case I2C1_SCL_PE01_SDA_PE00:
@@ -88,7 +88,7 @@ uint8_t I2C_QuickInit(uint32_t MAP, uint32_t baudrate)
 
 void I2C_Init(I2C_InitTypeDef* I2C_InitStruct)
 {
-    
+
 }
 
 static inline uint8_t SDA_IN(void)
@@ -98,7 +98,7 @@ static inline uint8_t SDA_IN(void)
 
 static bool I2C_Start(void)
 {
-    SDA_DDR_OUT();
+    SDA_DDR_OUT();//set gpio output
     SDA_H();
     SCL_H();
     I2C_DELAY();
@@ -146,21 +146,21 @@ static bool I2C_WaitAck(void)
     uint8_t ack;
     SDA_DDR_IN();
     SCL_L();
-    
+
     I2C_DELAY();
     SCL_H();
     I2C_DELAY();
     ack = SDA_IN();
     SCL_L();
     SDA_DDR_OUT();
-    
+
     return ack;
 }
 
 static void I2C_SendByte(uint8_t data)
 {
     volatile uint8_t i;
-    
+
     i = 8;
     while(i--)
     {
@@ -178,7 +178,7 @@ static void I2C_SendByte(uint8_t data)
 static uint8_t I2C_GetByte(void)
 {
     uint8_t i,byte;
-    
+
     i = 8;
     byte = 0;
 
@@ -204,17 +204,17 @@ static uint8_t I2C_GetByte(void)
  *         @arg addrLen    : len of slave register addr(in byte)
  *         @arg buf        : data buf
  *         @arg buf        : read len
- * @note 
+ * @note
  */
 int I2C_BurstWrite(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t addrLen, uint8_t *buf, uint32_t len)
 {
     uint8_t *p;
     uint8_t err;
-    
+
     p = (uint8_t*)&addr;
     err = 0;
     chipAddr <<= 1;
-    
+
     I2C_Start();
     I2C_SendByte(chipAddr);
     err += I2C_WaitAck();
@@ -224,11 +224,11 @@ int I2C_BurstWrite(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t 
         I2C_SendByte(*p++);
         err += I2C_WaitAck();
     }
-    
+
     while(len--)
     {
         I2C_SendByte(*buf++);
-        err += I2C_WaitAck();  
+        err += I2C_WaitAck();
     }
 
     I2C_Stop();
@@ -256,31 +256,31 @@ int I2C_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, u
  *         @arg addrLen    : len of slave register addr(in byte)
  *         @arg buf        : data buf
  *         @arg buf        : read len
- * @note 
+ * @note
  */
 int I2C_BurstRead(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t addrLen, uint8_t *buf, uint32_t len)
 {
     uint8_t *p;
     uint8_t err;
-    
+
     p = (uint8_t*)&addr;
     err = 0;
     chipAddr <<= 1;
-    
+
     I2C_Start();
     I2C_SendByte(chipAddr);
     err += I2C_WaitAck();
-    
+
     while(addrLen--)
     {
         I2C_SendByte(*p++);
         err += I2C_WaitAck();
     }
-    
+
     I2C_Start();
     I2C_SendByte(chipAddr+1);
     err += I2C_WaitAck();
-    
+
     while(len--)
     {
         *buf++ = I2C_GetByte();
@@ -289,10 +289,10 @@ int I2C_BurstRead(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t a
             I2C_Ack();
         }
     }
-    
+
     I2C_NAck();
     I2C_Stop();
-    
+
     return err;
 }
 
@@ -305,10 +305,10 @@ int I2C_BurstRead(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t a
 int I2C_Probe(uint32_t instance, uint8_t chipAddr)
 {
     uint8_t err;
-    
+
     err = 0;
     chipAddr <<= 1;
-    
+
     I2C_Start();
     I2C_SendByte(chipAddr);
     err = I2C_WaitAck();
@@ -334,28 +334,28 @@ int SCCB_ReadSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, u
 {
     uint8_t err;
     uint8_t retry;
-    
+
     retry = 10;
     chipAddr <<= 1;
-    
+
     while(retry--)
     {
         err = 0;
         I2C_Start();
         I2C_SendByte(chipAddr);
         err += I2C_WaitAck();
-        
+
         I2C_SendByte(addr);
         err += I2C_WaitAck();
-        
+
         I2C_Stop();
         I2C_Start();
         I2C_SendByte(chipAddr+1);
         err += I2C_WaitAck();
-        
+
         *data = I2C_GetByte();
        // err += I2C_WaitAck();
-        
+
         I2C_NAck();
         I2C_Stop();
         if(!err)
@@ -372,9 +372,9 @@ int SCCB_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, 
 {
     uint8_t err;
     uint8_t retry;
-    
+
     retry = 10;
-    
+
     while(retry--)
     {
         err = I2C_WriteSingleRegister(instance, chipAddr, addr, data);

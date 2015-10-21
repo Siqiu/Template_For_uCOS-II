@@ -15,6 +15,7 @@
 #include "Module_Protocol.h"
 #include "Module_Init.h"
 #include "Module_ISR.h"
+#include "Module_Updata.h"
 #include "dma.h"
 #include "uart.h"
 #include "IS61WV25616.h"

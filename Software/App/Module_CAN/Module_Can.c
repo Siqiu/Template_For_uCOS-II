@@ -228,7 +228,7 @@ void Pcak_Pile_State(void)
 				{
 					if(pile_info[For_temp].pile_state == 0x01)
 					{
-						*ptr++ = pile_info[For_temp].pile_state;
+						*ptr++ = pile_info[For_temp].address;
 						*ptr++ = 0x00;
 						*ptr++ = 0x0C;
 						*ptr++ = 0x00;
@@ -291,7 +291,7 @@ void Pcak_Pile_State(void)
 				{
 					//static uint8_t String[] = "½áÊø³äµç\r\n";
 
-					uint8_t For_temp = 0;
+					uint16_t For_temp = 0;
 					uint16_t For_temp_1 = 0;
 					uint16_t ID_Num_Len = 0;
 					uint16_t Zero_Fill_Len;
@@ -311,7 +311,7 @@ void Pcak_Pile_State(void)
 					{
 						if(pile_info[For_temp].user_id)
 						{
-							*ptr++ = pile_info[For_temp].pile_state;
+							*ptr++ = pile_info[For_temp].address;
 							*ptr++ = 0x00;
 							*ptr++ = 0x0D;
 							*ptr++ = 0x00;

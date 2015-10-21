@@ -20,6 +20,7 @@
 #include "chlib_k.h"
 #include "Module_BSP.h"
 #include "Module_Protocol.h"
+#include "Module_Queue.h"
 #if DEBUG
 #include "test.h"
 #endif
@@ -56,8 +57,8 @@ extern OS_EVENT *key;															//事件控制块 指针
 extern OS_EVENT * msg_test;													//按键邮箱事件块指针
 extern OS_EVENT * sem_test;													//蜂鸣器信号量指针
 
-
-
+extern Queue_t msgQ;
+extern uint8_t		Only_ID[12];
 /*
 *********************************************************************************************************
 *                                         FUNCTION PROTOTYPES
@@ -87,7 +88,6 @@ void	bsp_init(void);
 
 int main(void)
 {
-	SCB->VTOR=0x10000UL;//为了配合Bootlaoder程序，更改中断向量表起始地址
 	bsp_init();
 
     OSInit();
@@ -191,7 +191,7 @@ void App_Task_Mbox(void *pdata)
 //		Flash_Read_Inside(20, buf1,2);
 /******************************************************************************/
 #if DEBUG
-        dona_test();
+        //dona_test();
 #endif
 
 		UardDmaFlow();
@@ -234,6 +234,12 @@ void App_Task_Post(void *pdata)
 	{
 		Pile_Send(0x01,READ_pile_info);
 
+//        static uint8_t Only_ID_Buf[12] = {5};
+//        for(uint16_t i = 79872; i>0; i-=2048)
+//        {
+//            Flash_Write_Inside(i, Only_ID_Buf,12);
+//        }
+
 		OSTimeDlyHMSM(0, 0, 2, 0);
 	}
 }
@@ -249,7 +255,7 @@ void App_Task_Time(void *pdata)
 {
 	for(;;)
 	{
-        GPIO_ToggleBit(HW_GPIOE, 12);                                            //翻转GPIO,点亮led1来表示发送成功
+        GPIO_ToggleBit(HW_GPIOE, 6);                                            //翻转GPIO,点亮led1来表示发送成功
 
 		RTC_DateTime_Type td = {0};
 

@@ -13,7 +13,7 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
-     
+
 /* libray driver */
 #include "common.h"
 #include "gpio.h"
@@ -32,6 +32,7 @@
 #include "ftm.h"
 #include "lptmr.h"
 #include "flexbus.h"
+#include "flash.h"
 #include "sd.h"
 #include "tsi.h"
 #include "vref.h"

@@ -10,9 +10,9 @@
 #ifndef   __MODULE_CAN_H__
 #define   __MODULE_CAN_H__
 #include "includes.h"
-#include "can.h"
-#include "crc.h"
-#include "uart.h"
+//#include "can.h"
+//#include "crc.h"
+//#include "uart.h"
 #include "chlib_k.h"//printf
 #include "Module_Protocol.h"
 #include "Module_Can.h"

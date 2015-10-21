@@ -16,10 +16,10 @@
 #define   __MODULE_INIT_H__
 #include "includes.h"
 #include "rtc.h"
-#include "flash.h"
+#include "i2c.h"
 
+#define	UART1_RXD_MAX			1536
 
 void Init_Timer_Cnt(void);
-#define	MAXBUF			1536
 
 #endif	/* __MODULE_INIT_H__ */

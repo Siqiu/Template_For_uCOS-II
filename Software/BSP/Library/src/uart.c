@@ -12,8 +12,6 @@
 #include "uart.h"
 #include "gpio.h"
 
-extern uint16_t	debug;
-
 
 #if (!defined(UART_BASES))
 #ifdef  UART2

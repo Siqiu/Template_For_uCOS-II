@@ -87,6 +87,8 @@
 *********************************************************************************************************
 */
 
+#include "at24cxx.h"
+
 
 /*
 *********************************************************************************************************
@@ -123,15 +125,11 @@
 #define	HEX2ASC01(data)				(((data)&0xf ) + 0x30)
 
 #define	DATA_LEN					20											//数据体长度
-#define	DATA_ALL_LEN				44											//数据体长度
+#define	DATA_ALL_LEN				45											//数据体长度
 
-#define	PROG_DATA_ADDR				0x00005000									//参数起始位置
+#define	PROG_DATA_ADDR				0x00004000									//参数起始位置
 #define	PROG_DATA_ADDR_OFFSET		0x00000064									//参数写时候的偏移
 
-#define	PROG_BASE_ADDR				0x00010000
-#define	PROG_BASE_ADDR_1			0x00030000
 
-#define	PROG_BASE_ADDR_2			0x00030000
-#define	PROG_ADDR_END				0x00050000
 #endif
 

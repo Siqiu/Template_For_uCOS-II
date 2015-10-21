@@ -4,7 +4,7 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2013.12.25
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   ******************************************************************************
   */
 
@@ -34,7 +34,7 @@ struct at24cxx
     uint8_t  addr;      /* base addr */
 };
 
-struct at24cxx_device 
+struct at24cxx_device
 {
     uint8_t     addr;
     uint8_t     page_size;
@@ -45,7 +45,7 @@ struct at24cxx_device
 
 static struct at24cxx_device at24cxx_dev;
 
-static const struct at24cxx at24cxx_tab[] = 
+static const struct at24cxx at24cxx_tab[] =
 {
     {"at24c01",    128, 8,  0x50},
     {"at24c02",    256, 8,  0x50},
@@ -57,9 +57,9 @@ static const struct at24cxx at24cxx_tab[] =
 int at24cxx_init(uint32_t instance)
 {
     uint32_t i;
-    
+
     at24cxx_dev.instance = instance;
-    
+
     for(i=0;i<ARRAY_SIZE(at24cxx_tab);i++)
     {
         if(!I2C_Probe(instance, at24cxx_tab[i].addr))
@@ -77,7 +77,7 @@ int at24cxx_init(uint32_t instance)
 int at24cxx_read(uint32_t addr, uint8_t *buf, uint32_t len)
 {
     uint8_t chip_addr;
-    
+
     chip_addr = (addr/256) + at24cxx_dev.addr;
     return I2C_BurstRead(at24cxx_dev.instance, chip_addr, addr%256, 1, buf, len);
 }
@@ -85,7 +85,7 @@ int at24cxx_read(uint32_t addr, uint8_t *buf, uint32_t len)
 static int at24cxx_write_page(uint32_t addr, uint8_t *buf, uint32_t len)
 {
     uint8_t chip_addr;
-    
+
     chip_addr = (addr/256) + at24cxx_dev.addr;
     return I2C_BurstWrite(at24cxx_dev.instance, chip_addr, addr%256, 1, buf, len);
 }
@@ -111,31 +111,31 @@ int at24cxx_write(uint32_t addr, uint8_t *buf, uint32_t len)
     {
         return ret;
     }
-    while(I2C_Probe(at24cxx_dev.instance, at24cxx_dev.addr));
-	addr += pageremain;
-	secpos++;
-	Byteremian = len - pageremain;
-	while(Byteremian != 0)
-	{
-		if(Byteremian <= page_size)
-		{
-			 pageremain = Byteremian;
-		}
-		else
-		{
-			pageremain = page_size;
-		}
-        ret = at24cxx_write_page(secpos*page_size, buf, pageremain);
-        if(ret)
-        {
-            return ret;
-        }
-        while(I2C_Probe(at24cxx_dev.instance, at24cxx_dev.addr));
-        secpos++;
-        buf += pageremain;
-        Byteremian -= pageremain;
-	}
-    return 0;
+//    while(I2C_Probe(at24cxx_dev.instance, at24cxx_dev.addr));
+//	addr += pageremain;
+//	secpos++;
+//	Byteremian = len - pageremain;
+//	while(Byteremian != 0)
+//	{
+//		if(Byteremian <= page_size)
+//		{
+//			 pageremain = Byteremian;
+//		}
+//		else
+//		{
+//			pageremain = page_size;
+//		}
+//        ret = at24cxx_write_page(secpos*page_size, buf, pageremain);
+//        if(ret)
+//        {
+//            return ret;
+//        }
+//        while(I2C_Probe(at24cxx_dev.instance, at24cxx_dev.addr));
+//        secpos++;
+//        buf += pageremain;
+//        Byteremian -= pageremain;
+//	}
+//    return 0;
 }
 
 

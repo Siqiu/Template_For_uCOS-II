@@ -1,4 +1,4 @@
-"C:\work\GitHub\Template_For_uCOS-II\Software\App\main.c"
+"C:\work\GitHub\Template_For_uCOS-II\Software\BSP\Devices\src\ili9320.c"
 -std=c99
 -ferror-limit=100
 -I
@@ -91,8 +91,8 @@ C:\work\GitHub\Template_For_uCOS-II\Software\emWin\Include
 C:\work\GitHub\Template_For_uCOS-II\Software\emWin\Sample\GUIDemo
 -DMK60D10=1
 -DRAVEN=1
--DDEBUG=1
 -DUART_USE_DMA=1
+-DUSE_BOOT_EN=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
 -D__CHAR_MIN__=0
@@ -285,8 +285,8 @@ C:\work\GitHub\Template_For_uCOS-II\Software\emWin\Sample\GUIDemo
 -D__HAS_LOCATED_DECLARATION__=1
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593924
--D__DATE__="Oct 21 2015"
--D__TIME__="19:35:41"
+-D__DATE__="Oct 19 2015"
+-D__TIME__="10:05:49"
 -D__STDC__=1
 -D__STDC_VERSION__=199901L
 -D__STDC_HOSTED__=1

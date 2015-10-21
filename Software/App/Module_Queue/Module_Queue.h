@@ -12,55 +12,42 @@
 
 #include "includes.h"
 
-typedef struct queue
-{
-	int *pBase;
-	int front;    //指向队列第一个元素
-	int rear;    //指向队列最后一个元素的下一个元素
-	int maxsize; //循环队列的最大存储空间
-}QUEUE,*PQUEUE;
-
-void CreateQueue(PQUEUE Q,int maxsize);
-void TraverseQueue(PQUEUE Q);
-bool FullQueue(PQUEUE Q);
-//bool EmptyQueue(PQUEUE Q);
-bool Enqueue(PQUEUE Q, int val);
-bool Dequeue(PQUEUE Q, int *val);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#pragma pack(1)
+#define C_MAX_SIZE          1536
 typedef struct
 {
-    uint8_t  cmd;
+    uint8_t data;
+} uint8;
+
+typedef struct
+{
+    uint16_t data;
+}  uint16;
+
+typedef struct
+{
+    uint32_t data;
+}  uint32;
+
+//#pragma pack(1)
+typedef struct
+{
     uint8_t  type;
-    uint16_t len;
-    //void*    pMessage;
+    union{
+        uint8    type8;
+        uint16   type16;
+        //uint32   type32;
+    };
 } msg_t;
 
-#define C_MAX_SIZE          10
+
 typedef struct
 {
     uint8_t front;
     uint8_t rear;
 	msg_t m_Msg[C_MAX_SIZE];
 } Queue_t;
+
+
 
 /* Exported valable -------------------------------------------------------- */
 

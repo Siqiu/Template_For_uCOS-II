@@ -4,7 +4,7 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.26
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   * @note    此文件为芯片FlexBus模块的底层功能函数
   ******************************************************************************
   */
@@ -27,7 +27,7 @@
 #define kFLEXBUS_PortSize_16Bit    (0x02)  //端口数据宽度：16位
 #define kFLEXBUS_PortSize_32Bit    (0x00)  //端口数据宽度：32位
 
-//!< Flexbus 片选信号选择 
+//!< Flexbus 片选信号选择
 #define kFLEXBUS_CS0               (0x00)  //0号片选信号
 #define kFLEXBUS_CS1               (0x01)  //1号片选信号
 #define kFLEXBUS_CS2               (0x02)  //2号片选信号
@@ -49,10 +49,10 @@
 typedef enum
 {
     kFLEXBUS_CSPMCR_Group1,
-    kFLEXBUS_CSPMCR_Group2,  
+    kFLEXBUS_CSPMCR_Group2,
     kFLEXBUS_CSPMCR_Group3,
     kFLEXBUS_CSPMCR_Group4,
-    kFLEXBUS_CSPMCR_Group5,    
+    kFLEXBUS_CSPMCR_Group5,
 }FLEXBUS_PortMultiplexingSelect_Type;
 
 //!< Flexus 控制信号复用选择
@@ -94,7 +94,7 @@ typedef struct
     uint32_t kFLEXBUS_ASET:2;
     uint32_t kFLEXBUS_RDAH:2;
     uint32_t kFLEXBUS_WRAH:2;
-    uint32_t kFLEXBUS_WS:6;    
+    uint32_t kFLEXBUS_WS:6;
 }FLEXBUS_AdvancedConfigTypeDef;
 
 //!< API functions

@@ -27,13 +27,18 @@
 ; Cortex-M version
 ;
 
+SOFT_VER		EQU		0x20150724
+HARD_VER		EQU		0x91140810
+VER_SUM			EQU		(SOFT_VER+HARD_VER)
+UPDATA_CNT		EQU		0x00000001
+
         MODULE  ?cstartup
 
         ;; Forward declaration of sections.
         SECTION CSTACK:DATA:NOROOT(3)
         SECTION .intvec:CODE:NOROOT(2)
         EXTERN  __iar_program_start
-        EXTERN  SystemInit        
+        EXTERN  SystemInit
         PUBLIC  __vector_table
         PUBLIC  __Vectors
         PUBLIC  __Vectors_End
@@ -42,22 +47,22 @@
         DATA
 
 __vector_table
-        DCD     sfe(CSTACK)
-                DCD     Reset_Handler  ; Reset Handler
-                DCD     NMI_Handler  ; NMI Handler
-                DCD     HardFault_Handler  ; Hard Fault Handler
-                DCD     MemManage_Handler  ; MPU Fault Handler
-                DCD     BusFault_Handler  ; Bus Fault Handler
-                DCD     UsageFault_Handler  ; Usage Fault Handler
-                DCD     0  ; Reserved
-                DCD     0  ; Reserved
-                DCD     0  ; Reserved
-                DCD     0  ; Reserved
-                DCD     SVC_Handler  ; SVCall Handler
-                DCD     DebugMon_Handler  ; Debug Monitor Handler
-                DCD     0  ; Reserved
-                DCD     OS_CPU_PendSVHandler  ; PendSV Handler
-                DCD     SysTick_Handler  ; SysTick Handler
+                DCD     sfe(CSTACK)
+                DCD     Reset_Handler           ; Reset Handler
+                DCD     NMI_Handler             ; NMI Handler
+                DCD     HardFault_Handler       ; Hard Fault Handler
+                DCD     MemManage_Handler       ; MPU Fault Handler
+                DCD     BusFault_Handler        ; Bus Fault Handler
+                DCD     UsageFault_Handler      ; Usage Fault Handler
+                DCD     SOFT_VER                ; Reserved
+                DCD     HARD_VER                ; Reserved
+                DCD     VER_SUM                 ; Reserved
+                DCD     UPDATA_CNT              ; Reserved
+                DCD     SVC_Handler             ; SVCall Handler
+                DCD     DebugMon_Handler        ; Debug Monitor Handler
+                DCD     0                       ; Reserved
+                DCD     OS_CPU_PendSVHandler    ; PendSV Handler
+                DCD     SysTick_Handler         ; SysTick Handler
 
                 ; External Interrupts
                 DCD     DMA0_IRQHandler  ; DMA Channel 0 Transfer Complete
@@ -327,7 +332,7 @@ Reset_Handler
         BX      R0
 
 
-        PUBWEAK NMI_Handler  
+        PUBWEAK NMI_Handler
         SECTION .text:CODE:REORDER:NOROOT(1)
 NMI_Handler
         B NMI_Handler
@@ -518,382 +523,382 @@ SPI2_IRQHandler
         B SPI2_IRQHandler
 
         PUBWEAK CAN0_ORed_Message_buffer_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN0_ORed_Message_buffer_IRQHandler
         B CAN0_ORed_Message_buffer_IRQHandler
 
         PUBWEAK CAN0_Bus_Off_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)  
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN0_Bus_Off_IRQHandler
         B CAN0_Bus_Off_IRQHandler
 
         PUBWEAK CAN0_Error_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)  
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN0_Error_IRQHandler
         B CAN0_Error_IRQHandler
 
         PUBWEAK CAN0_Tx_Warning_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN0_Tx_Warning_IRQHandler
         B CAN0_Tx_Warning_IRQHandler
 
         PUBWEAK CAN0_Rx_Warning_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN0_Rx_Warning_IRQHandler
         B CAN0_Rx_Warning_IRQHandler
 
         PUBWEAK CAN0_Wake_Up_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN0_Wake_Up_IRQHandler
         B CAN0_Wake_Up_IRQHandler
 
         PUBWEAK I2S0_Tx_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)     
+        SECTION .text:CODE:REORDER:NOROOT(1)
 I2S0_Tx_IRQHandler
         B I2S0_Tx_IRQHandler
 
         PUBWEAK I2S0_Rx_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)     
+        SECTION .text:CODE:REORDER:NOROOT(1)
 I2S0_Rx_IRQHandler
         B I2S0_Rx_IRQHandler
 
         PUBWEAK CAN1_ORed_Message_buffer_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)     
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN1_ORed_Message_buffer_IRQHandler
         B CAN1_ORed_Message_buffer_IRQHandler
 
         PUBWEAK CAN1_Bus_Off_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN1_Bus_Off_IRQHandler
         B CAN1_Bus_Off_IRQHandler
 
         PUBWEAK CAN1_Error_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN1_Error_IRQHandler
         B CAN1_Error_IRQHandler
 
         PUBWEAK CAN1_Tx_Warning_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN1_Tx_Warning_IRQHandler
         B CAN1_Tx_Warning_IRQHandler
 
         PUBWEAK CAN1_Rx_Warning_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN1_Rx_Warning_IRQHandler
         B CAN1_Rx_Warning_IRQHandler
 
         PUBWEAK CAN1_Wake_Up_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)        
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CAN1_Wake_Up_IRQHandler
         B CAN1_Wake_Up_IRQHandler
 
         PUBWEAK Reserved59_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)     
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved59_IRQHandler
         B Reserved59_IRQHandler
 
         PUBWEAK UART0_LON_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)     
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART0_LON_IRQHandler
         B UART0_LON_IRQHandler
 
         PUBWEAK UART0_RX_TX_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)     
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART0_RX_TX_IRQHandler
         B UART0_RX_TX_IRQHandler
 
         PUBWEAK UART0_ERR_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)        
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART0_ERR_IRQHandler
         B UART0_ERR_IRQHandler
 
         PUBWEAK UART1_RX_TX_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)       
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART1_RX_TX_IRQHandler
         B UART1_RX_TX_IRQHandler
 
         PUBWEAK UART1_ERR_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART1_ERR_IRQHandler
         B UART1_ERR_IRQHandler
 
         PUBWEAK UART2_RX_TX_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART2_RX_TX_IRQHandler
         B UART2_RX_TX_IRQHandler
 
         PUBWEAK UART2_ERR_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART2_ERR_IRQHandler
         B UART2_ERR_IRQHandler
 
         PUBWEAK UART3_RX_TX_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)    
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART3_RX_TX_IRQHandler
         B UART3_RX_TX_IRQHandler
 
         PUBWEAK UART3_ERR_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)          
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART3_ERR_IRQHandler
         B UART3_ERR_IRQHandler
 
         PUBWEAK UART4_RX_TX_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART4_RX_TX_IRQHandler
         B UART4_RX_TX_IRQHandler
 
         PUBWEAK UART4_ERR_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)       
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART4_ERR_IRQHandler
         B UART4_ERR_IRQHandler
 
         PUBWEAK UART5_RX_TX_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART5_RX_TX_IRQHandler
         B UART5_RX_TX_IRQHandler
 
         PUBWEAK UART5_ERR_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 UART5_ERR_IRQHandler
         B UART5_ERR_IRQHandler
 
         PUBWEAK ADC0_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)        
+        SECTION .text:CODE:REORDER:NOROOT(1)
 ADC0_IRQHandler
         B ADC0_IRQHandler
 
         PUBWEAK ADC1_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)          
+        SECTION .text:CODE:REORDER:NOROOT(1)
 ADC1_IRQHandler
         B ADC1_IRQHandler
 
         PUBWEAK CMP0_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CMP0_IRQHandler
         B CMP0_IRQHandler
 
         PUBWEAK CMP1_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)             
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CMP1_IRQHandler
         B CMP1_IRQHandler
 
         PUBWEAK CMP2_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CMP2_IRQHandler
         B CMP2_IRQHandler
 
         PUBWEAK FTM0_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)          
+        SECTION .text:CODE:REORDER:NOROOT(1)
 FTM0_IRQHandler
         B FTM0_IRQHandler
 
         PUBWEAK FTM1_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)               
+        SECTION .text:CODE:REORDER:NOROOT(1)
 FTM1_IRQHandler
         B FTM1_IRQHandler
 
         PUBWEAK FTM2_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 FTM2_IRQHandler
         B FTM2_IRQHandler
 
         PUBWEAK CMT_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 CMT_IRQHandler
         B CMT_IRQHandler
 
         PUBWEAK RTC_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 RTC_IRQHandler
         B RTC_IRQHandler
 
         PUBWEAK RTC_Seconds_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)  
+        SECTION .text:CODE:REORDER:NOROOT(1)
 RTC_Seconds_IRQHandler
         B RTC_Seconds_IRQHandler
 
         PUBWEAK PIT0_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PIT0_IRQHandler
         B PIT0_IRQHandler
 
         PUBWEAK PIT1_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PIT1_IRQHandler
         B PIT1_IRQHandler
 
         PUBWEAK PIT2_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PIT2_IRQHandler
         B PIT2_IRQHandler
 
         PUBWEAK PIT3_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PIT3_IRQHandler
         B PIT3_IRQHandler
 
         PUBWEAK PDB0_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)  
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PDB0_IRQHandler
         B PDB0_IRQHandler
 
         PUBWEAK USB0_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 USB0_IRQHandler
         B USB0_IRQHandler
 
         PUBWEAK USBDCD_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)       
+        SECTION .text:CODE:REORDER:NOROOT(1)
 USBDCD_IRQHandler
         B USBDCD_IRQHandler
 
         PUBWEAK ENET_1588_Timer_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 ENET_1588_Timer_IRQHandler
         B ENET_1588_Timer_IRQHandler
 
         PUBWEAK ENET_Transmit_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)             
+        SECTION .text:CODE:REORDER:NOROOT(1)
 ENET_Transmit_IRQHandler
         B ENET_Transmit_IRQHandler
 
         PUBWEAK ENET_Receive_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 ENET_Receive_IRQHandler
         B ENET_Receive_IRQHandler
 
         PUBWEAK ENET_Error_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)        
+        SECTION .text:CODE:REORDER:NOROOT(1)
 ENET_Error_IRQHandler
         B ENET_Error_IRQHandler
 
         PUBWEAK Reserved95_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved95_IRQHandler
         B Reserved95_IRQHandler
 
         PUBWEAK SDHC_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 SDHC_IRQHandler
         B SDHC_IRQHandler
 
         PUBWEAK DAC0_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 DAC0_IRQHandler
         B DAC0_IRQHandler
 
         PUBWEAK DAC1_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)          
+        SECTION .text:CODE:REORDER:NOROOT(1)
 DAC1_IRQHandler
         B DAC1_IRQHandler
 
         PUBWEAK TSI0_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 TSI0_IRQHandler
         B TSI0_IRQHandler
 
         PUBWEAK MCG_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 MCG_IRQHandler
         B MCG_IRQHandler
 
         PUBWEAK LPTimer_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)       
+        SECTION .text:CODE:REORDER:NOROOT(1)
 LPTimer_IRQHandler
         B LPTimer_IRQHandler
 
         PUBWEAK Reserved102_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)          
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved102_IRQHandler
         B Reserved102_IRQHandler
 
         PUBWEAK PORTA_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)            
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PORTA_IRQHandler
         B PORTA_IRQHandler
 
         PUBWEAK PORTB_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)        
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PORTB_IRQHandler
         B PORTB_IRQHandler
 
         PUBWEAK PORTC_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PORTC_IRQHandler
         B PORTC_IRQHandler
 
         PUBWEAK PORTD_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PORTD_IRQHandler
         B PORTD_IRQHandler
 
         PUBWEAK PORTE_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)          
+        SECTION .text:CODE:REORDER:NOROOT(1)
 PORTE_IRQHandler
         B PORTE_IRQHandler
 
         PUBWEAK Reserved108_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)     
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved108_IRQHandler
         B Reserved108_IRQHandler
 
         PUBWEAK Reserved109_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved109_IRQHandler
         B Reserved109_IRQHandler
 
         PUBWEAK SWI_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)        
+        SECTION .text:CODE:REORDER:NOROOT(1)
 SWI_IRQHandler
         B SWI_IRQHandler
 
         PUBWEAK Reserved111_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)           
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved111_IRQHandler
         B Reserved111_IRQHandler
 
         PUBWEAK Reserved112_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved112_IRQHandler
         B Reserved112_IRQHandler
 
         PUBWEAK Reserved113_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)  
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved113_IRQHandler
         B Reserved113_IRQHandler
 
         PUBWEAK Reserved114_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)       
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved114_IRQHandler
         B Reserved114_IRQHandler
 
         PUBWEAK Reserved115_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)       
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved115_IRQHandler
         B Reserved115_IRQHandler
 
         PUBWEAK Reserved116_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)      
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved116_IRQHandler
         B Reserved116_IRQHandler
 
         PUBWEAK Reserved117_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)          
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved117_IRQHandler
         B Reserved117_IRQHandler
 
         PUBWEAK Reserved118_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)         
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved118_IRQHandler
         B Reserved118_IRQHandler
 
         PUBWEAK Reserved119_IRQHandler
-        SECTION .text:CODE:REORDER:NOROOT(1)   
+        SECTION .text:CODE:REORDER:NOROOT(1)
 Reserved119_IRQHandler
         B Reserved119_IRQHandler
 
         PUBWEAK DefaultISR
-        SECTION .text:CODE:REORDER:NOROOT(1)       
+        SECTION .text:CODE:REORDER:NOROOT(1)
 DefaultISR
         B DefaultISR
 

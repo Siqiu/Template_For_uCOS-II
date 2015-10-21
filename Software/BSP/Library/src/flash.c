@@ -32,7 +32,7 @@
 
 #if defined(FTFL)
 #define FTF    FTFL
-#define SECTOR_SIZE     (2048)
+#define SECTOR_SIZE     1024//(2048)
 #define PROGRAM_CMD      PGM4
 #elif defined(FTFE)
 #define FTF    FTFE

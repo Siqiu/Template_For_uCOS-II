@@ -20,7 +20,7 @@ bool		Pile_State_Wait_Flag;
 bool		Pile_State_Open_Flag;
 bool		Pile_State_Close_Flag;
 uint16_t	Pile_State_Flag;
-uint8_t		Only_ID[12] = {0};//唯一ID
+uint8_t		Only_ID[12] = {0};//{'T','S','H','P','D','S','M','I','C','0','0','1'};//唯一ID
 uint8_t		Can1_Buf[8] = {0};
 uint8_t		Can1_Buf_Flag[2] = {0xFF,0xFF};
 uint8_t		Pcak_Pile_State_All_Flag;
@@ -40,7 +40,7 @@ OS_EVENT * sem_test;                                                            
 
 uint16_t	debug;
 /* 接收缓冲区 */
-uint8_t UART_Buffer[MAXBUF];
+uint8_t UART_Buffer[UART1_RXD_MAX];
 /*******************************************************************************
   * @函数名称		Init_Timer_Cnt
   * @函数说明		给全局计数器清零
@@ -63,7 +63,10 @@ void Init_Timer_Cnt(void)
 
 	Stitic_Time_Cnt = 0;
 
-	Flash_Read_Inside(PROG_DATA_ADDR,Only_ID,12);
+	//Flash_Read_Inside(PROG_DATA_ADDR,Only_ID,12);
+    //static uint8_t buf[20] = {'0','1','2','3','4','5','6','7','8','9','10','11'};
+    //at24cxx_write(0, buf, 12);
+    at24cxx_read(0, Only_ID, 12);                                               /* read only ID */
 
 	/* RTC 判断时间是否合法 */
 	if(RTC_IsTimeValid())

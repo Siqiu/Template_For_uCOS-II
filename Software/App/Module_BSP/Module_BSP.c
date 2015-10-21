@@ -14,19 +14,21 @@
 */
 #include "Module_BSP.h"
 
-extern uint8_t UART_Buffer[MAXBUF];
+extern uint8_t UART_Buffer[UART1_RXD_MAX];
 
 
 
 void bsp_init(void)
 {
+    InitUpdataParam();                                                          /* 第一个初始化的函数 */
+
     DelayInit();																/* 延迟初始化 */
 
     SYSTICK_Init(1000*1000/OS_TICKS_PER_SEC);									/* 滴答时钟 */
 
     SYSTICK_ITConfig(true);														/* 开启SysTick中断 */
 
-    GPIO_QuickInit(HW_GPIOE, 12, kGPIO_Mode_OPP);								/* 配置GPIO */
+    GPIO_QuickInit(HW_GPIOE, 6, kGPIO_Mode_OPP);								/* 配置GPIO */
 	/***************************************************************************/
 
     WDOG_InitTypeDef WDOG_InitStruct1;											/* 初始化看门狗 */
@@ -96,9 +98,13 @@ void bsp_init(void)
 	PIT_ITDMAConfig(HW_PIT_CH0, kPIT_IT_TOF, true);								/* 开启PIT0定时器中断 */
 	/***************************************************************************/
 
-    SRAM_Init();                                                                /* SRAM初始化 */
+    //SRAM_Init();                                                                /* SRAM初始化 */
 
     /***************************************************************************/
+
+    I2C_QuickInit(I2C0_SCL_PB02_SDA_PB03, 100*1000);
+
+    if( at24cxx_init(1) ) while(1);
 
 	Init_Timer_Cnt();															/* 要放置到bsp_init的最后 */
 #if	DEBUG

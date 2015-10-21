@@ -3,7 +3,7 @@
 <Workspace>
   <ConfigDictionary>
     
-  <CurrentConfigs><Project>MK60DN512VLQ10_IAR_SK/Release</Project></CurrentConfigs></ConfigDictionary>
+  <CurrentConfigs><Project>MK60DN512VLQ10_IAR_SK/Release_Next</Project></CurrentConfigs></ConfigDictionary>
   <Desktop>
     <Static>
       <Workspace>
@@ -12,7 +12,7 @@
           
           
           
-        <Column0>334</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+        <Column0>273</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -25,7 +25,7 @@
     <Windows>
       
       
-    <Wnd0>
+    <Wnd2>
         <Tabs>
           <Tab>
             <Identity>TabID-8325-5661</Identity>
@@ -35,20 +35,20 @@
           </Tab>
         <Tab><Identity>TabID-18983-28278</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-10454-11635</Identity><TabName>Ambiguous Definitions</TabName><Factory>Select-Ambiguous-Definitions</Factory><Session/></Tab><Tab><Identity>TabID-32339-25842</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd0><Wnd1><Tabs><Tab><Identity>TabID-10235-21181</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>MK60DN512VLQ10_IAR_SK</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/App</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd1></Windows>
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3><Tabs><Tab><Identity>TabID-10235-21181</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>MK60DN512VLQ10_IAR_SK</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/App</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP/Devices</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP/Devices/inc</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/BSP/Devices/src</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/CPU</ExpandedNode><ExpandedNode>MK60DN512VLQ10_IAR_SK/Output</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd3></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>74</YPos2><SelStart2>3779</SelStart2><SelEnd2>3779</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\Module_Queue\Module_Queue.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>109</YPos2><SelStart2>2093</SelStart2><SelEnd2>2093</SelEnd2></Tab><ActiveTab>1</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\Module_Queue\Module_Queue.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>44</YPos2><SelStart2>914</SelStart2><SelEnd2>914</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\test.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>24</YPos2><SelStart2>697</SelStart2><SelEnd2>697</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\uCOS-II\port\os_cpu.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>140</YPos2><SelStart2>7857</SelStart2><SelEnd2>7857</SelEnd2></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\main.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>75</YPos2><SelStart2>3854</SelStart2><SelEnd2>3854</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\App\Module_Protocol\Module_Protocol.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>158</YPos2><SelStart2>4595</SelStart2><SelEnd2>4595</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\uCOS-II\core\os_core.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>1745</YPos2><SelStart2>75993</SelStart2><SelEnd2>75993</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\BSP\Library\src\crc.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>219</YPos2><SelStart2>6763</SelStart2><SelEnd2>6763</SelEnd2></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\Software\uCOS-II\port\os_cpu_c.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd><XPos2>0</XPos2><YPos2>187</YPos2><SelStart2>7699</SelStart2><SelEnd2>7699</SelEnd2></Tab><ActiveTab>4</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-0075F868><key>iaridepm.enu1</key></Toolbar-0075F868></Sizes></Row0></Top><Left><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>595</Bottom><Right>408</Right><x>-2</x><y>-2</y><xscreen>1083</xscreen><yscreen>716</yscreen><sizeHorzCX>747928</sizeHorzCX><sizeHorzCY>865780</sizeHorzCY><sizeVertCX>283149</sizeVertCX><sizeVertCY>721886</sizeVertCY></Rect></Wnd1></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>187</Bottom><Right>1450</Right><x>-2</x><y>-2</y><xscreen>1452</xscreen><yscreen>189</yscreen><sizeHorzCX>1002762</sizeHorzCX><sizeHorzCY>228537</sizeHorzCY><sizeVertCX>680249</sizeVertCX><sizeVertCY>876663</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-02706FA8><key>iaridepm.enu1</key></Toolbar-02706FA8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>595</Bottom><Right>347</Right><x>-2</x><y>-2</y><xscreen>1095</xscreen><yscreen>716</yscreen><sizeHorzCX>756215</sizeHorzCX><sizeHorzCY>865780</sizeHorzCY><sizeVertCX>241022</sizeVertCX><sizeVertCY>721886</sizeVertCY></Rect></Wnd3></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>187</Bottom><Right>1450</Right><x>-2</x><y>-2</y><xscreen>1452</xscreen><yscreen>189</yscreen><sizeHorzCX>1002762</sizeHorzCX><sizeHorzCY>228537</sizeHorzCY><sizeVertCX>687845</sizeVertCX><sizeVertCY>876663</sizeVertCY></Rect></Wnd2></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

@@ -25,7 +25,7 @@ extern bool	Rev_Flag;
 extern bool	Can1_Rev_Flag;
 extern bool	Uart1_Rev_Flag;
 extern uint8_t	Can1_Buf[8];
-extern uint8_t UART_Buffer[MAXBUF];
+extern uint8_t UART_Buffer[UART1_RXD_MAX];
 
 
 extern OS_EVENT *key;																	//事件控制块 指针
@@ -175,7 +175,8 @@ void    CheckPack_True_win(void)
 				{
 					Only_ID_Buf[For_temp] = *ptr++;
 				}
-				Flash_Write_Inside(PROG_DATA_ADDR, Only_ID_Buf,12);
+				//Flash_Write_Inside(PROG_DATA_ADDR, Only_ID_Buf,12);
+                at24cxx_write(0, Only_ID_Buf, 12);
 #if	DEBUG
 				static uint8_t buf[12] = {0};
 				Flash_Read_Inside(PROG_DATA_ADDR,buf,12);

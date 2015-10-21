@@ -170,6 +170,90 @@
       </data>
     </settings>
   </configuration>
+  <configuration>
+    <name>Release_Next</name>
+    <toolchain>
+      <name>ARM</name>
+    </toolchain>
+    <debug>0</debug>
+    <settings>
+      <name>RuntimeChecking</name>
+      <archiveVersion>0</archiveVersion>
+      <data>
+        <version>2</version>
+        <wantNonLocal>1</wantNonLocal>
+        <debug>0</debug>
+        <option>
+          <name>GenRtcDebugHeap</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcEnableBoundsChecking</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcCheckPtrsNonInstrMem</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GenRtcTrackPointerBounds</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GenRtcCheckAccesses</name>
+          <state>1</state>
+        </option>
+        <option>
+          <name>GenRtcGenerateEntries</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcNrTrackedPointers</name>
+          <state>1000</state>
+        </option>
+        <option>
+          <name>GenRtcIntOverflow</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcIncUnsigned</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcIntConversion</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcInclExplicit</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcIntShiftOverflow</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcInclUnsignedShiftOverflow</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcUnhandledCase</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcDivByZero</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcEnable</name>
+          <state>0</state>
+        </option>
+        <option>
+          <name>GenRtcCheckPtrsNonInstrFunc</name>
+          <state>1</state>
+        </option>
+      </data>
+    </settings>
+  </configuration>
   <group>
     <name>App</name>
     <file>
@@ -194,6 +278,9 @@
       <name>$PROJ_DIR$\Software\App\Module_Queue\Module_Queue.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\Software\App\Module_IAP\Module_Updata.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Software\App\test.c</name>
     </file>
   </group>
@@ -204,26 +291,8 @@
       <group>
         <name>inc</name>
         <file>
-          <name>$PROJ_DIR$\Software\BSP\Devices\inc\ads7843.h</name>
+          <name>$PROJ_DIR$\Software\BSP\Devices\inc\at24cxx.h</name>
         </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Devices\inc\ili9320.h</name>
-        </file>
-      </group>
-      <group>
-        <name>src</name>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Devices\src\ads7843.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Devices\src\ili9320.c</name>
-        </file>
-      </group>
-    </group>
-    <group>
-      <name>Drivers</name>
-      <group>
-        <name>inc</name>
         <file>
           <name>$PROJ_DIR$\Software\BSP\Devices\inc\IS61WV25616.h</name>
         </file>
@@ -231,8 +300,20 @@
       <group>
         <name>src</name>
         <file>
+          <name>$PROJ_DIR$\Software\BSP\Devices\src\at24cxx.c</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\Software\BSP\Devices\src\IS61WV25616.c</name>
         </file>
+      </group>
+    </group>
+    <group>
+      <name>Drivers</name>
+      <group>
+        <name>inc</name>
+      </group>
+      <group>
+        <name>src</name>
       </group>
     </group>
     <group>
