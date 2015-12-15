@@ -21,9 +21,11 @@
 #include "Module_BSP.h"
 #include "Module_Protocol.h"
 #include "Module_Queue.h"
+#include "Module_Init.h"
 #if DEBUG
 #include "test.h"
 #endif
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -37,40 +39,39 @@
 *********************************************************************************************************
 */
 
-#define TASK_STK_SIZE              (128)                                        //所有任务统一使用128字节堆栈地址
+#define TASK_STK_SIZE               (128)                                       //所有任务统一使用128字节堆栈地址
 //定义任务优先级
-#define APP_START_TASK_PRIO        (4)                                          //开始任务
-#define APP_MBOX_TASK_PRIO         (8)                                          //邮箱接收显示任务
-#define APP_SEM_TASK_PRIO          (9)                                          //信号量接收显示任务
-#define APP_POST_TASK_PRIO         (10)                                         //邮箱 信号量投递任务
-#define APP_TIME_TASK_PRIO         (11)                                         //计时任务
-//声明任务堆栈
-OS_STK  APP_START_STK[TASK_STK_SIZE];
-OS_STK  APP_LED_STK[TASK_STK_SIZE];
-OS_STK  APP_MBOX_STK[TASK_STK_SIZE];
-OS_STK  APP_SEM_STK[TASK_STK_SIZE];
-OS_STK  APP_POST_STK[TASK_STK_SIZE];
-OS_STK  APP_TIME_STK[TASK_STK_SIZE];
-uint8_t	err;																	//错误信息
+#define PRIO_START                  (4)                                         //开始任务
+#define PRIO_MBOX                   (8)                                         //邮箱接收显示任务
+#define PRIO_SEM                    (9)                                         //信号量接收显示任务
+#define PRIO_POST                   (10)                                        //邮箱 信号量投递任务
+#define PRIO_TIME                   (11)                                        //计时任务
 
-extern OS_EVENT *key;															//事件控制块 指针
-extern OS_EVENT * msg_test;													//按键邮箱事件块指针
-extern OS_EVENT * sem_test;													//蜂鸣器信号量指针
+#define PRIO_Family_Energy_Storage  (12)                                        //家庭储能2.5°电
+
+
+//声明任务堆栈
+OS_STK  STK_START[TASK_STK_SIZE];
+
+OS_STK  STK_LED[TASK_STK_SIZE];
+OS_STK  STK_MBOX[TASK_STK_SIZE];
+OS_STK  STK_SEM[TASK_STK_SIZE];
+OS_STK  STK_POST[TASK_STK_SIZE];
+OS_STK  STK_TIME[TASK_STK_SIZE];
+OS_STK  STK_Family_Energy_Storage[TASK_STK_SIZE];
+
+
 
 extern Queue_t msgQ;
 extern uint8_t		Only_ID[12];
+extern uint16_t	debug;
 /*
 *********************************************************************************************************
 *                                         FUNCTION PROTOTYPES
 *********************************************************************************************************
 */
 
-static void App_Task_Start(void *pdata);
-void	App_Task_Post(void *pdata);
-void	App_Task_Mbox(void *pdata);
-void	App_Task_Sem(void *pdata);
-void	App_Task_Time(void *pdata);
-void	bsp_init(void);
+static void Task_Start(void *pdata);
 
 
 /*
@@ -89,18 +90,182 @@ void	bsp_init(void);
 int main(void)
 {
 	bsp_init();
-
+#if 0
+    while(1)
+    {
+    }
+#endif
     OSInit();
-	OSTaskCreate(App_Task_Start,(void *)0,
-							&APP_START_STK[TASK_STK_SIZE-1],
-							APP_START_TASK_PRIO);
+	
+	OSTaskCreate(Task_Start,(void *)0,
+							&STK_START[TASK_STK_SIZE-1],
+							PRIO_START);
 
     SYSTICK_Cmd(true);
-
+    
     OSStart();
-
+    
     while(1);
 }
+
+
+/*
+*********************************************************************************************************
+*                                      CREATE BSP_INIT TASKS
+*
+* Description:  This function creates the application tasks.
+*
+* Arguments  :  none
+*
+* Returns    :  none
+*********************************************************************************************************
+*/
+
+
+/*******************************************************************************
+  * @函数名称		Task_MBOX
+  * @函数说明		邮箱接收函数任务
+  * @输入参数		无
+  * @输出参数		无
+  * @返回参数		无
+*******************************************************************************/
+#define SECTOR_NUM  (FLASH_SECTOR_NUM-1)         //尽量用最后面的扇区，确保安全
+void Task_Mbox(void *pdata)
+{
+//#if OS_CRITICAL_METHOD == 3
+//	OS_CPU_SR cpu_sr;
+//#endif
+//    OS_ENTER_CRITICAL();
+//    OS_EXIT_CRITICAL();
+    pdata = pdata;
+	for(;;)
+	{
+		WDOG_Refresh();
+#if 1//DEBUG
+        if(debug){
+            debug--;
+            dona_test();
+        }
+#endif
+		UardDmaFlow();
+
+
+
+		OSTimeDlyHMSM(0, 0, 0, 10);
+	}
+}
+/*
+*********************************************************************************************************
+*                                      CREATE APPLICATION TASKS
+*
+* Description:  This function creates the application tasks.
+*
+* Arguments  :  none
+*
+* Returns    :  none
+*********************************************************************************************************
+*/
+/*******************************************************************************
+  * @函数名称		Task_SEM
+  * @函数说明		信号量测试，显示函数
+  * @输入参数		无
+  * @输出参数		无
+  * @返回参数		无
+*******************************************************************************/
+void Task_Sem(void *pdata)
+{
+    pdata=pdata;
+	for(;;)
+	{
+		OSTimeDlyHMSM(0, 0, 20, 500);
+	}
+}
+
+/*******************************************************************************
+  * @函数名称		Task_Post
+  * @函数说明		邮箱投递，信号量投递任务
+  * @输入参数		无
+  * @输出参数		无
+  * @返回参数		无
+*******************************************************************************/
+void Task_Post(void *pdata)
+{
+    pdata = pdata;
+    
+    OSStatInit();                   											//统计任务初始化
+	
+    for(;;)
+	{
+		Pile_Send(0x01,READ_pile_info);
+		OSTimeDlyHMSM(0, 0, 0, 300);
+		Pile_Send(0x02,READ_pile_info);
+		OSTimeDlyHMSM(0, 0, 0, 300);
+		Pile_Send(0x03,READ_pile_info);
+		OSTimeDlyHMSM(0, 0, 0, 300);
+		Pile_Send(0x04,READ_pile_info);
+        OSTimeDlyHMSM(0, 0, 0, 300);
+        /* 铁城充电机 */
+        Pile_Send_Tcchager(MESAGE_1,480,1500,true);
+		
+        OSTimeDlyHMSM(0, 0, 2, 0);
+	}
+}
+
+/*******************************************************************************
+  * @函数名称		Task_Time
+  * @函数说明		邮箱投递，信号量投递任务
+  * @输入参数		无
+  * @输出参数		无
+  * @返回参数		无
+*******************************************************************************/
+void Task_Time(void *pdata)
+{
+    pdata = pdata;
+//    OSENET_Init();
+
+//    OSLwIP_Init();
+
+    //udp_server();
+	for(;;)
+	{
+        //udp_serv();//可是使用
+        //udp_client(10);
+//        tcp_serv();
+        //tcp_client();//可用
+
+        GPIO_ToggleBit(HW_GPIOE, 6);                                            //翻转GPIO,点亮led1来表示发送成功
+#if 0
+		RTC_DateTime_Type td = {0};
+
+		RTC_GetDateTime(&td);
+
+		printf("%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
+#endif
+		OSTimeDlyHMSM(0, 0, 0, 500);
+	}
+}
+
+/*******************************************************************************
+  * @函数名称		Task_Family_Energy_Storage
+  * @函数说明		家庭储能2.5°电项目
+  * @输入参数		无
+  * @输出参数		无
+  * @返回参数		无
+*******************************************************************************/
+void Task_Family_Energy_Storage(void *pdata)
+{
+    pdata = pdata;
+    
+	for(;;)
+	{
+        RTC_DateTime_Type td = {0};
+        RTC_GetDateTime(&td);
+        printf("first:%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
+		OSTimeDlyHMSM(0, 0, 1, 0);
+	}
+}
+
+
 
 /*
 *********************************************************************************************************
@@ -124,159 +289,42 @@ int main(void)
   * @输出参数		无
   * @返回参数		无
 *******************************************************************************/
-static void App_Task_Start(void *pdata)
+static void Task_Start(void *pdata)
 {
 	pdata = pdata;
-	msg_test=OSMboxCreate((void*)0);                                            //创建消息邮箱
-	sem_test=OSSemCreate(0);                                                    //创建信号量
+    
+    uint8_t	err;                                                                //错误信息
+    
     //建立邮箱接收显示任务
-    OSTaskCreate(App_Task_Mbox,(void *)0,
-                &APP_MBOX_STK[TASK_STK_SIZE-1],
-                APP_MBOX_TASK_PRIO);
-	OSTaskNameSet(APP_MBOX_TASK_PRIO, (uint8_t*)"UardDmaFlow",&err);
+    OSTaskCreate(Task_Mbox,(void *)0,
+                &STK_MBOX[TASK_STK_SIZE-1],
+                PRIO_MBOX);
+	OSTaskNameSet(PRIO_MBOX, (uint8_t*)"UardDmaFlow",&err);
 
 	//建立信号量接收显示任务
-	OSTaskCreate(App_Task_Sem,(void *)0,
-				 &APP_SEM_STK[TASK_STK_SIZE-1],
-				 APP_SEM_TASK_PRIO);
-	OSTaskNameSet(APP_SEM_TASK_PRIO, (uint8_t*)"Delay",&err);
+	OSTaskCreate(Task_Sem,(void *)0,
+				 &STK_SEM[TASK_STK_SIZE-1],
+				 PRIO_SEM);
+	OSTaskNameSet(PRIO_SEM, (uint8_t*)"Delay",&err);
 
 	//建立邮箱，信号量投递任务
-	OSTaskCreate(App_Task_Post,(void *)0,
-				 &APP_POST_STK[TASK_STK_SIZE-1],
-				 APP_POST_TASK_PRIO);
-	OSTaskNameSet(APP_POST_TASK_PRIO, (uint8_t*)"Can_Post",&err);
+	OSTaskCreate(Task_Post,(void *)0,
+				 &STK_POST[TASK_STK_SIZE-1],
+				 PRIO_POST);
+	OSTaskNameSet(PRIO_POST, (uint8_t*)"Can_Post",&err);
 
 	//建立时间
-	OSTaskCreate(App_Task_Time,(void *)0,
-				 &APP_TIME_STK[TASK_STK_SIZE-1],
-				 APP_TIME_TASK_PRIO);
-	OSTaskNameSet(APP_TIME_TASK_PRIO, (uint8_t*)"Time_to_one",&err);
+	OSTaskCreate(Task_Time,(void *)0,
+				 &STK_TIME[TASK_STK_SIZE-1],
+				 PRIO_TIME);
+	OSTaskNameSet(PRIO_TIME, (uint8_t*)"Time_to_one",&err);
+    
+    //家庭储能
+	OSTaskCreate(Task_Family_Energy_Storage,(void *)0,
+				 &STK_Family_Energy_Storage[TASK_STK_SIZE-1],
+				 PRIO_Family_Energy_Storage);
+	OSTaskNameSet(PRIO_TIME, (uint8_t*)"2.5kwh",&err);
+
 	//挂起起始任务.
-	OSTaskSuspend(APP_START_TASK_PRIO);
+	OSTaskSuspend(PRIO_START);
 }
-
-/*
-*********************************************************************************************************
-*                                      CREATE APPLICATION TASKS
-*
-* Description:  This function creates the application tasks.
-*
-* Arguments  :  none
-*
-* Returns    :  none
-*********************************************************************************************************
-*/
-/*******************************************************************************
-  * @函数名称		App_Task_MBOX
-  * @函数说明		邮箱接收函数任务
-  * @输入参数		无
-  * @输出参数		无
-  * @返回参数		无
-*******************************************************************************/
-#define SECTOR_NUM  (FLASH_SECTOR_NUM-1)         //尽量用最后面的扇区，确保安全
-void App_Task_Mbox(void *pdata)
-{
-#if OS_CRITICAL_METHOD == 3
-	OS_CPU_SR cpu_sr;
-#endif
-    pdata = pdata;
-	for(;;)
-	{
-		WDOG_Refresh();
-/***************************内部flash******************************************/
-//		static uint8_t buf[5] = {0,1,2,3,4};
-//		static uint8_t buf1[5] = {0};
-//		Flash_Write_Inside(20, buf, 2);
-//		Flash_Read_Inside(20, buf1,2);
-/******************************************************************************/
-#if DEBUG
-        //dona_test();
-#endif
-
-		UardDmaFlow();
-
-		OS_ENTER_CRITICAL();
-
-		OS_EXIT_CRITICAL();
-
-		OSTimeDlyHMSM(0, 0, 0, 10);
-	}
-}
-
-/*******************************************************************************
-  * @函数名称		App_Task_SEM
-  * @函数说明		信号量测试，显示函数
-  * @输入参数		无
-  * @输出参数		无
-  * @返回参数		无
-*******************************************************************************/
-void App_Task_Sem(void *pdata)
-{
-    pdata=pdata;
-	for(;;)
-	{
-		OSTimeDlyHMSM(0, 0, 20, 500);
-	}
-}
-
-/*******************************************************************************
-  * @函数名称		App_Task_Post
-  * @函数说明		邮箱投递，信号量投递任务
-  * @输入参数		无
-  * @输出参数		无
-  * @返回参数		无
-*******************************************************************************/
-void App_Task_Post(void *pdata)
-{
-    OSStatInit();                   											//统计任务初始化
-	for(;;)
-	{
-		Pile_Send(0x01,READ_pile_info);
-
-//        static uint8_t Only_ID_Buf[12] = {5};
-//        for(uint16_t i = 79872; i>0; i-=2048)
-//        {
-//            Flash_Write_Inside(i, Only_ID_Buf,12);
-//        }
-
-		OSTimeDlyHMSM(0, 0, 2, 0);
-	}
-}
-
-/*******************************************************************************
-  * @函数名称		App_Task_Post
-  * @函数说明		邮箱投递，信号量投递任务
-  * @输入参数		无
-  * @输出参数		无
-  * @返回参数		无
-*******************************************************************************/
-void App_Task_Time(void *pdata)
-{
-	for(;;)
-	{
-        GPIO_ToggleBit(HW_GPIOE, 6);                                            //翻转GPIO,点亮led1来表示发送成功
-
-		RTC_DateTime_Type td = {0};
-
-		RTC_GetDateTime(&td);
-#if 0
-		printf("%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
-#endif
-		OSTimeDlyHMSM(0, 0, 0, 500);
-	}
-}
-
-
-/*
-*********************************************************************************************************
-*                                      CREATE BSP_INIT TASKS
-*
-* Description:  This function creates the application tasks.
-*
-* Arguments  :  none
-*
-* Returns    :  none
-*********************************************************************************************************
-*/
-

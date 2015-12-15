@@ -17,15 +17,15 @@
         <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>Debug\Exe</state>
+          <state>output\Debug\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Debug\Obj</state>
+          <state>output\Debug\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Debug\List</state>
+          <state>output\Debug\List</state>
         </option>
         <option>
           <name>Variant</name>
@@ -176,6 +176,7 @@
           <state>RAVEN</state>
           <state>DEBUG</state>
           <state>UART_USE_DMA</state>
+          <state>USE_RTOS</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -183,11 +184,11 @@
         </option>
         <option>
           <name>CCPreprocComments</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCPreprocLine</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCListCFile</name>
@@ -211,11 +212,11 @@
         </option>
         <option>
           <name>CCEnableRemarks</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state>Pa050,Pa082</state>
+          <state>Pe167,Pa050,Pa082,Pe193,Pe181,Pa091,Pe068</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -322,13 +323,26 @@
           <state>$PROJ_DIR$\Software\App\Module_ISR</state>
           <state>$PROJ_DIR$\Software\App\Module_Queue</state>
           <state>$PROJ_DIR$\Software\App\Module_IAP</state>
-          <state>$PROJ_DIR$\Software\emWin\Sample\Config</state>
+          <state>$PROJ_DIR$\Software\App\Module_Modbus</state>
+          <state>$PROJ_DIR$\Software\App\Module_USB</state>
+          <state>$PROJ_DIR$\Software\App\Module_malloc</state>
           <state>$PROJ_DIR$\Software\emWin\Include</state>
+          <state>$PROJ_DIR$\Software\emWin\Lib</state>
+          <state>$PROJ_DIR$\Software\emWin\Sample\Config</state>
           <state>$PROJ_DIR$\Software\emWin\Sample\GUIDemo</state>
+          <state>$PROJ_DIR$\Software\BSP\Library\inc</state>
+          <state>$PROJ_DIR$\Software\lwip</state>
+          <state>$PROJ_DIR$\Software\lwip\arch</state>
+          <state>$PROJ_DIR$\Software\lwip\lwip-1.4.1\include</state>
+          <state>$PROJ_DIR$\Software\lwip\lwip-1.4.1\include\ipv4</state>
+          <state>$PROJ_DIR$\Software\USBStack\port_templete</state>
+          <state>$PROJ_DIR$\Software\USBStack\src</state>
+          <state>$PROJ_DIR$\Software\USBStack\inc</state>
+          <state>$PROJ_DIR$\Software\fatfs</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCCodeSection</name>
@@ -889,7 +903,7 @@
         </option>
         <option>
           <name>IlinkOptExceptionsAllow</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IlinkOptExceptionsForce</name>
@@ -905,7 +919,7 @@
         </option>
         <option>
           <name>IlinkOptUseVfe</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IlinkOptForceVfe</name>
@@ -981,15 +995,15 @@
         <debug>0</debug>
         <option>
           <name>ExePath</name>
-          <state>Release\Exe</state>
+          <state>output\Release\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Release\Obj</state>
+          <state>output\Release\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Release\List</state>
+          <state>output\Release\List</state>
         </option>
         <option>
           <name>Variant</name>
@@ -1140,6 +1154,7 @@
           <state>RAVEN</state>
           <state>UART_USE_DMA</state>
           <state>USE_BOOT_EN</state>
+          <state>USE_RTOS</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1286,9 +1301,21 @@
           <state>$PROJ_DIR$\Software\App\Module_ISR</state>
           <state>$PROJ_DIR$\Software\App\Module_Queue</state>
           <state>$PROJ_DIR$\Software\App\Module_IAP</state>
-          <state>$PROJ_DIR$\Software\emWin\Sample\Config</state>
+          <state>$PROJ_DIR$\Software\App\Module_Modbus</state>
+          <state>$PROJ_DIR$\Software\App\Module_USB</state>
           <state>$PROJ_DIR$\Software\emWin\Include</state>
+          <state>$PROJ_DIR$\Software\emWin\Lib</state>
+          <state>$PROJ_DIR$\Software\emWin\Sample\Config</state>
           <state>$PROJ_DIR$\Software\emWin\Sample\GUIDemo</state>
+          <state>$PROJ_DIR$\Software\BSP\Library\inc</state>
+          <state>$PROJ_DIR$\Software\lwip</state>
+          <state>$PROJ_DIR$\Software\lwip\arch</state>
+          <state>$PROJ_DIR$\Software\lwip\lwip-1.4.1\include</state>
+          <state>$PROJ_DIR$\Software\lwip\lwip-1.4.1\include\ipv4</state>
+          <state>$PROJ_DIR$\Software\USBStack\port_templete</state>
+          <state>$PROJ_DIR$\Software\USBStack\src</state>
+          <state>$PROJ_DIR$\Software\USBStack\inc</state>
+          <state>$PROJ_DIR$\Software\fatfs</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1945,15 +1972,15 @@
         <debug>0</debug>
         <option>
           <name>ExePath</name>
-          <state>Release_Next\Exe</state>
+          <state>output\Release_Next\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Release_Next\Obj</state>
+          <state>output\Release_Next\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Release_Next\List</state>
+          <state>output\Release_Next\List</state>
         </option>
         <option>
           <name>Variant</name>
@@ -2250,9 +2277,20 @@
           <state>$PROJ_DIR$\Software\App\Module_ISR</state>
           <state>$PROJ_DIR$\Software\App\Module_Queue</state>
           <state>$PROJ_DIR$\Software\App\Module_IAP</state>
-          <state>$PROJ_DIR$\Software\emWin\Sample\Config</state>
+          <state>$PROJ_DIR$\Software\App\Module_Modbus</state>
+          <state>$PROJ_DIR$\Software\App\Module_USB</state>
           <state>$PROJ_DIR$\Software\emWin\Include</state>
+          <state>$PROJ_DIR$\Software\emWin\Lib</state>
+          <state>$PROJ_DIR$\Software\emWin\Sample\Config</state>
           <state>$PROJ_DIR$\Software\emWin\Sample\GUIDemo</state>
+          <state>$PROJ_DIR$\Software\BSP\Library\inc</state>
+          <state>$PROJ_DIR$\Software\lwip</state>
+          <state>$PROJ_DIR$\Software\lwip\arch</state>
+          <state>$PROJ_DIR$\Software\lwip\lwip-1.4.1\include</state>
+          <state>$PROJ_DIR$\Software\lwip\lwip-1.4.1\include\ipv4</state>
+          <state>$PROJ_DIR$\Software\USBStack\port_templete</state>
+          <state>$PROJ_DIR$\Software\USBStack\src</state>
+          <state>$PROJ_DIR$\Software\USBStack\inc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -2897,6 +2935,9 @@
   <group>
     <name>App</name>
     <file>
+      <name>$PROJ_DIR$\Software\uCOS-II\config\includes.h</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Software\App\main.c</name>
     </file>
     <file>
@@ -2912,6 +2953,12 @@
       <name>$PROJ_DIR$\Software\App\Module_ISR\Module_ISR.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\Software\App\Module_malloc\Module_malloc.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\App\Module_Modbus\Module_Modbus.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Software\App\Module_Protocol\Module_Protocol.c</name>
     </file>
     <file>
@@ -2921,7 +2968,16 @@
       <name>$PROJ_DIR$\Software\App\Module_IAP\Module_Updata.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\Software\App\Module_USB\Module_USB.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\App\tcp_demo.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Software\App\test.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\App\udp_demo.c</name>
     </file>
   </group>
   <group>
@@ -2934,6 +2990,9 @@
           <name>$PROJ_DIR$\Software\BSP\Devices\inc\at24cxx.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\Software\BSP\Devices\inc\ili9320.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\Software\BSP\Devices\inc\IS61WV25616.h</name>
         </file>
       </group>
@@ -2941,6 +3000,15 @@
         <name>src</name>
         <file>
           <name>$PROJ_DIR$\Software\BSP\Devices\src\at24cxx.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\App\drv_enet.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\BSP\Devices\src\enet_phy.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\BSP\Devices\src\ili9320.c</name>
         </file>
         <file>
           <name>$PROJ_DIR$\Software\BSP\Devices\src\IS61WV25616.c</name>
@@ -2958,189 +3026,57 @@
     </group>
     <group>
       <name>Library</name>
-      <group>
-        <name>inc</name>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\adc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\arm_common_tables.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\arm_const_structs.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\arm_math.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\can.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\chlib_k.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\cmp.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\common.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\cpuidy.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\crc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\dac.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\dma.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\dsp_demo.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\enet.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\flash.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\flexbus.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\ftm.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\gpio.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\i2c.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\i2s.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\lptmr.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\nfc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\pdb.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\pit.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\rtc.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\sd.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\spi.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\SysTick.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\tsi.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\uart.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\vref.h</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\inc\wdog.h</name>
-        </file>
-      </group>
-      <group>
-        <name>src</name>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\adc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\can.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\cmp.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\common.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\cpuidy.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\crc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\dac.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\dma.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\enet.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\flash.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\flexbus.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\ftm.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\gpio.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\i2c.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\i2s.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\lptmr.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\nfc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\pdb.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\pit.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\rtc.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\sd.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\spi.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\systick.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\tsi.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\uart.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\vref.c</name>
-        </file>
-        <file>
-          <name>$PROJ_DIR$\Software\BSP\Library\src\wdog.c</name>
-        </file>
-      </group>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\can.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\common.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\cpuidy.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\crc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\dma.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\enet.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\flash.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\flexbus.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\gpio.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\i2c.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\pit.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\rtc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\sd.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\spi.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\systick.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\uart.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\wdog.c</name>
+      </file>
     </group>
   </group>
   <group>
@@ -3159,12 +3095,204 @@
     </file>
   </group>
   <group>
+    <name>Fatfs</name>
+    <file>
+      <name>$PROJ_DIR$\Software\fatfs\option\cc936.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\fatfs\diskio.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\fatfs\ff.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\fatfs\ffconf.h</name>
+    </file>
+  </group>
+  <group>
+    <name>Lwip</name>
+    <group>
+      <name>lwip_api</name>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\api_lib.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\api_msg.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\err.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\netbuf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\netdb.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\netifapi.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\sockets.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\tcpip.c</name>
+      </file>
+    </group>
+    <group>
+      <name>lwip_arch</name>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\arch\sys_arch.c</name>
+      </file>
+    </group>
+    <group>
+      <name>lwip_core</name>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\asn1_dec.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\asn1_enc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\autoip.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\def.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\dhcp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\dns.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\icmp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\igmp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\inet.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\inet_chksum.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\init.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\ip.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\ip_addr.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\ip_frag.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\mem.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\memp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\mib2.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\mib_structs.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\msg_in.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\msg_out.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\netif.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\pbuf.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\raw.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\stats.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\sys.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\tcp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\tcp_in.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\tcp_out.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\timers.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\udp.c</name>
+      </file>
+    </group>
+    <group>
+      <name>lwip_netif</name>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\auth.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\chap.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\chpms.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\etharp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ethernetif.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\fsm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\ipcp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\lcp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\magic.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\md5.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\pap.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\ppp.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\ppp_oe.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\randm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\slipif.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\vj.c</name>
+      </file>
+    </group>
+  </group>
+  <group>
     <name>UCOS-II</name>
     <group>
       <name>uCOSII_Config</name>
-      <file>
-        <name>$PROJ_DIR$\Software\uCOS-II\config\includes.h</name>
-      </file>
       <file>
         <name>$PROJ_DIR$\Software\uCOS-II\config\os_cfg.h</name>
       </file>
@@ -3218,6 +3346,45 @@
       </file>
       <file>
         <name>$PROJ_DIR$\Software\uCOS-II\port\os_dbg.c</name>
+      </file>
+    </group>
+  </group>
+  <group>
+    <name>USB-Stack</name>
+    <group>
+      <name>USB-Config</name>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\port_templete\usb_config.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\port_templete\usb_lib.c</name>
+      </file>
+    </group>
+    <group>
+      <name>USB-Lib</name>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\src\usbd_cdc_acm.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\src\usbd_core.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\src\usbd_core_cdc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\src\usbd_core_hid.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\src\usbd_core_msc.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\src\usbd_hid.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\src\usbd_kk.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\Software\USBStack\src\usbd_msc.c</name>
       </file>
     </group>
   </group>

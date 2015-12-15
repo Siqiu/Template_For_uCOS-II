@@ -19,12 +19,16 @@
 #include "dma.h"
 #include "uart.h"
 #include "IS61WV25616.h"
+#include "ff.h"
 
 /* Exported valable -------------------------------------------------------- */
-
 /* Public functions ---------------------------------------------------------*/
 
 void bsp_init(void);
+
+void itoa(int num,char str[]);
+
+void get_curr_time(uint8_t* src);
 
 /* private functions---------------------------------------------------------*/
 

@@ -13,13 +13,12 @@
 *********************************************************************************************************
 */
 #include "Module_Protocol.h"
+#include "Module_Init.h"
+#include "Module_Can.h"
 
-extern bool	Pile_State_Wait_Flag;
+extern struct Pile_state Pile_State;
+
 extern uint8_t	Pcak_Pile_State_All_Flag;
-extern bool	Pile_State_Open;
-extern bool	Pile_State_Open_Flag;
-extern bool	Pile_State_Close;
-extern bool	Pile_State_Close_Flag;
 extern bool	Rev_Flag;
 
 extern bool	Can1_Rev_Flag;
@@ -28,30 +27,75 @@ extern uint8_t	Can1_Buf[8];
 extern uint8_t UART_Buffer[UART1_RXD_MAX];
 
 
-extern OS_EVENT *key;																	//ÊÂ¼ş¿ØÖÆ¿é Ö¸Õë
-extern OS_EVENT * msg_test;                                                            //°´¼üÓÊÏäÊÂ¼ş¿éÖ¸Õë
-extern OS_EVENT * sem_test;                                                            //·äÃùÆ÷ĞÅºÅÁ¿Ö¸Õë
-
+extern OS_EVENT *key;																	//äº‹ä»¶æ§åˆ¶å— æŒ‡é’ˆ
+extern OS_EVENT * msg_test;                                                            //æŒ‰é”®é‚®ç®±äº‹ä»¶å—æŒ‡é’ˆ
+extern OS_EVENT * sem_test;                                                            //èœ‚é¸£å™¨ä¿¡å·é‡æŒ‡é’ˆ
+extern uint8_t Only_ID[12];
 
 PROTOCOL pile_info[5];
 extern USART_CtrolBlock uart;
 #define	CRC_DATA	44
 #define	DATA_START	22
 
+
+struct BMS bms;
 /* Public  functions ---------------------------------------------------------*/
+
+
+/*******************************************************************************
+  * @å‡½æ•°åç§°		UardDmaFlow
+  * @å‡½æ•°è¯´æ˜		æ¥æ”¶çº¿ç¨‹ï¼Œå‡ºæ¥é‚£ä¸ªå‡½æ•°è§£ææ•°æ®
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
+*******************************************************************************/
+void UardDmaFlow(void)
+{
+	if(Can1_Rev_Flag)
+	{
+		Can1_Rev_Flag = false;
+	}
+
+	if(Uart1_Rev_Flag)
+	{
+        if((UART_Buffer[0] ==0x23) & (UART_Buffer[1] == 0x23))                  //true win protocols
+		{
+			CheckPack_True_win();
+		}
+			
+        
+        if(UART_Buffer[0] == 0x7E)                                              //BMS protocols
+		{
+			    CheckPack_Bms();
+		}
+        uart.TxdPackLength = 0;
+		Uart1_Rev_Flag = false;
+	}
+
+	if((Pile_State.Wait_Flag)|(Pile_State.Open))
+	{
+		if(Pcak_Pile_State_All_Flag|Pile_State.Open)
+		{
+			Pcak_Pile_State_All();
+			Pile_State.Wait_Flag = 0;
+			Pcak_Pile_State_All_Flag = 0;
+		}
+	}
+}
+
 
 /* Private functions ---------------------------------------------------------*/
 
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		CheckPack_True_win
-  * @º¯ÊıËµÃ÷		TRUEWINÒÆ¶¯µçÔ´³µÊı¾İÍ¨Ñ¶Ğ­Òé
-  * @ÊäÈë²ÎÊı		ÎŞ
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÎŞ
+  * @å‡½æ•°åç§°		CheckPack_True_win
+  * @å‡½æ•°è¯´æ˜		TRUEWINç§»åŠ¨ç”µæºè½¦æ•°æ®é€šè®¯åè®®
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
 *******************************************************************************/
 void    CheckPack_True_win(void)
 {
-	//0x2A 0x2A 0x54 0x57 0x0001 0x000C 0x000A 13812341234 0x0DĞ£Ñé
+	//0x2A 0x2A 0x54 0x57 0x0001 0x000C 0x000A 13812341234 0x0Dæ ¡éªŒ
 	//2A 2A 54 57 00 00 00 00 00 00 00 00 00 00 00 00 00 01 00 0C 00 14
 	//31 33 38 31 32 33 34 31 32 33 34 00 00 00 00 00 00 00 00 00
 	//0D 00 2D
@@ -73,67 +117,67 @@ void    CheckPack_True_win(void)
 	func_code = *ptr++;
 	switch(func_code)
 	{
-		case 0x01://Ô¤Ô¼³äµç
+		case 0x01://é¢„çº¦å……ç”µ
 			{
 				break;
 			}
-		case 0x02://Ô¤Ô¼È¡Ïû
+		case 0x02://é¢„çº¦å–æ¶ˆ
 			{
 				break;
 			}
-		case 0x03://×®×´Ì¬²éÑ¯
+		case 0x03://æ¡©çŠ¶æ€æŸ¥è¯¢
 			{
 				break;
 			}
-		case 0x04://×®½øÈë·Ç¿ÕÏĞ×´Ì¬
+		case 0x04://æ¡©è¿›å…¥éç©ºé—²çŠ¶æ€
 			{
 				break;
 			}
-		case 0x05://×®½øÈë´ı»úÄ£Ê½
+		case 0x05://æ¡©è¿›å…¥å¾…æœºæ¨¡å¼
 			{
 				break;
 			}
-		case 0x06://×®µç¼Û²éÑ¯
+		case 0x06://æ¡©ç”µä»·æŸ¥è¯¢
 			{
 				break;
 			}
-		case 0x07://×®µç¼ÛĞŞ¸Ä
+		case 0x07://æ¡©ç”µä»·ä¿®æ”¹
 			{
 				break;
 			}
-		case 0x08://¿¨ÕËºÅĞÅÏ¢
+		case 0x08://å¡è´¦å·ä¿¡æ¯
 			{
 				break;
 			}
-		case 0x09://ÊÖ»úÕË»§Óà¶î£¨´ıÓÅ»¯£©
+		case 0x09://æ‰‹æœºè´¦æˆ·ä½™é¢ï¼ˆå¾…ä¼˜åŒ–ï¼‰
 			{
 				break;
 			}
-		case 0x0A://Ïû·ÑĞÅÏ¢
+		case 0x0A://æ¶ˆè´¹ä¿¡æ¯
 			{
 				break;
 			}
-		case 0x0B://³µÁ¾ĞÅÏ¢£¨´ıÓÅ»¯£©
+		case 0x0B://è½¦è¾†ä¿¡æ¯ï¼ˆå¾…ä¼˜åŒ–ï¼‰
 			{
 				break;
 			}
-		case 0x0C://³äµç¿ªÊ¼/³äµç½áÊø
+		case 0x0C://å……ç”µå¼€å§‹
 			{
-				//Pcak_Pile_State();
+				Pcak_Pile_State();
 				Pile_Send(pile_addr,CTRL_pile_open);
 				break;
 			}
-		case 0x0D://³äµç¿ªÊ¼/³äµç½áÊø
+		case 0x0D://å……ç”µç»“æŸ
 			{
-				//Pcak_Pile_State();
+				Pcak_Pile_State();
 				Pile_Send(pile_addr,CTRL_pile_close);
 				break;
 			}
-		case 0x0E://¶ÁÈ¡Ê±¼ä
+		case 0x0E://è¯»å–æ—¶é—´
 			{
 				break;
 			}
-		case 0x0F://Ğ£Ê±
+		case 0x0F://æ ¡æ—¶
 			{
 				uint8_t Temp;
 				ptr+=3;
@@ -141,15 +185,15 @@ void    CheckPack_True_win(void)
 				Temp = *ptr++;
 				td.year = 2000+(Temp);
 				Temp = *ptr++;
-				td.month = BCD2DEC(Temp);
+				td.month = CONVERT_16_10(Temp);
 				Temp = *ptr++;
-				td.day = BCD2DEC(Temp);
+				td.day = CONVERT_16_10(Temp);
 				Temp = *ptr++;
-				td.hour = BCD2DEC(Temp);
+				td.hour = CONVERT_16_10(Temp);
 				Temp = *ptr++;
-				td.minute = BCD2DEC(Temp);
+				td.minute = CONVERT_16_10(Temp);
 				Temp = *ptr++;
-				td.second = BCD2DEC(Temp);
+				td.second = CONVERT_16_10(Temp);
 				RTC_SetDateTime(&td);
 
 				UART_Buffer[0] = 0x2A;
@@ -161,22 +205,23 @@ void    CheckPack_True_win(void)
 				UART_DMASendByte(DMA_SEND_CH, UART_Buffer, uart.TxdPackLength);
 				break;
 			}
-		case 0x10://¶ÁÈ¡Î¨Ò»ID
+		case 0x10://è¯»å–å”¯ä¸€ID
 			{
 				break;
 			}
-		case 0x11://ÉèÖÃÎ¨Ò»ID
+		case 0x11://è®¾ç½®å”¯ä¸€ID
 			{
 				static uint8_t Only_ID_Buf[12] = {0};
 				uint16_t For_temp;
 				ptr+=2;
-				/* Î¨Ò»ID */
+				/* å”¯ä¸€ID */
 				for(For_temp=0 ;For_temp<12;For_temp++)
 				{
 					Only_ID_Buf[For_temp] = *ptr++;
 				}
 				//Flash_Write_Inside(PROG_DATA_ADDR, Only_ID_Buf,12);
-                at24cxx_write(0, Only_ID_Buf, 12);
+                eep_write_page(0, Only_ID_Buf, 12);
+                eep_read(0, Only_ID, 12);
 #if	DEBUG
 				static uint8_t buf[12] = {0};
 				Flash_Read_Inside(PROG_DATA_ADDR,buf,12);
@@ -184,7 +229,7 @@ void    CheckPack_True_win(void)
 				UART_Buffer[0] = 0x2A;
 				UART_Buffer[1] = 0x2A;
 				uint8_t* Only_ID_Ptr = Only_ID_Buf;
-				/* Î¨Ò»ID */
+				/* å”¯ä¸€ID */
 				for(For_temp=0 ;For_temp<12;For_temp++)
 				{
 					UART_Buffer[4+For_temp] = *Only_ID_Ptr++;
@@ -200,11 +245,11 @@ void    CheckPack_True_win(void)
 }
 
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		CheckPack_Ding_Chong
-  * @º¯ÊıËµÃ÷		¶¦³ä³äµç×®Êı¾İÍ¨Ñ¶Ğ­Òé
-  * @ÊäÈë²ÎÊı		ÎŞ
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÎŞ
+  * @å‡½æ•°åç§°		CheckPack_Ding_Chong
+  * @å‡½æ•°è¯´æ˜		é¼å……å……ç”µæ¡©æ•°æ®é€šè®¯åè®®
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
 *******************************************************************************/
 void    CheckPack_Ding_Chong(void)
 {
@@ -217,20 +262,20 @@ void    CheckPack_Ding_Chong(void)
 	uint8_t		func_code;
 	pile_addr = *ptr++;
 	pile_info[pile_addr-0x01].address = pile_addr;
-	pile_addr -= 0x01;//µØÖ·Îª1µÄÊı¾İ´¢´æÔÚÊı×é0ÔªËØÖĞ
+	pile_addr -= 0x01;//åœ°å€ä¸º1çš„æ•°æ®å‚¨å­˜åœ¨æ•°ç»„0å…ƒç´ ä¸­
     if(Can1_Buf[7] != crcCheck(7,Can1_Buf)) return;
 	func_code = *ptr++;
 	switch(func_code)
 	{
-		case CTRL_pile_open://01 ¿ØÖÆÆô¶¯
+		case CTRL_pile_open://01 æ§åˆ¶å¯åŠ¨
 			{
 				break;
 			}
-		case CTRL_pile_close://02 ¿ØÖÆÍ£Ö¹
+		case CTRL_pile_close://02 æ§åˆ¶åœæ­¢
 			{
 				break;
 			}
-		case READ_pile_info://03(×®ĞÅÏ¢)0x01 0x03 0x00 0x00 0x00 0x00 0x64 0x66ÕıĞò
+		case READ_pile_info://03(æ¡©ä¿¡æ¯)0x01 0x03 0x00 0x00 0x00 0x00 0x64 0x66æ­£åº
 			{
                 uint8_t	    pile_price_H;
                 uint8_t	    pile_price_L;
@@ -241,55 +286,85 @@ void    CheckPack_Ding_Chong(void)
                 pile_info[pile_addr].pile_price = (pile_price_H<<8)|pile_price_L;
 				if(pile_info[pile_addr].pile_state==0x00)
 				{
-					Pile_State_Open = false;
-					Pile_State_Close = true;
-					Pile_State_Open_Flag = true;
+					Pile_State.Open = false;
+					Pile_State.Close = true;
+					Pile_State.Open_Flag = true;
 				}
 				if(pile_info[pile_addr].pile_state==0x01)
 				{
-					Pile_State_Open = true;
-					Pile_State_Close = false;
-					Pile_State_Close_Flag = true;
+					Pile_State.Open = true;
+					Pile_State.Close = false;
+					Pile_State.Close_Flag = true;
 				}
 				if(pile_info[pile_addr].pile_state==0x06)
 				{
-					Pile_State_Wait_Flag = true;
+					Pile_State.Wait_Flag = true;
 					Pcak_Pile_State_All_Flag = true;
-					Pile_State_Close_Flag = true;
+					Pile_State.Close_Flag = true;
 				}
                 break;
             }
-		case READ_card_info://04£¨¿¨ĞÅÏ¢£©0x01 0x04 0xB1 0x7F 0x39 0x05 0x00 0xF7µ¹Ğò
+		case READ_card_info://04ï¼ˆå¡ä¿¡æ¯ï¼‰0x01 0x04 0xB1 0x7F 0x39 0x05 0x00 0xF7å€’åº
 			{
                 pile_info[pile_addr].user_id = (Can1_Buf[5]<<24|Can1_Buf[4]<<16|Can1_Buf[3]<<8|Can1_Buf[2]);
 				break;
 			}
-		case READ_consume_info://05£¨Ïû·ÑĞÅÏ¢£©0x01 0x05 0x00 0x00 0xC6 0x00 0x02 0xC0
+		case READ_consume_info://05ï¼ˆæ¶ˆè´¹ä¿¡æ¯ï¼‰0x01 0x05 0x00 0x00 0xC6 0x00 0x02 0xC0
 			{
                 *ptr++;
-                pile_info[pile_addr].pay_amount = (Can1_Buf[3]<<8|Can1_Buf[4]);//Ïû·Ñ½ğ¶î
-                pile_info[pile_addr].pay_power = (Can1_Buf[5]<<8|Can1_Buf[6]);//Ïû·ÑµçÁ¿
+                pile_info[pile_addr].pay_amount = (Can1_Buf[3]<<8|Can1_Buf[4]);//æ¶ˆè´¹é‡‘é¢
+                pile_info[pile_addr].pay_power = (Can1_Buf[5]<<8|Can1_Buf[6]);//æ¶ˆè´¹ç”µé‡
 				break;
 			}
-		case READ_balance_info://06£¨¿¨ÄÚ½ğ¶î£©0x01 0x06 0x00 0x00 0x0C 0x34 0xFB 0xC4ÕıĞò
+		case READ_balance_info://06ï¼ˆå¡å†…é‡‘é¢ï¼‰0x01 0x06 0x00 0x00 0x0C 0x34 0xFB 0xC4æ­£åº
 			{
                 *ptr++;
                 pile_info[pile_addr].ID_card_balance = (Can1_Buf[3]<<24|Can1_Buf[4]<<16|Can1_Buf[5]<<8|Can1_Buf[6]);
 				break;
 			}
-		case READ_time://07£¨Ê±¼ä£©
+		case READ_time://07ï¼ˆæ—¶é—´ï¼‰
 			{
 				break;
 			}
-		case WRITE_pile_info://10£¨×®µØÖ·¡¢µçÁ÷¡¢Ñº½ğ£©
+		case READ_VC:// 08ï¼ˆç”µå‹ç”µæµï¼‰
+			{
+				uint16_t Code = (bms.Voltage_All/100);//å•ä½0.1V
+				Can1_Buf[3] = (Code>>8);
+				Can1_Buf[4] = (Code&0xFF);
+				
+				Code = bms.Currents.Currents;
+				Can1_Buf[5] = (Code>>8);
+				Can1_Buf[6] = (Code&0xFF);
+				Can1_Buf[7] = crcCheck(7,Can1_Buf);
+				CAN_WriteData(HW_CAN1, 2, (pile_addr+0x01), Can1_Buf, 8);
+				break;
+			}
+		case READ_Capacity_TEMP:// 09ï¼ˆå®¹é‡æ¸©åº¦ï¼‰
+			{
+				uint16_t Code = (bms.Capacity.Capacity/10);//å•ä½0.1AH
+				Can1_Buf[3] = (Code>>8);
+				Can1_Buf[4] = (Code&0xFF);
+				
+				Code = bms.TEMP;
+				Can1_Buf[5] = (Code>>8);
+				Can1_Buf[6] = (Code&0xFF);
+				Can1_Buf[7] = crcCheck(7,Can1_Buf);
+				CAN_WriteData(HW_CAN1, 2, (pile_addr+0x01), Can1_Buf, 8);
+				break;
+			}
+		case READ_BATcore_state:// 0Aï¼ˆç”µèŠ¯çŠ¶æ€ï¼‰
 			{
 				break;
 			}
-		case WRITE_price_info://11£¨µç¼Û£©
+		case WRITE_pile_info://10ï¼ˆæ¡©åœ°å€ã€ç”µæµã€æŠ¼é‡‘ï¼‰
 			{
 				break;
 			}
-		case WRITE_time://12£¨Ê±¼ä£©
+		case WRITE_price_info://11ï¼ˆç”µä»·ï¼‰
+			{
+				break;
+			}
+		case WRITE_time://12ï¼ˆæ—¶é—´ï¼‰
 			{
 
 				break;
@@ -301,30 +376,303 @@ void    CheckPack_Ding_Chong(void)
 
 
 
-
-
-void UardDmaFlow(void)
+static uint16_t Bms_01_Voltage(uint8_t *buf)
 {
-	if(Can1_Rev_Flag)
+	uint8_t MSK_V_BAL = 0x80;	// ç”µå‹å¹³è¡¡æ ‡å¿—
+	uint8_t MSK_V_OV  = 0x40;	// ç”µå‹è¿‡å‹æ ‡å¿—
+	uint8_t MSK_V_UV  = 0x20;	// ç”µå‹æ¬ å‹æ ‡å¿—
+	static uint16_t for_temp;
+	uint16_t Msg_Len = 0;
+	if(*buf++ != 0x01) return 0;
+	Msg_Len = (*buf++);
+	bms.Voltage_All = 0;
+    for(for_temp=0; for_temp<Msg_Len; for_temp++)
 	{
-		Can1_Rev_Flag = false;
-	}
+		if(*buf & MSK_V_BAL)//æå–å‡è¡¡æ ‡è¯†
+			bms.Voltage[for_temp].Balance_Flag = 1;
 
-	if(Uart1_Rev_Flag)
-	{
-		CheckPack_True_win();
-		Uart1_Rev_Flag = false;
-	}
+		if(*buf & MSK_V_OV)//æå–è¿‡å‹æ ‡è¯†
+			bms.Voltage[for_temp].Over_voltage_Flag = 1;
 
-	if(Pile_State_Wait_Flag|Pile_State_Open)
+		if(*buf & MSK_V_UV)//æå–æ¬ å‹æ ‡è¯†
+			bms.Voltage[for_temp].under_voltage_Flag = 1;
+
+		uint16_t Code = 0;
+        Code |= ((*buf++)&0x1F);
+        Code <<= 8;
+		Code |= *buf++;
+
+		bms.Voltage[for_temp].Voltage = Code;
+        bms.Voltage_All += Code;
+	}
+    return ((Msg_Len*2)+1);
+}
+
+static uint16_t Bms_02_Currents(uint8_t *buf)
+{
+    uint16_t Msg_Len = 0;
+    
+    if(*buf++ != 0x02) return 0;
+    
+    Msg_Len = *buf++;
+
+	uint16_t Code = 0;
+	Code |= (*buf++);
+	Code <<= 8;
+	Code |= *buf++;
+	
+	bms.Currents.Currents = Code;
+    return ((Msg_Len*2)+1);
+}
+
+static uint16_t Bms_03_SOC(uint8_t *buf)
+{
+    uint16_t Msg_Len = 0;
+
+    if(*buf++ != 0x03) return 0;
+
+    Msg_Len = *buf++;
+
+	uint16_t Code = 0;
+	Code |= (*buf++);
+	Code <<= 8;
+	Code |= *buf++;
+    
+    bms.Soc.SOC = Code;
+    return ((Msg_Len*2)+1);
+}
+
+static uint16_t Bms_04_Capacity(uint8_t *buf)
+{
+    uint16_t Msg_Len = 0;
+
+    if(*buf++ != 0x04) return 0;
+
+    Msg_Len = *buf++;
+
+	uint16_t Code = 0;
+	Code |= (*buf++);
+	Code <<= 8;
+	Code |= *buf++;
+
+    bms.Capacity.Capacity = Code;
+    return ((Msg_Len*2)+1);
+}
+
+static uint16_t Bms_05_Temperature(uint8_t *buf)
+{
+	uint16_t MSK_O_under_TEMP  = 0x08;//æ”¾æ¬ æ¸©
+	uint16_t MSK_O_Over_TEMP = 0x04;//æ”¾è¿‡æ¸©
+	uint16_t MSK_I_under_TEMP  = 0x02;//å……æ¬ æ¸©
+	uint16_t MSK_I_Over_TEMP = 0x01;//å……è¿‡æ¸©
+    
+    uint16_t Msg_Len = 0;
+    
+	static uint16_t for_temp;
+    
+    if(*buf++ != 0x05) return 0;
+    
+	Msg_Len = (*buf++);
+    
+	bms.TEMP = 0;
+    
+    for(for_temp=0; for_temp<Msg_Len; for_temp++)
 	{
-		if(Pcak_Pile_State_All_Flag|Pile_State_Open)
+		if(*buf & MSK_O_under_TEMP)
+			bms.Temperature[for_temp].O_under_TEMP = 1;
+
+		if(*buf & MSK_O_Over_TEMP)
+			bms.Temperature[for_temp].O_Over_TEMP = 1;
+
+		if(*buf & MSK_I_under_TEMP)
+			bms.Temperature[for_temp].I_under_TEMP = 1;
+
+		if(*buf & MSK_I_Over_TEMP)
+			bms.Temperature[for_temp].I_Over_TEMP = 1;
+		
+		uint16_t Code = 0;
+        *buf++;
+		Code = (*buf++);
+
+		bms.Temperature[for_temp].Temperature = Code;
+        bms.TEMP += Code;
+	}
+    return ((Msg_Len*2)+1);
+}
+
+static uint16_t Bms_06_Warning(uint8_t *buf)
+{
+	//ä¿æŠ¤çŠ¶æ€æ ‡è¯†ç¬¦
+//	uint16_t MSK_CHG_MOD    = 0x01;     //å……ç”µæ¨¡å¼
+//	uint16_t MSK_DISG_MOD   = 0x02;     //æ”¾ç”µæ¨¡å¼
+//	uint16_t MSK_SC         = 0x04;     //çŸ­è·¯ä¿æŠ¤
+//	uint16_t MSK_OC         = 0x08;     //è¿‡æµä¿æŠ¤
+//	uint16_t MSK_CELL_OV    = 0x10;     //å•ä½“è¿‡å‹ä¿æŠ¤
+//	uint16_t MSK_CELL_UV    = 0x20;     //å•ä½“æ¬ å‹ä¿æŠ¤
+//	uint16_t MSK_CHG_OT     = 0x40;     //å……è¿‡æ¸©ä¿æŠ¤
+//	uint16_t MSK_CHG_UT     = 0x80;     //å……æ¬ æ¸©ä¿æŠ¤
+//	uint16_t MSK_DISG_OT    = 0x100;    //æ”¾ç”µè¿‡æ¸©
+//	uint16_t MSK_DISG_UT    = 0x200;	//æ”¾ç”µæ¬ æ¸©
+    
+    uint16_t Msg_Len = 0;
+    
+	static uint16_t for_temp;
+    
+    if(*buf++ != 0x06) return 0;
+    Msg_Len = (*buf++);
+    
+    for(for_temp=0; for_temp<Msg_Len; for_temp++)
+	{
+        switch(for_temp)
 		{
-			Pcak_Pile_State_All();
-			Pile_State_Wait_Flag = 0;
-			Pcak_Pile_State_All_Flag = 0;
+			case 0:
+				{
+					if(*buf & 0x20)
+						bms.Warning.I_mos = 1;
+
+					if(*buf & 0x40)
+						bms.Warning.O_mos = 1;
+
+					if(*buf & 0x80)
+						bms.Warning.Voltage_sensor = 1;
+					break;
+				}
+			case 1:
+				{
+					if(*buf & 0x01)
+						bms.Warning.TEMP_Sen = 1;
+
+					if(*buf & 0x02)
+						bms.Warning.current_Sen = 1;
+
+					if(*buf & 0x04)
+						bms.Warning.charger_reverse= 1;
+					break;
+				}
+			case 2:
+				{
+					if(*buf & 0x01)
+						bms.Warning.O_over_TEMP_PTT= 1;
+
+					if(*buf & 0x02)
+						bms.Warning.O_under_TEMP_PTT = 1;
+					break;
+				}
+			case 3:
+				{
+					if(*buf & 0x01)
+						bms.Warning.charge_state = 1;
+
+					if(*buf & 0x02)
+						bms.Warning.discharge_state = 1;
+
+					if(*buf & 0x04)
+						bms.Warning.short_circuit_PTT = 1;
+
+					if(*buf & 0x08)
+						bms.Warning.overcurrent_PTT_return= 1;
+
+					if(*buf & 0x10)
+						bms.Warning.over_voltage_PTT = 1;
+
+					if(*buf & 0x20)
+						bms.Warning.under_voltage_PTT = 1;
+
+					if(*buf & 0x40)
+						bms.Warning.I_over_TEMP_PTT = 1;
+
+					if(*buf & 0x80)
+						bms.Warning.I_under_TEMP_PTT = 1;
+					break;
+				}
+			case 4:
+				{
+//					if(*buf & 0x01)
+//						bms.Warning. = 1;
+//
+//					if(*buf & 0x02)
+//						bms.Warning. = 1;
+//
+//					if(*buf & 0x04)
+//						bms.Warning. = 1;
+//
+//					if(*buf & 0x08)
+//						bms.Warning. = 1;
+//
+//					if(*buf & 0x10)
+//						bms.Warning. = 1;
+//
+//					if(*buf & 0x20)
+//						bms.Warning. = 1;
+//
+//					if(*buf & 0x40)
+//						bms.Warning. = 1;
+//
+//					if(*buf & 0x80)
+//						bms.Warning. = 1;
+					break;
+				}
+			case 5:
+				{
+					break;
+				}
+			case 6:
+				{
+					break;
+				}
+			case 7:
+				{
+					break;
+				}
+			case 8:
+				{
+					if(*buf & 0x01)
+						bms.Warning.ENV_over_TEMP_ALM= 1;
+
+					if(*buf & 0x02)
+						bms.Warning.ENV_under_TEMP_ALM = 1;
+
+					if(*buf & 0x04)
+						bms.Warning.PCB_over_TEMP_ALM = 1;
+
+					if(*buf & 0x08)
+						bms.Warning.capacity_too_under_ALM = 1;
+
+					if(*buf & 0x10)
+						bms.Warning.differential_pressure = 1;
+					break;
+				}
+			case 9:
+				{
+					if(*buf & 0x01)
+						bms.Warning.one_over_voltage_ALM= 1;
+
+					if(*buf & 0x02)
+						bms.Warning.one_under_voltage_ALM = 1;
+
+					if(*buf & 0x04)
+						bms.Warning.all_over_voltage_ALM = 1;
+
+					if(*buf & 0x08)
+						bms.Warning.all_under_voltage_ALM= 1;
+
+					if(*buf & 0x10)
+						bms.Warning.I_over_current_ALM = 1;
+
+					if(*buf & 0x20)
+						bms.Warning.O_over_current_ALM = 1;
+
+					if(*buf & 0x40)
+						bms.Warning.Bat_over_TEMP_ALM= 1;
+
+					if(*buf & 0x80)
+						bms.Warning.Bat_under_TEMP_ALM = 1;
+					break;
+				}
 		}
+        *buf++;
 	}
+    return ((Msg_Len*2)+1);
 }
 
 
@@ -332,114 +680,191 @@ void UardDmaFlow(void)
 
 
 
+/*******************************************************************************
+  * @å‡½æ•°åç§°		CheckPack_Bms
+  * @å‡½æ•°è¯´æ˜		Head Address	CID Data length Data Check Tail
+  *					0x7E 0x00~0x0e	0x01 â€”   â€”              â€”  0x0D
+  * 				ä¿¡åç²¾æœºæœ‰é™å…¬å¸é”‚ç”µæ± BMSé€šä¿¡åè®®
+  * 				1. PCç«¯æŒ‡ä»¤å’Œä¿æŠ¤æ¿ç«¯æŒ‡ä»¤éƒ½éµå¾ªæ­¤æ ¼å¼
+  * 				2. Headä¸ºæŒ‡ä»¤å¤´æ ‡è¯†ç¬¦(1byteï¼‰
+  * 				3. Addressä¸ºä¿æŠ¤æ¿åœ°å€ç (1byte)
+  * 				4. CIDä¸ºæŒ‡ä»¤åºåˆ—å·(1byte)
+  * 				5. Data lengthä¸ºæŒ‡ä»¤é•¿åº¦(1byte)
+  * 				6. Dataä¸ºä¿¡æ¯åŸŸ(ä¸å®šé•¿ï¼Œè¯¦è§ä¸‹é¢
+  * 				7. Checkä¸ºæ ¡éªŒç å­—æ®µ(1byte,ç®—æ³•è§ä¸‹é¢)
+  * 				8. Tailä¸ºæŒ‡ä»¤å°¾æ ‡è¯†ç¬¦(1byte)
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
+*******************************************************************************/
+void	CheckPack_Bms(void)
+{
+#define BMS_HEND 0x7E
+#define BMS_END  0x0D
+//#if OS_CRITICAL_METHOD == 3
+//	OS_CPU_SR cpu_sr;
+//#endif
+	//OS_ENTER_CRITICAL();
+	uint8_t*	ptr = UART_Buffer;
+	uint16_t     data_len = 0;
+	uint8_t		func_code;
+	uint16_t for_temp;
+	if((*ptr++) != BMS_HEND) return;
+	*ptr++;
+	func_code = *ptr++;//no use
+	data_len = *ptr++;//data_len
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    uint16_t num;
+	for(for_temp=0; for_temp<data_len; for_temp++)
+	{
+        func_code = *ptr;
+		num = 0;
+		switch(func_code)
+		{
+			case 0x01://01 ç”µå‹
+				{
+					num = Bms_01_Voltage(ptr);
+                    ptr += num;
+                    for_temp += num;
+					break;
+				}
+			case 0x02://02 ç”µæµ
+				{
+					num += Bms_02_Currents(ptr);
+                    ptr += num;
+                    for_temp += num;
+					break;
+				}
+			case 0x03://03 SOC
+				{
+					num = Bms_03_SOC(ptr);
+                    ptr += num;
+                    for_temp += num;
+					break;
+				}
+			case 0x04://04 å®¹é‡
+				{
+					num = Bms_04_Capacity(ptr);
+                    ptr += num;
+                    for_temp += num;
+					break;
+				}
+			case 0x05://05 æ¸©åº¦
+				{
+					num = Bms_05_Temperature(ptr);
+                    ptr += num;
+                    for_temp += num;
+                    //bms.TEMP = (bms.TEMP/10)-50;//10 ä¸ªçš„å¹³å‡æ¸©åº¦
+					break;
+				}
+			case 0x06://06 è­¦å‘Š
+				{
+					num = Bms_06_Warning(ptr);
+					ptr += num;
+					for_temp += num;
+					break;
+				}
+			case 0x07:
+				{
+					num = 3;
+					ptr += num;
+					for_temp += num;
+					break;
+				}
+			case 0x08:
+				{
+					num = 3;
+					ptr += num;
+					for_temp += num;
+					break;
+				}
+			case 0x09:
+				{
+					num = 3;
+					ptr += num;
+					for_temp += num;
+					break;
+				}
+			case 0x0A:
+				{
+					num = 3;
+					ptr += num;
+					for_temp += num;
+					break;
+				}
+			default:
+				{
+					*ptr++;
+					break;
+				}
+		}
+		*ptr++;
+	}
+	//OS_EXIT_CRITICAL();
+}
 
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		CheckPack_Bms
-  * @º¯ÊıËµÃ÷		Head Address	CID Data length Data Check Tail
-  *					0x7E 0x00~0x0e	0x01 ¡ª   ¡ª              ¡ª  0x0D
-  * 				ĞÅ»ª¾«»úÓĞÏŞ¹«Ë¾ï®µç³ØBMSÍ¨ĞÅĞ­Òé
-  * 				1. PC¶ËÖ¸ÁîºÍ±£»¤°å¶ËÖ¸Áî¶¼×ñÑ­´Ë¸ñÊ½
-  * 				2. HeadÎªÖ¸ÁîÍ·±êÊ¶·û(1byte£©
-  * 				3. AddressÎª±£»¤°åµØÖ·Âë(1byte)
-  * 				4. CIDÎªÖ¸ÁîĞòÁĞºÅ(1byte)
-  * 				5. Data lengthÎªÖ¸Áî³¤¶È(1byte)
-  * 				6. DataÎªĞÅÏ¢Óò(²»¶¨³¤£¬Ïê¼ûÏÂÃæ
-  * 				7. CheckÎªĞ£ÑéÂë×Ö¶Î(1byte,Ëã·¨¼ûÏÂÃæ)
-  * 				8. TailÎªÖ¸ÁîÎ²±êÊ¶·û(1byte)
-  * @ÊäÈë²ÎÊı		ÎŞ
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÎŞ
+  * @å‡½æ•°åç§°		CheckPack_Tccharger
+  * @å‡½æ•°è¯´æ˜		Tccharger protocol
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
 *******************************************************************************/
-//void	CheckPack_Bms(void)
-//{
-//	uint8_t MSK_V_BAL = 0x80;	// µçÑ¹Æ½ºâ±êÖ¾
-//	uint8_t MSK_V_OV  = 0x40;	// µçÑ¹¹ıÑ¹±êÖ¾
-//	uint8_t MSK_V_UL  = 0x20;	// µçÑ¹Ç·Ñ¹±êÖ¾
-//	uint16_t for_temp;
-//	uint8_t *ptr = ;
-//	for(for_temp=0; for_temp<; for_temp++)
-//	{
-//		//ÌáÈ¡¾ùºâ±êÊ¶
-//		if((rxbuf[p] &= MSK_V_BAL) > 0)
-//		{
-//			rxbuf[p] &= ~MSK_V_BAL;
-//		}
-//		//ÌáÈ¡¹ıÑ¹±êÊ¶
-//		if((rxbuf[p] &= MSK_V_OV) > 0)
-//		{
-//			rxbuf[p] &= ~MSK_V_OV;
-//		}
-//		//ÌáÈ¡Ç·Ñ¹±êÊ¶
-//		if((rxbuf[p] &= MSK_V_UV) > 0)
-//		{
-//			rxbuf[p] &= ~MSK_V_UV;
-//		}
-//	}
-//	//±£»¤×´Ì¬±êÊ¶·û
-//	uint16_t MSK_CHG_MOD = 0x01;	//³äµçÄ£Ê½
-//	uint16_t MSK_DISG_MOD = 0x02;	//·ÅµçÄ£Ê½
-//	uint16_t MSK_SC = 0x04;			//¶ÌÂ·±£»¤
-//	uint16_t MSK_OC = 0x08;			//¹ıÁ÷±£»¤
-//	uint16_t MSK_CELL_OV = 0x10;	//µ¥Ìå¹ıÑ¹±£»¤
-//	uint16_t MSK_CELL_UV = 0x20;	//µ¥ÌåÇ·Ñ¹±£»¤
-//	uint16_t MSK_CHG_OT = 0x40;		//³ä¹ıÎÂ±£»¤
-//	uint16_t MSK_CHG_UT = 0x80;		//³äÇ·ÎÂ±£»¤
-//	uint16_t MSK_DISG_OT = 0x100;	//·Åµç¹ıÎÂ
-//	uint16_t MSK_DISG_UT = 0x200;	//·ÅµçÇ·ÎÂ
-//	//get protection status
-//	if ((Status[1] & o.MSK_CHG_OT) > 0) //³äµç¹ıÎÂ±£»¤
-//	{
-//		// "³äµç¹ıÎÂ±£»¤"
-//	}
-//}
+void CheckPack_Tccharger(void)
+{
+    Pile_Send(MESAGE_1,READ_card_info);
+}
 
+/*******************************************************************************
+  * @å‡½æ•°åç§°		CheckPack_DGUS
+  * @å‡½æ•°è¯´æ˜		DGUS protocol//head 2byte//data len 1byte//cmd 1byte//data nbyte
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
+*******************************************************************************/
+#define DGUS_HEAD_1     0xA5
+#define DGUS_HEAD_2     0x5A
+#define DGUS_WRITE_CR   0x80
+#define DGUS_READ_CR    0x81
+#define DGUS_WRITE_DATA 0x82
+#define DGUS_READ_DATA  0x83
+void CheckPack_DGUS(void)
+{
+	uint8_t*	ptr = UART_Buffer;
+	uint8_t     func_code;
+
+	if(DGUS_HEAD_1 != *ptr++) return;
+	if(DGUS_HEAD_2 != *ptr++) return;
+    func_code = *ptr;
+    
+    switch(func_code)
+    {
+        case DGUS_WRITE_CR://write CR
+            {
+                break;
+            }
+        case DGUS_READ_CR://read CR
+            {
+                break;
+            }
+        case DGUS_WRITE_DATA://write data
+            {
+                break;
+            }
+        case DGUS_READ_DATA://read data
+            {
+                break;
+            }
+    }
+}
+void DGUS_send_data(uint8_t type, uint8_t *buf, uint16_t len)
+{
+	uint8_t*	ptr = UART_Buffer;
+
+    *ptr++ = DGUS_HEAD_1;
+    *ptr++ = DGUS_HEAD_2;
+    *ptr++ = len+1;//æ•°æ®çš„é•¿åº¦åŠ ä¸ŠæŒ‡ä»¤
+    *ptr++ = type;
+    ptr = buf;
+    UART_DMASendByte(DMA_SEND_CH, UART_Buffer, uart.TxdPackLength);
+}

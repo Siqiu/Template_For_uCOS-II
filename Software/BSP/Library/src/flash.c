@@ -167,13 +167,13 @@ static uint8_t FLASH_WriteSector(uint32_t addr, const uint8_t *buf, uint32_t len
 
 
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		Flash_Write_Inside
-  * @º¯ÊıËµÃ÷		Æ¬ÄÚFlash¶ÁÈ¡Êı¾İ
-  * @ÊäÈë²ÎÊı		secNo		  : µØÖ·
-					write_len     : ¶ÁÈ¡µÄ³¤¶È
-					*buf		  : »º´æÇøÖ¸Õë
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÊÇ·ñ³É¹¦
+  * @å‡½æ•°åç§°		Flash_Write_Inside
+  * @å‡½æ•°è¯´æ˜		ç‰‡å†…Flashè¯»å–æ•°æ®
+  * @è¾“å…¥å‚æ•°		secNo		  : åœ°å€
+					write_len     : è¯»å–çš„é•¿åº¦
+					*buf		  : ç¼“å­˜åŒºæŒ‡é’ˆ
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ˜¯å¦æˆåŠŸ
 *******************************************************************************/
 uint8_t Flash_Write_Inside(uint16_t secNo, uint8_t* buf, uint16_t write_len)
 {
@@ -203,20 +203,20 @@ uint8_t Flash_Write_Inside(uint16_t secNo, uint8_t* buf, uint16_t write_len)
 
 
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		Flash_Read_Inside
-  * @º¯ÊıËµÃ÷		Æ¬ÄÚFlash¶ÁÈ¡Êı¾İ
-  * @ÊäÈë²ÎÊı		FlashStartAdd : µØÖ·
-					len           : ¶ÁÈ¡µÄ³¤¶È
-					*pbuffer      : »º´æÇøÖ¸Õë
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÊÇ·ñ³É¹¦
+  * @å‡½æ•°åç§°		Flash_Read_Inside
+  * @å‡½æ•°è¯´æ˜		ç‰‡å†…Flashè¯»å–æ•°æ®
+  * @è¾“å…¥å‚æ•°		FlashStartAdd : åœ°å€
+					len           : è¯»å–çš„é•¿åº¦
+					*pbuffer      : ç¼“å­˜åŒºæŒ‡é’ˆ
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ˜¯å¦æˆåŠŸ
 *******************************************************************************/
 uint8_t Flash_Read_Inside(uint32_t FlashStartAdd,uint8_t *pbuffer, uint32_t len)
 {
 	uint32_t i = 0;
 	for(i=0;i<len;i++)
 	{
-	  pbuffer[i] = *(uint8_t *)(FlashStartAdd+i);		//¶ÁÈ¡Ö¸¶¨µØÖ·µÄÊı¾İ
+	  pbuffer[i] = *(uint8_t *)(FlashStartAdd+i);		//è¯»å–æŒ‡å®šåœ°å€çš„æ•°æ®
 	}
 	return true;
 }

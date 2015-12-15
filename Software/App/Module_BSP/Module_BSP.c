@@ -13,101 +13,179 @@
 *********************************************************************************************************
 */
 #include "Module_BSP.h"
-
-extern uint8_t UART_Buffer[UART1_RXD_MAX];
-
-
+#include "sys_arch.h"
 
 void bsp_init(void)
 {
-    InitUpdataParam();                                                          /* µÚÒ»¸ö³õÊ¼»¯µÄº¯Êı */
+    InitUpdataParam();                                                          /* ç¬¬ä¸€ä¸ªåˆå§‹åŒ–çš„å‡½æ•° */
 
-    DelayInit();																/* ÑÓ³Ù³õÊ¼»¯ */
+    DelayInit();																/* å»¶è¿Ÿåˆå§‹åŒ– */
 
-    SYSTICK_Init(1000*1000/OS_TICKS_PER_SEC);									/* µÎ´ğÊ±ÖÓ */
+    SYSTICK_Init(1000*1000/OS_TICKS_PER_SEC);									/* æ»´ç­”æ—¶é’Ÿ */
 
-    SYSTICK_ITConfig(true);														/* ¿ªÆôSysTickÖĞ¶Ï */
+    SYSTICK_ITConfig(true);														/* å¼€å¯SysTickä¸­æ–­ */
 
-    GPIO_QuickInit(HW_GPIOE, 6, kGPIO_Mode_OPP);								/* ÅäÖÃGPIO */
+    GPIO_QuickInit(HW_GPIOE, 6, kGPIO_Mode_OPP);								/* é…ç½®GPIO */
 	/***************************************************************************/
-
-    WDOG_InitTypeDef WDOG_InitStruct1;											/* ³õÊ¼»¯¿´ÃÅ¹· */
+#if !DEBUG
+    WDOG_InitTypeDef WDOG_InitStruct1;											/* åˆå§‹åŒ–çœ‹é—¨ç‹— */
     WDOG_InitStruct1.windowInMs = 0;
-    WDOG_InitStruct1.mode = kWDOG_Mode_Normal;									/* ÉèÖÃ¿´ÃÅ¹·´¦ÓÚÕı³£¹¤×÷Ä£Ê½ */
-    WDOG_InitStruct1.timeOutInMs = 2000;										/* Ê±ÏŞ 2000MS : 2000MS ÄÚÃ»ÓĞÎ¹¹·Ôò¸´Î» */
+    WDOG_InitStruct1.mode = kWDOG_Mode_Normal;									/* è®¾ç½®çœ‹é—¨ç‹—å¤„äºæ­£å¸¸å·¥ä½œæ¨¡å¼ */
+    WDOG_InitStruct1.timeOutInMs = 2000;										/* æ—¶é™ 2000MS : 2000MS å†…æ²¡æœ‰å–‚ç‹—åˆ™å¤ä½ */
     WDOG_Init(&WDOG_InitStruct1);
-    /***************************************************************************/
-
-    CAN_QuickInit(CAN1_TX_PE24_RX_PE25, kCAN_20K);								/* ³õÊ¼»¯ CAN Ê¹ÓÃCAN1Ä£¿éµÄPTE24/25Òı½Å£¬Í¨ĞÅËÙ¶ÈÎª125k*/
-
-    CAN_CallbackInstall(HW_CAN1, CAN_ISR);										/* ÉèÖÃ½ÓÊÕÖĞ¶Ï °²×°»Øµ÷º¯Êı */
-
-    CAN_ITDMAConfig(HW_CAN1,3, kCAN_IT_RX);										/* ¿ªÆôCANÍ¨ĞÅÖĞ¶Ï½ÓÊÕ¹¦ÄÜ£¬3ºÅÓÊÏä */
-
-    CAN_SetRxMB(HW_CAN1, 3, CAN_RX_ID);											/* ÉèÖÃ 3ºÅÓÊÏäÎªCAN½ÓÊÕÓÊÏä */
-
-    /***************************************************************************/
-
-	//UART_QuickInit(UART0_RX_PD06_TX_PD07, 115200);								/* ÅäÖÃ´®¿Ú */
-
-    UART_QuickInit(UART5_RX_PE09_TX_PE08, 115200);								/* 485 ºÍ ÆÕÍ¨µÄTTL ´®¿Ú Ö»ÊÇºó¼¶Ó²¼ş²»Í¬ ¶ÔÓÚMCUÀ´Ëµ£¬¶¼ÊÇ´®¿Ú */
-#if 1
-    /* ÅäÖÃDMA ´ò¿ªUART_Tx_DMA¹¦ÄÜ */
-	UART_SetDMATxMode(HW_UART5, true);
-
-    /* ÅäÖÃDMA ´ò¿ªUART_Rx_DMA¹¦ÄÜ */
-    UART_ITDMAConfig(HW_UART5, kUART_DMA_Rx, true);
-    UART_DMARevInit(HW_UART5, DMA_REV_CH, UART_Buffer);
-
-	DMA_CallbackInstall(DMA_REV_CH, DMA_ISR);									/* °²×°»Øµ÷º¯Êı */
-
-	DMA_ITConfig(DMA_REV_CH, kDMA_IT_Major, true);								/* ´«ÊäÍê³Éºó²úÉúÖĞ¶Ï */
-
-	DMA_EnableRequest(DMA_SEND_CH);												/* Æô¶¯DMA´«Êä */
-
-    DMA_EnableRequest(DMA_REV_CH);												/*Ê¹ÄÜDMA½ÓÊÕ */
-
-    //DMA_EnableMajorLink(DMA_REV_CH, DMA_SEND_CH, true);						/* Chl-Chl Link: µ±½ÓÊÕÍ¨µÀÍê³Éºó ×Ô¶¯¿ªÆô·¢ËÍDMAÍ¨µÀ */
-#else
-
-    //UART_CallbackTxInstall(HW_UART0,UART_TX_ISR);								/** register callback function*/
-
-    //UART_ITDMAConfig(HW_UART0, kUART_IT_Tx, true);							/** open TX interrupt */
-
-    UART_CallbackRxInstall(HW_UART0, UART_RX_ISR);								/*  ÅäÖÃUART ÖĞ¶ÏÅäÖÃ ´ò¿ª½ÓÊÕÖĞ¶Ï °²×°ÖĞ¶Ï»Øµ÷º¯Êı */
-
-    UART_ITDMAConfig(HW_UART0, kUART_IT_Rx, true);								/* ´ò¿ª´®¿Ú½ÓÊÕÖĞ¶Ï¹¦ÄÜ IT ¾ÍÊÇÖĞ¶ÏµÄÒâË¼*/
 #endif
-	FLASH_Init();
+    /***************************************************************************/
+
+    CAN_QuickInit(CAN1_TX_PE24_RX_PE25, 20*1000);								/* åˆå§‹åŒ– CAN ä½¿ç”¨CAN1æ¨¡å—çš„PTE24/25å¼•è„šï¼Œé€šä¿¡é€Ÿåº¦ä¸º125k*/
+
+    CAN_CallbackInstall(HW_CAN1, CAN_ISR);										/* è®¾ç½®æ¥æ”¶ä¸­æ–­ å®‰è£…å›è°ƒå‡½æ•° */
+
+    CAN_ITDMAConfig(HW_CAN1,3, kCAN_IT_RX);										/* å¼€å¯CANé€šä¿¡ä¸­æ–­æ¥æ”¶åŠŸèƒ½ï¼Œ3å·é‚®ç®± */
+
+    CAN_SetRxMB(HW_CAN1, 3, CAN_RX_ID);											/* è®¾ç½® 3å·é‚®ç®±ä¸ºCANæ¥æ”¶é‚®ç®± */
+
+    /***************************************************************************/
+
+	DMA_UartRxd();
+    
+    UART5_DMA_init();
+    
+    UART_ITDMAConfig(HW_UART5, kUART_DMA_Rx, true);
+    
+    /***************************************************************************/
+    DMA_ITConfig(DMA_REV_CH1, kDMA_IT_Major, true);								/* ä¼ è¾“å®Œæˆåäº§ç”Ÿä¸­æ–­ */
+    
+    UART_QuickInit(UART0_RX_PD06_TX_PD07, 115200);								/* é…ç½®ä¸²å£ */
+    
+    //DMA_EnableMajorLink(DMA_REV_CH, DMA_SEND_CH, true);						/* Chl-Chl Link: å½“æ¥æ”¶é€šé“å®Œæˆå è‡ªåŠ¨å¼€å¯å‘é€DMAé€šé“ */
+
+    //UART_CallbackTxInstall(HW_UART0,UART_TX_ISR);								/* register callback function*/
+
+    //UART_ITDMAConfig(HW_UART0, kUART_IT_Tx, true);							/* open TX interrupt */
+
+    UART_CallbackRxInstall(HW_UART0, UART_RX_ISR);								/*  é…ç½®UART ä¸­æ–­é…ç½® æ‰“å¼€æ¥æ”¶ä¸­æ–­ å®‰è£…ä¸­æ–­å›è°ƒå‡½æ•° */
+
+    UART_ITDMAConfig(HW_UART0, kUART_IT_Rx, true);								/* æ‰“å¼€ä¸²å£æ¥æ”¶ä¸­æ–­åŠŸèƒ½ IT å°±æ˜¯ä¸­æ–­çš„æ„æ€*/
+
+    /***************************************************************************/
+
+	FLASH_Init();																/* åˆå§‹åŒ–flashæ¨¡å— */
 	/***************************************************************************/
 
 	RTC_QuickInit();
 
-    RTC_CallbackInstall(RTC_ISR);												/* ¿ªÆôÖĞ¶Ï */
+    RTC_CallbackInstall(RTC_ISR);												/* å¼€å¯ä¸­æ–­ */
+
     RTC_ITDMAConfig(kRTC_IT_TimeAlarm, true);
 	/***************************************************************************/
 
-	/* ³õÊ¼»¯PITÄ£¿é */
-	PIT_InitTypeDef PIT_InitStruct1;											/* ÉêÇë½á¹¹Ìå±äÁ¿ */
-	PIT_InitStruct1.chl = HW_PIT_CH0;											/* Ê¹ÓÃ0ºÅ¶¨Ê±Æ÷ */
-	PIT_InitStruct1.timeInUs = 1000*1000;										/* ¶¨Ê±ÖÜÆÚ1S */
-	PIT_Init(&PIT_InitStruct1);													/* pitÄ£¿é³õÊ¼»¯ */
+	/* åˆå§‹åŒ–PITæ¨¡å— */
+	PIT_InitTypeDef PIT_InitStruct1;											/* ç”³è¯·ç»“æ„ä½“å˜é‡ */
 
-	PIT_CallbackInstall(HW_PIT_CH0, PIT_ISR);									/* ×¢²áPIT ÖĞ¶Ï»Øµ÷º¯Êı *///0ºÅ¶¨Ê±Æ÷µÄÖĞ¶Ï´¦Àí
+	PIT_InitStruct1.chl = HW_PIT_CH0;											/* ä½¿ç”¨0å·å®šæ—¶å™¨ */
 
-	PIT_ITDMAConfig(HW_PIT_CH0, kPIT_IT_TOF, true);								/* ¿ªÆôPIT0¶¨Ê±Æ÷ÖĞ¶Ï */
+	PIT_InitStruct1.timeInUs = 1000*1000;										/* å®šæ—¶å‘¨æœŸ1S */
+
+	PIT_Init(&PIT_InitStruct1);													/* pitæ¨¡å—åˆå§‹åŒ– */
+
+	PIT_CallbackInstall(HW_PIT_CH0, PIT_ISR);									/* æ³¨å†ŒPIT ä¸­æ–­å›è°ƒå‡½æ•° *///0å·å®šæ—¶å™¨çš„ä¸­æ–­å¤„ç†
+
+	PIT_ITDMAConfig(HW_PIT_CH0, kPIT_IT_TOF, true);								/* å¼€å¯PIT0å®šæ—¶å™¨ä¸­æ–­ */
 	/***************************************************************************/
 
-    //SRAM_Init();                                                                /* SRAM³õÊ¼»¯ */
+    //SRAM_Init();                                                                /* SRAMåˆå§‹åŒ– */
 
     /***************************************************************************/
 
-    I2C_QuickInit(I2C0_SCL_PB02_SDA_PB03, 100*1000);
+    I2C_QuickInit(I2C0_SCL_PB02_SDA_PB03, 100*1000);							/* I2Cåˆå§‹åŒ– */
 
-    if( at24cxx_init(1) ) while(1);
-
-	Init_Timer_Cnt();															/* Òª·ÅÖÃµ½bsp_initµÄ×îºó */
+    if( eep_init(1) ) while(1);													/* E2Påˆå§‹åŒ– */
+    /***************************************************************************/
+    usb_host_init();                                                            /* usb and SD init */
+    /***************************************************************************/
+    Init_Timer_Cnt();															/* è¦æ”¾ç½®åˆ°bsp_initçš„æœ€å */
+    /***************************************************************************/
+//    /* æŒ‚è½½æ–‡ä»¶ç³»ç»Ÿ */
+//    FRESULT rc;//error number
+//    
+//    FATFS fs_sd;
+//
+//    FATFS *fs;
+//    
+//    fs = &fs_sd;
+//
+//    rc = f_mount(fs, "0:", 0);
+//    
+//    if(rc)while(1);
+    
+    
+	//OSENET_Init();
+	//OSLwIP_Init();
+//	GUI_Init();
+//	GUI_DispString("BMP file test\r\n");
+//	GUI_DispString("please insert SD card...\r\n");
+	
+	
 #if	DEBUG
-    printf("Bsp_Init_Finish\r\n");												/* °å¼¶³õÊ¼»¯Íê³É */
+    printf("Bsp_Init_Finish\r\n");												/* æ¿çº§åˆå§‹åŒ–å®Œæˆ */
 #endif
+}
+
+
+
+void itoa(int num,char str[])
+{
+	int sign = num;
+	int i = 0;
+	int j = 0;
+	char temp[100];
+	//å¦‚æœæ˜¯è´Ÿæ•°å°±å»æ‰ç¬¦å·,å°†-1234è½¬æˆ1234
+	if(sign < 0)
+	{
+		num = -num;
+	}
+	//è½¬æˆå­—ç¬¦ä¸²ï¼Œ1234è½¬æˆ"4321"
+	do
+	{
+		temp[i] = num % 10 + '0';
+		num /= 10;
+		i++;
+	}while(num > 0);
+	//å¦‚æœæ˜¯è´Ÿæ•°çš„è¯ï¼ŒåŠ ä¸ªç¬¦å·åœ¨æœ«å°¾ï¼Œå¦‚ï¼š"4321-"
+	if(sign < 0)
+	{
+		temp[i++] = '-';
+	}
+	temp[i] = '\0';
+	i--;
+	//å°†tempæ•°ç»„ä¸­é€†åºè¾“å…¥åˆ°stræ•°ç»„ä¸­
+	//å°†"4321-" ====> "-1234"
+	while(i >= 0)
+	{
+		str[j] = temp[i];
+		j++;
+		i--;
+	}
+	
+	str[j] = '\0';//å­—ç¬¦ä¸²ç»“æŸæ ‡è¯†
+}
+
+void get_curr_time(uint8_t* src)
+{
+    RTC_DateTime_Type td = {0};
+    RTC_GetDateTime(&td);
+    
+    uint8_t dst[10] = {0};
+    
+    itoa(td.year,dst);  strcat(src,dst);strcat(src,"å¹´");
+    
+    itoa(td.month,dst); strcat(src,dst);strcat(src,"æœˆ");
+    
+    itoa(td.day,dst);   strcat(src,dst);strcat(src,"æ—¥");
+    
+    itoa(td.hour,dst);  strcat(src,dst);strcat(src,"æ—¶");
+    
+    itoa(td.minute,dst);strcat(src,dst);strcat(src,"åˆ†");
+    
+    itoa(td.second,dst);strcat(src,dst);strcat(src,"ç§’\0");
 }

@@ -23,7 +23,7 @@ typedef enum
     kCRCTransposeBytes = 3U  /*!< Only bytes are transposed; no bits in a byte are transposed. @internal gui name="Transpose Bytes" */
 }CRC_Transpose_Type;
 
-/* CRC协议 用于快速初始化 */
+/* CRC鍗忚 鐢ㄤ簬蹇�熷垵濮嬪寲 */
 typedef enum
 {
     kCRC16_IBM,
@@ -59,8 +59,8 @@ void CRC_Init(CRC_InitTypeDef * CRC_InitStruct);
 uint32_t CRC_Generate(uint8_t* data, uint32_t len);
 
 
-uint8_t	crcCheck(uint32_t size, uint8_t* ptr );
-uint32_t crcCheck16(uint32_t size, uint8_t* ptr );
+uint8_t	crcCheck(uint16_t size, uint8_t* ptr );
+uint16_t crcCheck16(uint16_t size, uint8_t* ptr );
 
 #endif
 

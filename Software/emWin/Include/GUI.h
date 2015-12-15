@@ -21,7 +21,7 @@ for  the  purposes  of  creating  libraries  for  ARM7, ARM9, Cortex-M
 series,  and   Cortex-R4   processor-based  devices,  sublicensed  and
 distributed as part of the  MDK-ARM  Professional  under the terms and
 conditions  of  the   End  User  License  supplied  with  the  MDK-ARM
-Professional.
+Professional. 
 Full source code is available at: www.segger.com
 
 We appreciate your understanding and fairness.
@@ -447,7 +447,7 @@ void GUI_DrawLine         (int x0, int y0, int x1, int y1);
 void GUI_DrawLineRel      (int dx, int dy);
 void GUI_DrawLineTo       (int x, int y);
 void GUI_DrawPie          (int x0, int y0, int r, int a0, int a1, int Type);
-//void GUI_DrawPixel        (int x, int y);
+void GUI_DrawPixel        (int x, int y);
 void GUI_DrawPoint        (int x, int y);
 void GUI_DrawPolygon      (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
 void GUI_DrawPolyLine     (const GUI_POINT * pPoints, int NumPoints, int x0, int y0);
@@ -948,7 +948,7 @@ void              GUI_MEMDEV_SetBlurLQ              (void);
 int               GUI_MEMDEV_BlendColor32           (GUI_MEMDEV_Handle hMem, U32 BlendColor, U8 BlendIntens);
 int               GUI_MEMDEV_Dither32               (GUI_MEMDEV_Handle hMem, const LCD_API_COLOR_CONV * pColorConvAPI);
 
-/* Optional custom drawing of 16bpp memory devices */
+/* Optional custom drawing of 16bpp memory devices */  
 void GUI_MEMDEV_SetDrawMemdev16bppFunc(GUI_DRAWMEMDEV_16BPP_FUNC * pfDrawMemdev16bppFunc);
 
 /*********************************************************************

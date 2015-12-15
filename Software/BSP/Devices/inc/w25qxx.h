@@ -23,6 +23,9 @@
 #define ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))
 #endif
 
+#define W25QXX_SECTOR_SIZE  (4096)
+
+
 struct w25qxx_init_t
 {
     uint32_t (*xfer)(uint8_t *buf_in, uint8_t *buf_out, uint32_t len, uint8_t cs_state);
@@ -32,10 +35,9 @@ struct w25qxx_init_t
 
 //!< API functions
 int w25qxx_init(struct w25qxx_init_t* init);
-int w25qxx_write(uint32_t addr, uint8_t *buf, uint32_t len);
 int w25qxx_read(uint32_t addr, uint8_t *buf, uint32_t len);
-int w25qxx_write_page(uint32_t addr, uint8_t *buf, uint32_t len);
 int w25qxx_erase_sector(uint32_t addr);
+int w25qxx_write_sector(uint32_t addr, uint8_t *buf, uint32_t len);
 int w25qxx_erase_chip(void);
 int w25qxx_get_id(void);
 

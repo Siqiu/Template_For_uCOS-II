@@ -2,6 +2,42 @@
 
 <userOverrides>
   <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\App\Module_Init\Module_Init.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\App\main.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\BSP\Library\src\common.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\BSP\Library\src\cpuidy.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\BSP\Library\src\dac.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\BSP\Library\src\dma.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\BSP\Library\src\i2c.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\CPU\DeviceSupport\system_MK60D10.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>C:\work\GitHub\Template_For_uCOS-II\Software\uCOS-II\core\os_core.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
     <path>C:\work\Template_For_uCOS-II\Software\BSP\Drive\src\adc.c</path>
     <encoding>System</encoding>
   </override>
@@ -20,6 +56,42 @@
   <override>
     <path>C:\work\Template_For_uCOS-II\Software\BSP\Drive\src\wdog.c</path>
     <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\Module_BSP\Module_BSP.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\Module_CAN\Module_Can.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\Module_Protocol\Module_Protocol.h</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\main.c</path>
+    <encoding>GB2312</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\tcp_demo.c</path>
+    <encoding>GB2312</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\test.c</path>
+    <encoding>GB2312</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\BSP\Library\src\uart.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\lwip\arch\sys_arch.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\uCOS-II\config\os_cfg.h</path>
+    <encoding>GB2312</encoding>
   </override>
 </userOverrides>
 

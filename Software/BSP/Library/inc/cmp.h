@@ -4,10 +4,10 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2015.1.26
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   ******************************************************************************
   */
-  
+
 #ifndef __CH_LIB_CMP_H__
 #define __CH_LIB_CMP_H__
 
@@ -15,11 +15,11 @@
  extern "C" {
 #endif
 
-#include <stdint.h> 
+#include <stdint.h>
 
-/*!< CMP 回调函数声明 */
+/*!< CMP 鍥炶皟鍑芥暟澹版槑 */
 typedef void (*CMP_CallBackType)(void);
-     
+
 typedef struct
 {
     uint32_t                instance;

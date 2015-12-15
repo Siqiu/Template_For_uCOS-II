@@ -14,18 +14,26 @@
 */
 #include "Module_ISR.h"
 
+
 extern bool		Uart1_Rev_Flag;
-extern	uint16_t	Stitic_Time_Cnt;
+extern uint16_t	Stitic_Time_Cnt;
+extern uint8_t UART_Buffer[UART1_RXD_MAX];
+extern uint8_t *PUART_Buffer;
+extern uint16_t Rcv_Cnt;
+extern bool Uart_IDLE_Flag;
+extern uint16_t	debug;
+extern USART_CtrolBlock uart;
 
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	PIT_ISR
-  * @º¯ÊýËµÃ÷	PITÖÐ¶Ïº¯Êý
-  * @ÊäÈë²ÎÊý	ÎÞ
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	PIT_ISR
+  * @å‡½æ•°è¯´æ˜Ž	PITä¸­æ–­å‡½æ•°
+  * @è¾“å…¥å‚æ•°	æ— 
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void PIT_ISR(void)
 {
+    //Pile_Send_Tcchager(MESAGE_1,480,1500,true);
     if(Stitic_Time_Cnt>3000)
     {
         Stitic_Time_Cnt=0;
@@ -39,11 +47,11 @@ void PIT_ISR(void)
 #endif
 }
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	RTC_ISR
-  * @º¯ÊýËµÃ÷	RTCÖÐ¶Ïº¯Êý
-  * @ÊäÈë²ÎÊý	ÎÞ
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	RTC_ISR
+  * @å‡½æ•°è¯´æ˜Ž	RTCä¸­æ–­å‡½æ•°
+  * @è¾“å…¥å‚æ•°	æ— 
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void RTC_ISR(void)
 {
@@ -52,23 +60,36 @@ void RTC_ISR(void)
 #endif
 }
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	DMA_ISR
-  * @º¯ÊýËµÃ÷	DMAÖÐ¶Ïº¯Êý
-  * @ÊäÈë²ÎÊý	ÎÞ
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	DMA_ISR
+  * @å‡½æ•°è¯´æ˜Ž	DMAä¸­æ–­å‡½æ•°
+  * @è¾“å…¥å‚æ•°	æ— 
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void DMA_ISR(void)
 {
-	Uart1_Rev_Flag = true;
+    
+    if(Uart_IDLE_Flag)
+    {
+        Rcv_Cnt = 1;
+        Uart_IDLE_Flag = false;
+        debug = 0;
+        UART5->C2 |= UART_C2_ILIE_MASK;       // enable the IDLE line interrupt
+    }
+    else
+    {
+        Rcv_Cnt += 1;
+    }
+    
+        
 }
 
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	UART_TX_ISR
-  * @º¯ÊýËµÃ÷	´®¿Ú·¢ËÍÖÐ¶Ï»Øµ÷º¯Êý,ÔÚº¯ÊýÖÐÐ´ÖÐ¶ÏÏëÒª×öµÄÊÂÇé
-  * @ÊäÈë²ÎÊý	ÎÞ
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	UART_TX_ISR
+  * @å‡½æ•°è¯´æ˜Ž	ä¸²å£å‘é€ä¸­æ–­å›žè°ƒå‡½æ•°,åœ¨å‡½æ•°ä¸­å†™ä¸­æ–­æƒ³è¦åšçš„äº‹æƒ…
+  * @è¾“å…¥å‚æ•°	æ— 
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void UART_TX_ISR(uint16_t * byteToSend)
 {
@@ -83,16 +104,18 @@ void UART_TX_ISR(uint16_t * byteToSend)
 }
 
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	UART_RX_ISR
-  * @º¯ÊýËµÃ÷	´®¿Ú½ÓÊÕÖÐ¶Ï»Øµ÷º¯Êý,ÔÚº¯ÊýÖÐÐ´ÖÐ¶ÏÏëÒª×öµÄÊÂÇé
-  * @ÊäÈë²ÎÊý	ÎÞ
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	UART_RX_ISR
+  * @å‡½æ•°è¯´æ˜Ž	ä¸²å£æŽ¥æ”¶ä¸­æ–­å›žè°ƒå‡½æ•°,åœ¨å‡½æ•°ä¸­å†™ä¸­æ–­æƒ³è¦åšçš„äº‹æƒ…
+  * @è¾“å…¥å‚æ•°	æ— 
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void UART_RX_ISR(uint16_t byteReceived)
 {
+
 #if	DEBUG
-	printf("function:UART_RX_ISR\r\n");
+	//printf("function:%d\r\n",byteReceived);
 #endif
-    UART_WriteByte(HW_UART0, byteReceived);										/* ½«½ÓÊÕµ½µÄÊý¾Ý·¢ËÍ»ØÈ¥ */
+    (*PUART_Buffer++) = byteReceived;
+    UART_WriteByte(HW_UART0, byteReceived);										/* å°†æŽ¥æ”¶åˆ°çš„æ•°æ®å‘é€å›žåŽ» */
 }

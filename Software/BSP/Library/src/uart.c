@@ -12,6 +12,13 @@
 #include "uart.h"
 #include "gpio.h"
 
+extern USART_CtrolBlock uart;
+extern uint8_t UART_Buffer[UART1_RXD_MAX];
+extern uint16_t    Rcv_Cnt;
+extern bool	Uart1_Rev_Flag;
+extern bool Uart_IDLE_Flag;
+
+
 
 #if (!defined(UART_BASES))
 #ifdef  UART2
@@ -84,7 +91,7 @@ struct __FILE
 	/* standard output using printf() for debugging, no file handling */
 	/* is required. */
 };
-/* FILE is typedef¡¯ d in stdio.h. */
+/* FILE is typedefâ€™ d in stdio.h. */
 FILE __stdout;
 FILE __stdin;
 __weak int fputc(int ch,FILE *f)
@@ -218,11 +225,11 @@ _loop:
 //! @{
 
 /*******************************************************************************
- * @º¯ÊýÃû³Æ	InitUartParam
- * @º¯ÊýËµÃ÷	³õÊ¼»¯´®¿Ú³ÌÐò
- * @ÊäÈë²ÎÊý	ÎÞ
- * @Êä³ö²ÎÊý	ÎÞ
- * @·µ»Ø²ÎÊý	ÎÞ
+ * @å‡½æ•°åç§°	InitUartParam
+ * @å‡½æ•°è¯´æ˜Ž	åˆå§‹åŒ–ä¸²å£ç¨‹åº
+ * @è¾“å…¥å‚æ•°	æ— 
+ * @è¾“å‡ºå‚æ•°	æ— 
+ * @è¿”å›žå‚æ•°	æ— 
  *******************************************************************************/
 void	InitUartParam(void)
 {
@@ -233,26 +240,26 @@ void	InitUartParam(void)
 }
 
 /**
- * @brief  ³õÊ¼»¯UARTÄ£¿é
- * @note   ÓÃ»§Ðè×Ô¼º½øÐÐÒý½ÅµÄ¸´ÓÃÅäÖÃ
+ * @brief  åˆå§‹åŒ–UARTæ¨¡å—
+ * @note   ç”¨æˆ·éœ€è‡ªå·±è¿›è¡Œå¼•è„šçš„å¤ç”¨é…ç½®
  * @code
- *      //Ê¹ÓÃUART0Ä£¿é Ê¹ÓÃ115200²¨ÌØÂÊ½øÐÐÍ¨ÐÅ
- *    UART_InitTypeDef UART_InitStruct1;      //ÉêÇëÒ»¸ö½á¹¹±äÁ¿
- *    UART_InitStruct1.instance = HW_UART0;   //Ñ¡ÔñUART0Ä£¿é
- *    UART_InitStruct1.baudrate = 115200;     //ÉèÖÃÍ¨ÐÅËÙ¶ÈÎª115200
- *    UART_InitStruct1.parityMode = kUART_ParityDisabled; //Ð£ÑéÎ»½ûÖ¹
- *    UART_InitStruct1.bitPerChar = kUART_8BitsPerChar;   //Ã¿Ö¡8bit
+ *      //ä½¿ç”¨UART0æ¨¡å— ä½¿ç”¨115200æ³¢ç‰¹çŽ‡è¿›è¡Œé€šä¿¡
+ *    UART_InitTypeDef UART_InitStruct1;      //ç”³è¯·ä¸€ä¸ªç»“æž„å˜é‡
+ *    UART_InitStruct1.instance = HW_UART0;   //é€‰æ‹©UART0æ¨¡å—
+ *    UART_InitStruct1.baudrate = 115200;     //è®¾ç½®é€šä¿¡é€Ÿåº¦ä¸º115200
+ *    UART_InitStruct1.parityMode = kUART_ParityDisabled; //æ ¡éªŒä½ç¦æ­¢
+ *    UART_InitStruct1.bitPerChar = kUART_8BitsPerChar;   //æ¯å¸§8bit
  *    UART_Init(&UART_InitStruct1);
  * @endcode
- * @param  UART_InitTypeDef: ´®¿Ú¹¤×÷ÅäÖÃ´æ´¢½á¹¹Ìå
- *         instance      :Ð¾Æ¬´®¿Ú¶Ë¿Ú
- *         @arg HW_UART0 :Ð¾Æ¬µÄUART0¶Ë¿Ú
- *         @arg HW_UART1 :Ð¾Æ¬µÄUART1¶Ë¿Ú
- *         @arg HW_UART2 :Ð¾Æ¬µÄUART2¶Ë¿Ú
- *         @arg HW_UART3 :Ð¾Æ¬µÄUART3¶Ë¿Ú
- *         @arg HW_UART4 :Ð¾Æ¬µÄUART4¶Ë¿Ú
- *         @arg HW_UART5 :Ð¾Æ¬µÄUART5¶Ë¿Ú
- * @param  baudrate  :´®¿ÚÍ¨Ñ¶ËÙÂÊÉèÖÃ
+ * @param  UART_InitTypeDef: ä¸²å£å·¥ä½œé…ç½®å­˜å‚¨ç»“æž„ä½“
+ *         instance      :èŠ¯ç‰‡ä¸²å£ç«¯å£
+ *         @arg HW_UART0 :èŠ¯ç‰‡çš„UART0ç«¯å£
+ *         @arg HW_UART1 :èŠ¯ç‰‡çš„UART1ç«¯å£
+ *         @arg HW_UART2 :èŠ¯ç‰‡çš„UART2ç«¯å£
+ *         @arg HW_UART3 :èŠ¯ç‰‡çš„UART3ç«¯å£
+ *         @arg HW_UART4 :èŠ¯ç‰‡çš„UART4ç«¯å£
+ *         @arg HW_UART5 :èŠ¯ç‰‡çš„UART5ç«¯å£
+ * @param  baudrate  :ä¸²å£é€šè®¯é€ŸçŽ‡è®¾ç½®
  * @retval None
  */
 void UART_Init(UART_InitTypeDef* Init)
@@ -274,7 +281,7 @@ void UART_Init(UART_InitTypeDef* Init)
 
     /* disable Tx Rx first */
     UARTBase[Init->instance]->C2 &= ~((UART_C2_TE_MASK)|(UART_C2_RE_MASK));
-
+    
     /* baud rate generation */
     sbr = (uint16_t)((Init->srcClock)/((Init->baudrate)*16));
     brfa = ((32*Init->srcClock)/((Init->baudrate)*16)) - 32*sbr;
@@ -418,20 +425,20 @@ void UART_SetRxFIFOWatermark(uint32_t instance, uint32_t size)
 }
 
 /**
- * @brief  ´®¿Ú·¢ËÍÒ»¸ö×Ö½Ú
- * @note   ×èÈûÊ½·¢ËÍ Ö»ÓÐ·¢ËÍÍêºó²Å»á·µ»Ø
+ * @brief  ä¸²å£å‘é€ä¸€ä¸ªå­—èŠ‚
+ * @note   é˜»å¡žå¼å‘é€ åªæœ‰å‘é€å®ŒåŽæ‰ä¼šè¿”å›ž
  * @code
- *      //Ê¹ÓÃUART0Ä£¿é ·¢ËÍÊý¾Ý0x5A
+ *      //ä½¿ç”¨UART0æ¨¡å— å‘é€æ•°æ®0x5A
  *    UART_WriteByte(HW_UART0, 0x5A);
  * @endcode
- * @param  instance      :Ð¾Æ¬´®¿Ú¶Ë¿Ú
- *         @arg HW_UART0 :Ð¾Æ¬µÄUART0¶Ë¿Ú
- *         @arg HW_UART1 :Ð¾Æ¬µÄUART1¶Ë¿Ú
- *         @arg HW_UART2 :Ð¾Æ¬µÄUART2¶Ë¿Ú
- *         @arg HW_UART3 :Ð¾Æ¬µÄUART3¶Ë¿Ú
- *         @arg HW_UART4 :Ð¾Æ¬µÄUART4¶Ë¿Ú
- *         @arg HW_UART5 :Ð¾Æ¬µÄUART5¶Ë¿Ú
- * @param  ch: ÐèÒª·¢ËÍµÄÒ»×Ö½ÚÊý¾Ý
+ * @param  instance      :èŠ¯ç‰‡ä¸²å£ç«¯å£
+ *         @arg HW_UART0 :èŠ¯ç‰‡çš„UART0ç«¯å£
+ *         @arg HW_UART1 :èŠ¯ç‰‡çš„UART1ç«¯å£
+ *         @arg HW_UART2 :èŠ¯ç‰‡çš„UART2ç«¯å£
+ *         @arg HW_UART3 :èŠ¯ç‰‡çš„UART3ç«¯å£
+ *         @arg HW_UART4 :èŠ¯ç‰‡çš„UART4ç«¯å£
+ *         @arg HW_UART5 :èŠ¯ç‰‡çš„UART5ç«¯å£
+ * @param  ch: éœ€è¦å‘é€çš„ä¸€å­—èŠ‚æ•°æ®
  * @retval None
  */
 void UART_WriteByte(uint32_t instance, uint16_t ch)
@@ -457,22 +464,22 @@ void UART_WriteByte(uint32_t instance, uint16_t ch)
 
 
 /**
- * @brief  UART½ÓÊÜÒ»¸ö×Ö½Ú
- * @note   ·Ç×èÈûÊ½½ÓÊÕ Á¢¼´·µ»Ø
+ * @brief  UARTæŽ¥å—ä¸€ä¸ªå­—èŠ‚
+ * @note   éžé˜»å¡žå¼æŽ¥æ”¶ ç«‹å³è¿”å›ž
  * @code
- *      //½ÓÊÕUART0Ä£¿éµÄÊý¾Ý
- *      uint8_t data; //ÉêÇë±äÁ¿£¬´æ´¢½ÓÊÕµÄÊý¾Ý
+ *      //æŽ¥æ”¶UART0æ¨¡å—çš„æ•°æ®
+ *      uint8_t data; //ç”³è¯·å˜é‡ï¼Œå­˜å‚¨æŽ¥æ”¶çš„æ•°æ®
  *      UART_ReadByte(HW_UART0, &data);
  * @endcode
- * @param  instance      :Ð¾Æ¬´®¿Ú¶Ë¿Ú
- *         @arg HW_UART0 :Ð¾Æ¬µÄUART0¶Ë¿Ú
- *         @arg HW_UART1 :Ð¾Æ¬µÄUART1¶Ë¿Ú
- *         @arg HW_UART2 :Ð¾Æ¬µÄUART2¶Ë¿Ú
- *         @arg HW_UART3 :Ð¾Æ¬µÄUART3¶Ë¿Ú
- *         @arg HW_UART4 :Ð¾Æ¬µÄUART4¶Ë¿Ú
- *         @arg HW_UART5 :Ð¾Æ¬µÄUART5¶Ë¿Ú
- * @param  ch: ½ÓÊÕµ½µÄÊý¾ÝÖ¸Õë
- * @retval 0:³É¹¦½ÓÊÕµ½Êý¾Ý  ·Ç0:Ã»ÓÐ½ÓÊÕµ½Êý¾Ý
+ * @param  instance      :èŠ¯ç‰‡ä¸²å£ç«¯å£
+ *         @arg HW_UART0 :èŠ¯ç‰‡çš„UART0ç«¯å£
+ *         @arg HW_UART1 :èŠ¯ç‰‡çš„UART1ç«¯å£
+ *         @arg HW_UART2 :èŠ¯ç‰‡çš„UART2ç«¯å£
+ *         @arg HW_UART3 :èŠ¯ç‰‡çš„UART3ç«¯å£
+ *         @arg HW_UART4 :èŠ¯ç‰‡çš„UART4ç«¯å£
+ *         @arg HW_UART5 :èŠ¯ç‰‡çš„UART5ç«¯å£
+ * @param  ch: æŽ¥æ”¶åˆ°çš„æ•°æ®æŒ‡é’ˆ
+ * @retval 0:æˆåŠŸæŽ¥æ”¶åˆ°æ•°æ®  éž0:æ²¡æœ‰æŽ¥æ”¶åˆ°æ•°æ®
  */
 uint8_t UART_ReadByte(uint32_t instance, uint16_t *ch)
 {
@@ -489,20 +496,20 @@ uint8_t UART_ReadByte(uint32_t instance, uint16_t *ch)
 }
 
 /**
- * @brief  ÅäÖÃUARTÄ£¿éµÄÖÐ¶Ï»òDMAÊôÐÔ
+ * @brief  é…ç½®UARTæ¨¡å—çš„ä¸­æ–­æˆ–DMAå±žæ€§
  * @code
- *      //ÅäÖÃUART0Ä£¿é¿ªÆô½ÓÊÕÖÐ¶Ï¹¦ÄÜ
+ *      //é…ç½®UART0æ¨¡å—å¼€å¯æŽ¥æ”¶ä¸­æ–­åŠŸèƒ½
  *      UART_ITDMAConfig(HW_UART0, kUART_IT_Rx, true);
  * @endcode
- * @param  instance      :Ð¾Æ¬´®¿Ú¶Ë¿Ú
- *         @arg HW_UART0 :Ð¾Æ¬µÄUART0¶Ë¿Ú
- *         @arg HW_UART1 :Ð¾Æ¬µÄUART1¶Ë¿Ú
- *         @arg HW_UART2 :Ð¾Æ¬µÄUART2¶Ë¿Ú
- *         @arg HW_UART3 :Ð¾Æ¬µÄUART3¶Ë¿Ú
- *         @arg HW_UART4 :Ð¾Æ¬µÄUART4¶Ë¿Ú
- *         @arg HW_UART5 :Ð¾Æ¬µÄUART5¶Ë¿Ú
- * @param  status      :¿ª¹Ø
- * @param  config: ¹¤×÷Ä£Ê½Ñ¡Ôñ
+ * @param  instance      :èŠ¯ç‰‡ä¸²å£ç«¯å£
+ *         @arg HW_UART0 :èŠ¯ç‰‡çš„UART0ç«¯å£
+ *         @arg HW_UART1 :èŠ¯ç‰‡çš„UART1ç«¯å£
+ *         @arg HW_UART2 :èŠ¯ç‰‡çš„UART2ç«¯å£
+ *         @arg HW_UART3 :èŠ¯ç‰‡çš„UART3ç«¯å£
+ *         @arg HW_UART4 :èŠ¯ç‰‡çš„UART4ç«¯å£
+ *         @arg HW_UART5 :èŠ¯ç‰‡çš„UART5ç«¯å£
+ * @param  status      :å¼€å…³
+ * @param  config: å·¥ä½œæ¨¡å¼é€‰æ‹©
  *         @arg kUART_IT_Tx:
  *         @arg kUART_DMA_Tx:
  *         @arg kUART_IT_Rx:
@@ -548,17 +555,17 @@ void UART_ITDMAConfig(uint32_t instance, UART_ITDMAConfig_Type config, bool stat
 }
 
 /**
- * @brief  ×¢²á·¢ËÍÖÐ¶Ï»Øµ÷º¯Êý
- * @param  instance      :Ð¾Æ¬´®¿Ú¶Ë¿Ú
- *         @arg HW_UART0 :Ð¾Æ¬µÄUART0¶Ë¿Ú
- *         @arg HW_UART1 :Ð¾Æ¬µÄUART1¶Ë¿Ú
- *         @arg HW_UART2 :Ð¾Æ¬µÄUART2¶Ë¿Ú
- *         @arg HW_UART3 :Ð¾Æ¬µÄUART3¶Ë¿Ú
- *         @arg HW_UART4 :Ð¾Æ¬µÄUART4¶Ë¿Ú
- *         @arg HW_UART5 :Ð¾Æ¬µÄUART5¶Ë¿Ú
- * @param AppCBFun: »Øµ÷º¯ÊýÖ¸ÕëÈë¿Ú
+ * @brief  æ³¨å†Œå‘é€ä¸­æ–­å›žè°ƒå‡½æ•°
+ * @param  instance      :èŠ¯ç‰‡ä¸²å£ç«¯å£
+ *         @arg HW_UART0 :èŠ¯ç‰‡çš„UART0ç«¯å£
+ *         @arg HW_UART1 :èŠ¯ç‰‡çš„UART1ç«¯å£
+ *         @arg HW_UART2 :èŠ¯ç‰‡çš„UART2ç«¯å£
+ *         @arg HW_UART3 :èŠ¯ç‰‡çš„UART3ç«¯å£
+ *         @arg HW_UART4 :èŠ¯ç‰‡çš„UART4ç«¯å£
+ *         @arg HW_UART5 :èŠ¯ç‰‡çš„UART5ç«¯å£
+ * @param AppCBFun: å›žè°ƒå‡½æ•°æŒ‡é’ˆå…¥å£
  * @retval None
- * @note ¶ÔÓÚ´Ëº¯ÊýµÄ¾ßÌåÓ¦ÓÃÇë²éÔÄÓ¦ÓÃÊµÀý
+ * @note å¯¹äºŽæ­¤å‡½æ•°çš„å…·ä½“åº”ç”¨è¯·æŸ¥é˜…åº”ç”¨å®žä¾‹
  */
 void UART_CallbackTxInstall(uint32_t instance, UART_CallBackTxType AppCBFun)
 {
@@ -571,17 +578,17 @@ void UART_CallbackTxInstall(uint32_t instance, UART_CallBackTxType AppCBFun)
 }
 
 /**
- * @brief  ×¢²á½ÓÊÕÖÐ¶Ï»Øµ÷º¯Êý
- * @param  instance      :Ð¾Æ¬´®¿Ú¶Ë¿Ú
- *         @arg HW_UART0 :Ð¾Æ¬µÄUART0¶Ë¿Ú
- *         @arg HW_UART1 :Ð¾Æ¬µÄUART1¶Ë¿Ú
- *         @arg HW_UART2 :Ð¾Æ¬µÄUART2¶Ë¿Ú
- *         @arg HW_UART3 :Ð¾Æ¬µÄUART3¶Ë¿Ú
- *         @arg HW_UART4 :Ð¾Æ¬µÄUART4¶Ë¿Ú
- *         @arg HW_UART5 :Ð¾Æ¬µÄUART5¶Ë¿Ú
- * @param AppCBFun: »Øµ÷º¯ÊýÖ¸ÕëÈë¿Ú
+ * @brief  æ³¨å†ŒæŽ¥æ”¶ä¸­æ–­å›žè°ƒå‡½æ•°
+ * @param  instance      :èŠ¯ç‰‡ä¸²å£ç«¯å£
+ *         @arg HW_UART0 :èŠ¯ç‰‡çš„UART0ç«¯å£
+ *         @arg HW_UART1 :èŠ¯ç‰‡çš„UART1ç«¯å£
+ *         @arg HW_UART2 :èŠ¯ç‰‡çš„UART2ç«¯å£
+ *         @arg HW_UART3 :èŠ¯ç‰‡çš„UART3ç«¯å£
+ *         @arg HW_UART4 :èŠ¯ç‰‡çš„UART4ç«¯å£
+ *         @arg HW_UART5 :èŠ¯ç‰‡çš„UART5ç«¯å£
+ * @param AppCBFun: å›žè°ƒå‡½æ•°æŒ‡é’ˆå…¥å£
  * @retval None
- * @note ¶ÔÓÚ´Ëº¯ÊýµÄ¾ßÌåÓ¦ÓÃÇë²éÔÄÓ¦ÓÃÊµÀý
+ * @note å¯¹äºŽæ­¤å‡½æ•°çš„å…·ä½“åº”ç”¨è¯·æŸ¥é˜…åº”ç”¨å®žä¾‹
  */
 void UART_CallbackRxInstall(uint32_t instance, UART_CallBackRxType AppCBFun)
 {
@@ -595,15 +602,15 @@ void UART_CallbackRxInstall(uint32_t instance, UART_CallBackRxType AppCBFun)
 }
 
  /**
- * @brief  ´®¿Ú¿ìËÙ»¯ÅäÖÃº¯Êý
+ * @brief  ä¸²å£å¿«é€ŸåŒ–é…ç½®å‡½æ•°
  * @code
- *      // ³õÊ¼»¯ UART4 ÊôÐÔ: 115200-N-8-N-1, Tx:PC15 Rx:PC14
+ *      // åˆå§‹åŒ– UART4 å±žæ€§: 115200-N-8-N-1, Tx:PC15 Rx:PC14
  *      UART_QuickInit(UART4_RX_PC14_TX_PC15, 115200);
  * @endcode
- * @param  MAP  : ´®¿ÚÒý½ÅÅäÖÃËõÂÔÍ¼
- *         ÀýÈç UART1_RX_PE01_TX_PE00 £ºÊ¹ÓÃ´®¿Ú1µÄPTE1/PTE0Òý½Å
- * @param  baudrate: ²¨ÌØÂÊ 9600 115200...
- * @retval UARTÄ£¿éºÅ
+ * @param  MAP  : ä¸²å£å¼•è„šé…ç½®ç¼©ç•¥å›¾
+ *         ä¾‹å¦‚ UART1_RX_PE01_TX_PE00 ï¼šä½¿ç”¨ä¸²å£1çš„PTE1/PTE0å¼•è„š
+ * @param  baudrate: æ³¢ç‰¹çŽ‡ 9600 115200...
+ * @retval UARTæ¨¡å—å·
  */
 uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate)
 {
@@ -638,7 +645,24 @@ uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate)
 static void UART_IRQ_Handler(uint32_t instance)
 {
     uint16_t ch;
-    /* Tx */
+    
+    if(UARTBase[instance]->S1 & UART_S1_IDLE_MASK)
+    {
+        UARTBase[instance]->C2 &= (~UART_C2_ILIE_MASK);       // disenable the IDLE line interrupt
+        
+        uart.CommStatus |= RXD_END;
+        
+        uart.RxdByteCnt = Rcv_Cnt;
+        
+        Uart1_Rev_Flag = true;
+        Uart_IDLE_Flag = true;
+        
+        /* Reset the DMA */
+        //DMA0->TCD[DMA_REV_CH1].CSR |= DMA_CSR_DONE_MASK;                //Clear Done bit
+        DMA0->TCD[DMA_REV_CH1].DADDR = (uint32_t)UART_Buffer;
+    }
+    
+    /* Tx *//*S1 çŠ¶æ€ c2æŽ§åˆ¶*/
     if((UARTBase[instance]->S1 & UART_S1_TDRE_MASK) && (UARTBase[instance]->C2 & UART_C2_TIE_MASK))
     {
         if(UART_CallBackTxTable[instance])
@@ -656,6 +680,7 @@ static void UART_IRQ_Handler(uint32_t instance)
             UART_CallBackRxTable[instance](ch);
         }
     }
+
     if(UARTBase[instance]->S1 & UART_S1_OR_MASK)
     {
         volatile uint32_t dummy;
@@ -770,13 +795,13 @@ void UART_SetDMATxMode(uint32_t instance, bool status)
     UART_ITDMAConfig(instance, kUART_DMA_Tx, status);
 }
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	UART_SendWithDMA
-  * @º¯ÊýËµÃ÷	DMA ·¢ËÍº¯Êý
-  * @ÊäÈë²ÎÊý	dmaChl:DMAÍ¨µÀºÅ
-				buf:Òª·¢ËÍµÄ»º´æ
-				size:Òª·¢ËÍµÄ»º´æ´óÐ¡
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	UART_SendWithDMA
+  * @å‡½æ•°è¯´æ˜Ž	DMA å‘é€å‡½æ•°
+  * @è¾“å…¥å‚æ•°	dmaChl:DMAé€šé“å·
+				buf:è¦å‘é€çš„ç¼“å­˜
+				size:è¦å‘é€çš„ç¼“å­˜å¤§å°
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void UART_DMASendByte(uint32_t instance, uint8_t* buf, uint32_t size)
 {
@@ -793,28 +818,28 @@ uint32_t UART_DMAGetRemainByte(uint32_t instance)
 }
 
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	UART_DMASendInit
-  * @º¯ÊýËµÃ÷	DMA ´®¿Ú·¢ËÍ ÅäÖÃ
-  * @ÊäÈë²ÎÊý	uartInstnace:´®¿Ú±àºÅ
-				dmaChl:DMAÍ¨µÀºÅ
-				rxBuf:½ÓÊÕµÄ»º´æ
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	UART_DMASendInit
+  * @å‡½æ•°è¯´æ˜Ž	DMA ä¸²å£å‘é€ é…ç½®
+  * @è¾“å…¥å‚æ•°	uartInstnace:ä¸²å£ç¼–å·
+				dmaChl:DMAé€šé“å·
+				rxBuf:æŽ¥æ”¶çš„ç¼“å­˜
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void UART_DMASendInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * txBuf)
 {
     DMA_InitTypeDef DMA_InitStruct1 = {0};
-    DMA_InitStruct1.chl = dmaChl; /* DMAÍ¨µÀºÅ */
-    DMA_InitStruct1.chlTriggerSource = UART_SendDMATriggerSourceTable[uartInstnace];  /* DMA´¥·¢Ô´Ñ¡Ôñ */
-    DMA_InitStruct1.triggerSourceMode = kDMA_TriggerSource_Normal; /* ´¥·¢Ä£Ê½Ñ¡Ôñ */
-    DMA_InitStruct1.minorLoopByteCnt = 1;  /* MINOR LOOP ÖÐÒ»´Î´«ÊäµÄ×Ö½ÚÊý */
-    DMA_InitStruct1.majorLoopCnt = 0;//1;   /* MAJOR LOOP Ñ­»·´ÎÊý */
+    DMA_InitStruct1.chl = dmaChl; /* DMAé€šé“å· */
+    DMA_InitStruct1.chlTriggerSource = UART_SendDMATriggerSourceTable[uartInstnace];  /* DMAè§¦å‘æºé€‰æ‹© */
+    DMA_InitStruct1.triggerSourceMode = kDMA_TriggerSource_Normal; /* è§¦å‘æ¨¡å¼é€‰æ‹© */
+    DMA_InitStruct1.minorLoopByteCnt = 1;  /* MINOR LOOP ä¸­ä¸€æ¬¡ä¼ è¾“çš„å­—èŠ‚æ•° */
+    DMA_InitStruct1.majorLoopCnt = 0;//1;   /* MAJOR LOOP å¾ªçŽ¯æ¬¡æ•° */
 
-    DMA_InitStruct1.sAddr = NULL;//(uint32_t)txBuf;  /* Êý¾ÝÔ´µØÖ· */
+    DMA_InitStruct1.sAddr = NULL;//(uint32_t)txBuf;  /* æ•°æ®æºåœ°å€ */
     DMA_InitStruct1.sLastAddrAdj = 0;//-1;
     DMA_InitStruct1.sAddrOffset = 1;
-    DMA_InitStruct1.sDataWidth = kDMA_DataWidthBit_8;  /* Êý¾ÝÔ´µØÖ·Êý¾Ý¿í¶È 8 16 32 */
-    DMA_InitStruct1.sMod = kDMA_ModuloDisable;   /* Modulo ÉèÖÃ ²Î¼û AN2898 */
+    DMA_InitStruct1.sDataWidth = kDMA_DataWidthBit_8;  /* æ•°æ®æºåœ°å€æ•°æ®å®½åº¦ 8 16 32 */
+    DMA_InitStruct1.sMod = kDMA_ModuloDisable;   /* Modulo è®¾ç½® å‚è§ AN2898 */
 
     DMA_InitStruct1.dAddr = (uint32_t)UART_DataPortAddrTable[uartInstnace];
     DMA_InitStruct1.dLastAddrAdj = 0;
@@ -825,13 +850,13 @@ void UART_DMASendInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * txBuf)
 }
 
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	UART_DMARevInit
-  * @º¯ÊýËµÃ÷	DMA ´®¿Ú½ÓÊÕ ÅäÖÃ
-  * @ÊäÈë²ÎÊý	uartInstnace:´®¿Ú±àºÅ
-				dmaChl:DMAÍ¨µÀºÅ
-				rxBuf:½ÓÊÕµÄ»º´æ
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	UART_DMARevInit
+  * @å‡½æ•°è¯´æ˜Ž	DMA ä¸²å£æŽ¥æ”¶ é…ç½®
+  * @è¾“å…¥å‚æ•°	uartInstnace:ä¸²å£ç¼–å·
+				dmaChl:DMAé€šé“å·
+				rxBuf:æŽ¥æ”¶çš„ç¼“å­˜
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void UART_DMARevInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * rxBuf)
 {
@@ -854,18 +879,80 @@ void UART_DMARevInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * rxBuf)
     DMA_InitStruct1.dDataWidth = kDMA_DataWidthBit_8;
     DMA_InitStruct1.dMod = kDMA_ModuloDisable;
     DMA_Init(&DMA_InitStruct1);
-    /* Íê³É Major Loop ºó²»Í£Ö¹ Request ¼ÌÐøµÈ´ýDMAÓ²¼þ´¥·¢Ô´´¥·¢ */
+    /* å®Œæˆ Major Loop åŽä¸åœæ­¢ Request ç»§ç»­ç­‰å¾…DMAç¡¬ä»¶è§¦å‘æºè§¦å‘ */
     DMA_EnableAutoDisableRequest(dmaChl, false);
 }
 #endif
+bool DMA_UartRxd(void)
+{
+    static uint16_t instance = 5;
+    
+    DMA_InitTypeDef DMA_InitStruct1 = {0};
+    DMA_InitStruct1.chl = DMA_REV_CH1;
+    DMA_InitStruct1.chlTriggerSource = UART_RevDMATriggerSourceTable[instance];
+    DMA_InitStruct1.triggerSourceMode = kDMA_TriggerSource_Normal;//æ­£å¸¸è§¦å‘
+    DMA_InitStruct1.minorLoopByteCnt = 1;
+    DMA_InitStruct1.majorLoopCnt = 1;//å¤šå°‘æ¬¡äº§ç”Ÿä¸€æ¬¡ä¸­æ–­
 
+    DMA_InitStruct1.sAddr = (uint32_t)&UART5->D;
+    DMA_InitStruct1.sLastAddrAdj = -1;
+    DMA_InitStruct1.sAddrOffset = 1;
+    DMA_InitStruct1.sDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct1.sMod = kDMA_ModuloDisable;
 
+    DMA_InitStruct1.dAddr = (uint32_t)UART_Buffer;
+    DMA_InitStruct1.dLastAddrAdj = 0;//æŠŠæŒ‡é’ˆåç§»å›žåŽ»
+    DMA_InitStruct1.dAddrOffset = 1;
+    DMA_InitStruct1.dDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct1.dMod = kDMA_ModuloDisable;
+    DMA_Init(&DMA_InitStruct1);
+    /* å®Œæˆ Major Loop åŽä¸åœæ­¢ Request ç»§ç»­ç­‰å¾…DMAç¡¬ä»¶è§¦å‘æºè§¦å‘ */
+    DMA_EnableAutoDisableRequest(DMA_REV_CH1, false);
+    
+    DMA_CallbackInstall(DMA_REV_CH1, DMA_ISR);
+    
+    DMA0->SERQ = DMA_SERQ_SERQ(DMA_REV_CH1);                                    //enable transfer
+    
+    return true;
+}
+bool DMA_UartTxd(void)
+{
+    static uint16_t instance = 5;
+    
+    DMA_InitTypeDef DMA_InitStruct1 = {0};
+    DMA_InitStruct1.chl = DMA_SEND_CH;
+    DMA_InitStruct1.chlTriggerSource = UART_RevDMATriggerSourceTable[instance];
+    DMA_InitStruct1.triggerSourceMode = kDMA_TriggerSource_Normal;//æ­£å¸¸è§¦å‘
+    DMA_InitStruct1.minorLoopByteCnt = 1;
+    DMA_InitStruct1.majorLoopCnt = 1;//å¤šå°‘æ¬¡äº§ç”Ÿä¸€æ¬¡ä¸­æ–­
+
+    DMA_InitStruct1.sAddr = (uint32_t)&UART5->D;
+    DMA_InitStruct1.sLastAddrAdj = -1;
+    DMA_InitStruct1.sAddrOffset = 1;
+    DMA_InitStruct1.sDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct1.sMod = kDMA_ModuloDisable;
+
+    DMA_InitStruct1.dAddr = (uint32_t)UART_Buffer;
+    DMA_InitStruct1.dLastAddrAdj = 0;//æŠŠæŒ‡é’ˆåç§»å›žåŽ»
+    DMA_InitStruct1.dAddrOffset = 1;
+    DMA_InitStruct1.dDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct1.dMod = kDMA_ModuloDisable;
+    DMA_Init(&DMA_InitStruct1);
+    /* å®Œæˆ Major Loop åŽä¸åœæ­¢ Request ç»§ç»­ç­‰å¾…DMAç¡¬ä»¶è§¦å‘æºè§¦å‘ */
+    DMA_EnableAutoDisableRequest(DMA_REV_CH1, false);
+    
+    DMA_CallbackInstall(DMA_REV_CH1, DMA_ISR);
+    
+    DMA0->SERQ = DMA_SERQ_SERQ(DMA_REV_CH1);                                    //enable transfer
+    
+    return true;
+}
 /*******************************************************************************
-  * @º¯ÊýÃû³Æ	UART_SendString
-  * @º¯ÊýËµÃ÷	·¢ËÍÒ»´®×Ö·û
-  * @ÊäÈë²ÎÊý	ÎÞ
-  * @Êä³ö²ÎÊý	ÎÞ
-  * @·µ»Ø²ÎÊý	ÎÞ
+  * @å‡½æ•°åç§°	UART_SendString
+  * @å‡½æ•°è¯´æ˜Ž	å‘é€ä¸€ä¸²å­—ç¬¦
+  * @è¾“å…¥å‚æ•°	æ— 
+  * @è¾“å‡ºå‚æ•°	æ— 
+  * @è¿”å›žå‚æ•°	æ— 
 *******************************************************************************/
 void UART_SendString(uint32_t instance, uint8_t * str)
 {
@@ -873,4 +960,22 @@ void UART_SendString(uint32_t instance, uint8_t * str)
     {
         UART_WriteByte(instance, *str++);
     }
+}
+
+
+void UART5_DMA_init(void)
+{
+    UART_QuickInit(UART5_RX_PE09_TX_PE08, 115200);
+    
+    UART5->C2 &= ~((UART_C2_TE_MASK | UART_C2_RE_MASK));   //Disable UART5 first
+    
+    UART5->C5 |= UART_C5_RDMAS_MASK;      // Turn on DMA request for UART5 received event
+    
+    UART5->C1 |= UART_C1_ILT_MASK;        // Idle count start from the stop bit of previous byte
+    
+    UART5->C2 |= UART_C2_ILIE_MASK;       // enable the IDLE line interrupt
+    
+    UART5->C2 |= (UART_C2_TE_MASK | UART_C2_RE_MASK);   //Enable UART0
+    
+    NVIC_EnableIRQ(UART_IRQnTable[5]);
 }

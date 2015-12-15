@@ -3,11 +3,11 @@
 #include "chlib_k.h"
 #include "arm_math.h"
  /**
- * @brief  PITÄ£¿é¿ìËÙ³õÊ¼»¯ÅäÖÃ
+ * @brief  PITæ¨¡å—å¿«é€Ÿåˆå§‹åŒ–é…ç½®
  * @code
  * @endcode
- * @param  chl Í¨µÀºÅ
- * @param  timeInUs ²úÉúÖĞ¶ÏµÄÖÜÆÚ \µ¥Î»US
+ * @param  chl é€šé“å·
+ * @param  timeInUs äº§ç”Ÿä¸­æ–­çš„å‘¨æœŸ \å•ä½US
  * @retval None
  */
 void arm_abs_f32_demo(void);

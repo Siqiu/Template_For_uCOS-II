@@ -57,12 +57,12 @@ uint8_t	GetAddSum(uint8_t *buf, int16_t len)
 	return (sum);
 }
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		InitUpdataParam
-  * @º¯ÊıËµÃ÷		Òıµ¼×îĞÂµÄÓ¦ÓÃ³ÌĞò
-  * @ÊäÈë²ÎÊı		NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x8000);
-                    SCB->VTOR =  = PROG_BASE_ADDR_1;//ÎªÁËÅäºÏBootlaoder³ÌĞò£¬¸ü¸ÄÖĞ¶ÏÏòÁ¿±íÆğÊ¼µØÖ·
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÊÇ·ñ³É¹¦
+  * @å‡½æ•°åç§°		InitUpdataParam
+  * @å‡½æ•°è¯´æ˜		å¼•å¯¼æœ€æ–°çš„åº”ç”¨ç¨‹åº
+  * @è¾“å…¥å‚æ•°		NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x8000);
+                    SCB->VTOR =  = PROG_BASE_ADDR_1;//ä¸ºäº†é…åˆBootlaoderç¨‹åºï¼Œæ›´æ”¹ä¸­æ–­å‘é‡è¡¨èµ·å§‹åœ°å€
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ˜¯å¦æˆåŠŸ
 *******************************************************************************/
 void InitUpdataParam(void)
 {
@@ -75,20 +75,20 @@ void InitUpdataParam(void)
 	{
         *(int32_t*)0xE000ED08 = PROG_BASE_ADDR_1;
 		UpdataProg.IAP_ProgAddr = PROG_BASE_ADDR_1;
-		uchar_pt = (uint8_t *)(PROG_BASE_ADDR_1+NEW_PRG_FLAG_OFFSET);// ÉÕĞ´ÎÄ¼şµÄ°æ±¾ĞÅÏ¢
+		uchar_pt = (uint8_t *)(PROG_BASE_ADDR_1+NEW_PRG_FLAG_OFFSET);// çƒ§å†™æ–‡ä»¶çš„ç‰ˆæœ¬ä¿¡æ¯
 		uchar_pt += 3;
 	}
 	else
 	{
         *(int32_t*)0xE000ED08 = PROG_BASE_ADDR_2;
 		UpdataProg.IAP_ProgAddr = PROG_BASE_ADDR_2;
-		uchar_pt = (uint8_t *)(PROG_BASE_ADDR_2+NEW_PRG_FLAG_OFFSET);// ÉÕĞ´ÎÄ¼şµÄ°æ±¾ĞÅÏ¢
+		uchar_pt = (uint8_t *)(PROG_BASE_ADDR_2+NEW_PRG_FLAG_OFFSET);// çƒ§å†™æ–‡ä»¶çš„ç‰ˆæœ¬ä¿¡æ¯
 		uchar_pt += 3;
 	}
 #else
     *(int32_t*)0xE000ED08 = PROG_BASE_ADDR;
 	UpdataProg.IAP_ProgAddr = PROG_BASE_ADDR;
-	uchar_pt = (uint8_t *)(PROG_BASE_ADDR+NEW_PRG_FLAG_OFFSET);// ÉÕĞ´ÎÄ¼şµÄ°æ±¾ĞÅÏ¢
+	uchar_pt = (uint8_t *)(PROG_BASE_ADDR+NEW_PRG_FLAG_OFFSET);// çƒ§å†™æ–‡ä»¶çš„ç‰ˆæœ¬ä¿¡æ¯
 	uchar_pt += 3;
 #endif
 
@@ -181,7 +181,7 @@ void	UpdataProgInit(void)
 {
 	uint8_t	*buf;
 	uint32_t	erase_addr, run_addr;
-	if ((uint32_t)(&UpdataProgInit) < PROG_BASE_ADDR_2)	//ÏÖÔÚÊÇÔÚµÚ1¿é£¬ÔòÒª²Á³ıµÚ2¿é
+	if ((uint32_t)(&UpdataProgInit) < PROG_BASE_ADDR_2)	//ç°åœ¨æ˜¯åœ¨ç¬¬1å—ï¼Œåˆ™è¦æ“¦é™¤ç¬¬2å—
 	{
 		UpdataProg.IAP_ProgAddr = PROG_BASE_ADDR_2;
 		run_addr = PROG_BASE_ADDR_1;
@@ -217,7 +217,7 @@ void	UpdataProgInit(void)
 	SendDataLen = (uint16_t)(buf - AckBuf);
 }
 /*********************************************************/
-void	AckServerPackErr(uint8_t err_tpye)		//Ó¦´ğ·şÎñÆ÷Êı¾İ°ü´íÎó
+void	AckServerPackErr(uint8_t err_tpye)		//åº”ç­”æœåŠ¡å™¨æ•°æ®åŒ…é”™è¯¯
 {
 	uint8_t	*buf;
 	buf = MakeFramHead(AckBuf);
@@ -256,7 +256,7 @@ void ResetCPU(void)
 void SetUpdataProgFlag(void)
 {
 	uint32_t	updata_cnt, new_cnt_addr, cur_cnt_addr;
-	//±êÖ¾ÓĞĞ§1µ½FFFFFFFE
+	//æ ‡å¿—æœ‰æ•ˆ1åˆ°FFFFFFFE
 	if (UpdataProg.IAP_ProgAddr == PROG_BASE_ADDR_1)
 	{
 		new_cnt_addr = NEW_PRG_FLAG_ADDR1 + 12;
@@ -269,7 +269,7 @@ void SetUpdataProgFlag(void)
 	}
 
 	updata_cnt = *(uint32_t *)(cur_cnt_addr);
-	if (updata_cnt==0xFFFFFFFE)	//×î´óÁË
+	if (updata_cnt==0xFFFFFFFE)	//æœ€å¤§äº†
 	{
 		updata_cnt = 1;
 	}
@@ -298,24 +298,24 @@ GET_PACK_HEAD:
 	if (len>UART1_RXD_MAX)	return(0);
 	if (len<10)					return(0);
 	buf = SearchChar(buf, '#', len);
-	len = len_bak - ((uint32_t)buf - (uint32_t)buf_bak);	//Ê£Óà°üµÄ³¤¶È
+	len = len_bak - ((uint32_t)buf - (uint32_t)buf_bak);	//å‰©ä½™åŒ…çš„é•¿åº¦
 	if (buf==0)
 	{
-		return (0);	//Ã»ÕÒµ½£¬½áÊø
+		return (0);	//æ²¡æ‰¾åˆ°ï¼Œç»“æŸ
 	}
-	if (*(buf+1) != 'T')	//²»ÊÇ#*
+	if (*(buf+1) != 'T')	//ä¸æ˜¯#*
 	{
 		buf += 1;
 		len -= 1;
 		goto	GET_PACK_HEAD;
 	}
-	if (*(buf+2) != 'D')	//²»ÊÇ#*+
+	if (*(buf+2) != 'D')	//ä¸æ˜¯#*+
 	{
 		buf += 2;
 		len -= 2;
 		goto	GET_PACK_HEAD;
 	}
-	len = len_bak - ((uint32_t)buf - (uint32_t)buf_bak);	//Ê£Óà°üµÄ³¤¶È
+	len = len_bak - ((uint32_t)buf - (uint32_t)buf_bak);	//å‰©ä½™åŒ…çš„é•¿åº¦
 	buf_bak = (uint8_t *)buf;
 	if (*(buf_bak+len-1) != TW_PACK_END)
 	//if (buf_bak[len-1] != TW_PACK_END)
@@ -327,7 +327,7 @@ GET_PACK_HEAD:
 
 	//	ret = CompString((uchar *)(&Product_ID.DeviceId[0]), buf+3, 6);
 	//	ret |= CompString((uchar *)(&BroadcastPhyID), buf+3, 6);
-	//	if (ret==0)	return (0);		//ID²»Æ¥Åä£¬Ò²²»ÊÇ¹ã²¥ID
+	//	if (ret==0)	return (0);		//IDä¸åŒ¹é…ï¼Œä¹Ÿä¸æ˜¯å¹¿æ’­ID
 	if (buf_bak[3+5] != Product_ID.DeviceId[5]) return (0);
 	sum = GetAddSum(buf+3, len-5);
 	if (sum != *(buf_bak+len-2))
@@ -339,7 +339,7 @@ GET_PACK_HEAD:
 	{
 	case 0x01:	GetGPRS_PhyID();		break;
 	case 0x02:	UpdataProgInit();		break;
-	case 0x03:	goto DealServerData;											//·şÎñÆ÷·¢ËÍÊı¾İ Éı¼¶
+	case 0x03:	goto DealServerData;											//æœåŠ¡å™¨å‘é€æ•°æ® å‡çº§
 	case 0x04:	ResetCPU();				break;
 	default:							break;
 	}
@@ -357,7 +357,7 @@ DealServerData:
 	hard_ver = *(buf_bak+14);
 	if (hard_ver != PM_Ver[0])
 	{
-		AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+		AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 		return (1);
 	}
 
@@ -368,17 +368,17 @@ DealServerData:
 	fram_type = (fram_flag>>14)&0x03;
 
 	UpdataProg.LastFramID = UpdataProg.CurFramID;
-	UpdataProg.CurFramID   = fram_flag & 0x3FFF;		//Ö¡ºÅ
+	UpdataProg.CurFramID   = fram_flag & 0x3FFF;		//å¸§å·
 
 	switch (fram_type)
 	{
-	case 0x00: 	//µ¥Ö¡°ü£¬
-		AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+	case 0x00: 	//å•å¸§åŒ…ï¼Œ
+		AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 		break;
-	case 0x01: 	//¶àÖ¡°üÆğÊ¼
-		if ((UpdataProg.UpdataStep != 1) && (UpdataProg.UpdataStep != 2))   //µÚÒ»²½Ã»ÓĞ
+	case 0x01: 	//å¤šå¸§åŒ…èµ·å§‹
+		if ((UpdataProg.UpdataStep != 1) && (UpdataProg.UpdataStep != 2))   //ç¬¬ä¸€æ­¥æ²¡æœ‰
 		{
-			AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+			AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 			break;
 		}
 		tp = buf_bak+NEW_PRG_FLAG_OFFSET+17;
@@ -387,9 +387,9 @@ DealServerData:
 		new_hard_ver +=  (uint32_t)(*(tp++))<<16;
 		hard_ver = *(tp++);
 		new_hard_ver +=  (uint32_t)(hard_ver)<<24;
-		if (hard_ver != PM_Ver[0])	//ĞÂÎÄ¼şµÄÓ²¼ş°æ±¾²»¶Ô
+		if (hard_ver != PM_Ver[0])	//æ–°æ–‡ä»¶çš„ç¡¬ä»¶ç‰ˆæœ¬ä¸å¯¹
 		{
-			AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+			AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 			break;
 		}
 		new_soft_ver =  (uint32_t)(*(tp++))<<0;
@@ -400,28 +400,28 @@ DealServerData:
 		new_ver_sum +=  (uint32_t)(*(tp++))<<8;
 		new_ver_sum +=  (uint32_t)(*(tp++))<<16;
 		new_ver_sum +=  (uint32_t)(*(tp++))<<24;
-		if ((new_ver_sum!=(new_hard_ver+new_soft_ver)) || (new_ver_sum==0) )   //ÎÄ¼ş°æ±¾Ğ£ÑéºÍ²»¶Ô
+		if ((new_ver_sum!=(new_hard_ver+new_soft_ver)) || (new_ver_sum==0) )   //æ–‡ä»¶ç‰ˆæœ¬æ ¡éªŒå’Œä¸å¯¹
 		{
-			AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+			AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 			break;
 		}
 		UpdataProg.UpdataStep = 2;
 		flash_addr = UpdataProg.IAP_ProgAddr;
 		IAP_Flash_Char(flash_addr, buf_bak+17, NEW_PRG_FLAG_OFFSET+12);
-		IAP_Flash_Char(flash_addr+NEW_PRG_FLAG_OFFSET+16, buf_bak+NEW_PRG_FLAG_OFFSET+17+16, fram_len-NEW_PRG_FLAG_OFFSET-16);	//Ğ´Ê£ÓàµÄ
+		IAP_Flash_Char(flash_addr+NEW_PRG_FLAG_OFFSET+16, buf_bak+NEW_PRG_FLAG_OFFSET+17+16, fram_len-NEW_PRG_FLAG_OFFSET-16);	//å†™å‰©ä½™çš„
 		AckFramToServer(0x03);
 		break;
-	case 0x02: 	//¶àÖ¡°üÖĞ¼Ì
-		if ((UpdataProg.UpdataStep != 2) && (UpdataProg.UpdataStep != 3))   //µÚ2²½Ã»ÓĞ
+	case 0x02: 	//å¤šå¸§åŒ…ä¸­ç»§
+		if ((UpdataProg.UpdataStep != 2) && (UpdataProg.UpdataStep != 3))   //ç¬¬2æ­¥æ²¡æœ‰
 		{
-			AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+			AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 			break;
 		}
 		UpdataProg.UpdataStep = 3;
 
 		if ((UpdataProg.CurFramID != UpdataProg.LastFramID) && (UpdataProg.CurFramID != (UpdataProg.LastFramID+1)))
-		{   //µ±Ç°Ö¡²»ÊÇÖØ·¢µÄ£¬Ò²²»ÊÇÖ®Ç°Ö¡µÄÏÂÒ»Ö¡£¬ÓĞÌø¹ı£¬£¬²»¶ÔÀ²
-			AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+		{   //å½“å‰å¸§ä¸æ˜¯é‡å‘çš„ï¼Œä¹Ÿä¸æ˜¯ä¹‹å‰å¸§çš„ä¸‹ä¸€å¸§ï¼Œæœ‰è·³è¿‡ï¼Œï¼Œä¸å¯¹å•¦
+			AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 			UpdataProg.UpdataStep = 0;
 			break;
 		}
@@ -434,19 +434,19 @@ DealServerData:
 		}
 		else
 		{
-			AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+			AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 		}
 		break;
-	case 0x03: 	//¶àÖ¡°ü½áÊø
-		if ((UpdataProg.UpdataStep != 3) && (UpdataProg.UpdataStep != 4))   //µÚ3²½Ã»ÓĞ
+	case 0x03: 	//å¤šå¸§åŒ…ç»“æŸ
+		if ((UpdataProg.UpdataStep != 3) && (UpdataProg.UpdataStep != 4))   //ç¬¬3æ­¥æ²¡æœ‰
 		{
-			AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+			AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 			UpdataProg.UpdataStep = 0;
 			break;
 		}
 		UpdataProg.UpdataStep = 4;
 		//	flash_addr = UpdataProg.IAP_ProgAddr + (uint32)(UpdataProg.CurFramID-1)*fram_len;
-		//×îºóÒ»Ö¡£¬ÒÔÉÏÒ»Ö¡ºóµÄ½áÊøµØÖ·ÎªµØÖ·
+		//æœ€åä¸€å¸§ï¼Œä»¥ä¸Šä¸€å¸§åçš„ç»“æŸåœ°å€ä¸ºåœ°å€
 		if ((flash_addr+fram_len)<UpdataProg.IAP_ProgAddrEnd)
 		{
 			IAP_Flash_Char(flash_addr, buf_bak+17, fram_len);
@@ -455,7 +455,7 @@ DealServerData:
 		}
 		else
 		{
-			AckServerPackErr(0x03);	//°üÎŞ·¨´¦Àí£¬
+			AckServerPackErr(0x03);	//åŒ…æ— æ³•å¤„ç†ï¼Œ
 		}
 		break;
 	default:

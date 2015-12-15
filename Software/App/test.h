@@ -13,11 +13,11 @@
 #include "includes.h"
 #include "Module_Queue.h"
 /*
-EEPROM Split Factor ¡ª Determines the relative sizes of the two EEPROM subsystems.
-¡®00¡¯ = Subsystem A: EEESIZE*1/8, subsystem B: EEESIZE*7/8
-¡®01¡¯ = Subsystem A: EEESIZE*1/4, subsystem B: EEESIZE*3/4
-¡®10¡¯ = Subsystem A: EEESIZE*1/2, subsystem B: EEESIZE*1/2
-¡®11¡¯ = Subsystem A: EEESIZE*1/2, subsystem B: EEESIZE*1/2
+EEPROM Split Factor â€” Determines the relative sizes of the two EEPROM subsystems.
+â€˜00â€™ = Subsystem A: EEESIZE*1/8, subsystem B: EEESIZE*7/8
+â€˜01â€™ = Subsystem A: EEESIZE*1/4, subsystem B: EEESIZE*3/4
+â€˜10â€™ = Subsystem A: EEESIZE*1/2, subsystem B: EEESIZE*1/2
+â€˜11â€™ = Subsystem A: EEESIZE*1/2, subsystem B: EEESIZE*1/2
 */
 #define EEPROM_SUBSYS_A_1_8     0x00
 #define EEPROM_SUBSYS_A_1_4     0x10

@@ -36,7 +36,7 @@ ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
 [DebugChecksum]
-Checksum=-2043653408
+Checksum=1716590905
 [CodeCoverage]
 Enabled=_ 0
 [Disassembly]
@@ -45,12 +45,17 @@ MixedMode=1
 Path=C:\work\Template_For_uCOS-II\Debug\Exe\Project.out
 [array_types]
 Fmt0=struct <Unnamed 106> *[6]	4	0
-Fmt1=uint8_t[12]	4	0
-Fmt2=uint8_t[16]	4	0
-Fmt3=uint8_t[20]	4	0
-Fmt4=uint8_t[50]	4	0
+Fmt1=uint16_t[200]	4	0
+Fmt2=uint8_t[12]	4	0
+Fmt3=uint8_t[1536]	4	0
+Fmt4=uint8_t[16]	4	0
+Fmt5=uint8_t[200]	4	0
+Fmt6=uint8_t[20]	4	0
+Fmt7=uint8_t[50]	4	0
+Fmt8=uint8_t[8]	4	0
 [watch_formats]
-Fmt0={W}2:i	4	0
+Fmt0={W}2:Pile_State	4	0
+Fmt1={W}2:i	4	0
 [SWOTraceWindow]
 PcSampling=0
 InterruptLogs=0
@@ -113,23 +118,27 @@ Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\App\test.c}.37.9" 0 0 1 "" 0 "" 0
-Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\App\Module_Protocol\Module_Protocol.c}.71.5" 0 0 1 "" 0 "" 0
-Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\App\Module_Protocol\Module_Protocol.c}.179.17" 0 0 1 "" 0 "" 0
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\USBStack\src\usbd_kk.c}.639.9" 0 0 1 "" 0 "" 0
+Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\USBStack\src\usbd_kk.c}.658.9" 0 0 1 "" 0 "" 0
+Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\App\test.c}.214.1" 0 0 1 "" 0 "" 0
 Count=3
 [Aliases]
-A0=_ "C:\Documents and Settings\dengjianhua\桌面\STM32_NEW_1.1\user\src\main.c" ""
-A1=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\App\FW_IAP\IAP.c" ""
-A2=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\App\main.c" ""
-A3=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\CPU\CMSIS\core_cm3.h" ""
-A4=_ "C:\work\Template_For_uCOS-II\Software\uCOS-II\core\os_core.c" ""
-A5=_ "E:\work\ZX_T2_TP\ZX_T2_TP_V1.0_S\FWLIB_ST\CMSIS\core\CM3\startup\iar\startup_stm32f10x_hd.s" ""
-A6=_ "E:\work\ZX_T2_TP\ZX_T2_TP_V1.1.a_S\user\src\main.c" ""
-A7=_ "E:\work\空的ucos\Software\App\Module_IAP\Module_IAP.c" ""
-A8=_ "E:\work\空的ucos\Software\App\main.c" ""
-A9=_ "E:\work\空的ucos\Software\CPU\CMSIS\core_cm3.h" ""
-A10=_ "E:\work备份\空的工程 - ucos\Software\App\FW_IAP\IAP.c" ""
-A11=_ "E:\work备份\空的工程 - ucos\Software\App\main.c" ""
-A12=_ "E:\work备份\空的工程 - ucos\Software\CPU\CMSIS\core_cm3.h" ""
-Count=13
+A0=_ "C:\Code\Template_For_uCOS-II\Software\App\Module_malloc\Module_malloc.c" ""
+A1=_ "C:\Code\Template_For_uCOS-II\Software\App\main.c" ""
+A2=_ "C:\Documents and Settings\dengjianhua\桌面\STM32_NEW_1.1\user\src\main.c" ""
+A3=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\App\FW_IAP\IAP.c" ""
+A4=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\App\main.c" ""
+A5=_ "C:\Users\Administrator\Desktop\F1\ucos\ucos2015.04.16\空的工程 - ucos\Software\CPU\CMSIS\core_cm3.h" ""
+A6=_ "C:\work\GitHub\Template_For_uCOS-II\Software\App\main.c" ""
+A7=_ "C:\work\GitHub\Template_For_uCOS-II\Software\BSP\Library\src\pit.c" ""
+A8=_ "C:\work\Template_For_uCOS-II\Software\uCOS-II\core\os_core.c" ""
+A9=_ "E:\work\ZX_T2_TP\ZX_T2_TP_V1.0_S\FWLIB_ST\CMSIS\core\CM3\startup\iar\startup_stm32f10x_hd.s" ""
+A10=_ "E:\work\ZX_T2_TP\ZX_T2_TP_V1.1.a_S\user\src\main.c" ""
+A11=_ "E:\work\空的ucos\Software\App\Module_IAP\Module_IAP.c" ""
+A12=_ "E:\work\空的ucos\Software\App\main.c" ""
+A13=_ "E:\work\空的ucos\Software\CPU\CMSIS\core_cm3.h" ""
+A14=_ "E:\work备份\空的工程 - ucos\Software\App\FW_IAP\IAP.c" ""
+A15=_ "E:\work备份\空的工程 - ucos\Software\App\main.c" ""
+A16=_ "E:\work备份\空的工程 - ucos\Software\CPU\CMSIS\core_cm3.h" ""
+Count=17
 SuppressDialog=0

@@ -4,7 +4,7 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.24
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
   ******************************************************************************
   */
 #include "IS61WV25616.h"
@@ -20,7 +20,7 @@
 #define SRAM_TRACE(...)
 #endif
 
-//SRAM³õÊ¼»¯ÅäÖÃ
+//SRAMåˆå§‹åŒ–é…ç½®
 void SRAM_Init(void)
 {
     /* set SRAM pinMux */
@@ -34,8 +34,8 @@ void SRAM_Init(void)
     PORTC->PCR[16] = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;          // FB_BE_23_16
     PORTC->PCR[17] = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;          // FB_BE_31-24
     /* address signal */
-    PORTD->PCR[10] = PORT_PCR_MUX(6)|PORT_PCR_DSE_MASK;         //  FB_A18 
-    PORTD->PCR[9] = PORT_PCR_MUX(6)|PORT_PCR_DSE_MASK;          //  FB_A17 
+    PORTD->PCR[10] = PORT_PCR_MUX(6)|PORT_PCR_DSE_MASK;         //  FB_A18
+    PORTD->PCR[9] = PORT_PCR_MUX(6)|PORT_PCR_DSE_MASK;          //  FB_A17
     PORTD->PCR[8] = PORT_PCR_MUX(6)|PORT_PCR_DSE_MASK;          //  FB_A16
     PORTB->PCR[18] = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;         //  FB_A15
     PORTC->PCR[0]  = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;         //  FB_A14
@@ -68,19 +68,19 @@ void SRAM_Init(void)
     PORTB->PCR[23]  = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;        //  FB_AD28
     PORTB->PCR[22]  = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;        //  FB_AD29
     PORTB->PCR[21]  = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;        //  FB_AD30
-    PORTB->PCR[20]  = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;        //  FB_AD31 
+    PORTB->PCR[20]  = PORT_PCR_MUX(5)|PORT_PCR_DSE_MASK;        //  FB_AD31
     /* enable flexbus */
     FLEXBUS_InitTypeDef FLEXBUS_InitStruct;
-    FLEXBUS_InitStruct.ADSpaceMask = kFLEXBUS_ADSpace_512KByte; /* ÄÚ´æµØÖ··¶Î§ 512K */
-    FLEXBUS_InitStruct.autoAckMode = kFLEXBUS_AutoAckEnable; /*Æô¶¯×Ô¶¯Ó¦´ğ */
-    FLEXBUS_InitStruct.CSn = kFLEXBUS_CS1; /*Ê¹ÓÃCS1Æ¬Ñ¡ĞÅºÅ */
-    FLEXBUS_InitStruct.dataAlignMode = kFLEXBUS_DataLeftAligned; /*Êı¾İ×ó¶ÔÆë */
-    FLEXBUS_InitStruct.dataWidth = kFLEXBUS_PortSize_16Bit; /*Êı¾İÎ»¿í 16Î» */
-    FLEXBUS_InitStruct.baseAddress = SRAM_ADDRESS_BASE; /* »ùµØÖ· */
-    FLEXBUS_InitStruct.ByteEnableMode = kFLEXBUS_BE_AssertedReadWrite; /* ÔÚ¶ÁĞ´²Ù×÷µÄÊ±ºò¶¼²åÈë Î»Ê¹ÄÜĞÅºÅ */
+    FLEXBUS_InitStruct.ADSpaceMask = kFLEXBUS_ADSpace_512KByte; /* å†…å­˜åœ°å€èŒƒå›´ 512K */
+    FLEXBUS_InitStruct.autoAckMode = kFLEXBUS_AutoAckEnable; /*å¯åŠ¨è‡ªåŠ¨åº”ç­” */
+    FLEXBUS_InitStruct.CSn = kFLEXBUS_CS1; /*ä½¿ç”¨CS1ç‰‡é€‰ä¿¡å· */
+    FLEXBUS_InitStruct.dataAlignMode = kFLEXBUS_DataLeftAligned; /*æ•°æ®å·¦å¯¹é½ */
+    FLEXBUS_InitStruct.dataWidth = kFLEXBUS_PortSize_16Bit; /*æ•°æ®ä½å®½ 16ä½ */
+    FLEXBUS_InitStruct.baseAddress = SRAM_ADDRESS_BASE; /* åŸºåœ°å€ */
+    FLEXBUS_InitStruct.ByteEnableMode = kFLEXBUS_BE_AssertedReadWrite; /* åœ¨è¯»å†™æ“ä½œçš„æ—¶å€™éƒ½æ’å…¥ ä½ä½¿èƒ½ä¿¡å· */
     FLEXBUS_InitStruct.div = 1;
     FLEXBUS_Init(&FLEXBUS_InitStruct);
-    
+
     /* advanced config */
     FLEXBUS_AdvancedConfigTypeDef config;
     config.kFLEXBUS_brustWriteEnable = false;
@@ -91,15 +91,15 @@ void SRAM_Init(void)
     config.kFLEXBUS_WRAH = 0;
     config.kFLEXBUS_WS = 1;
     FLEXBUS_AdvancedConfig(FLEXBUS_InitStruct.CSn, &config);
-    
+
     /* config Flexbus SRAM pinmux */
     FLEXBUS_PortMuxConfig(kFLEXBUS_CSPMCR_Group3, kFLEXBUS_CSPMCR_GROUP3_BE_23_16);
     FLEXBUS_PortMuxConfig(kFLEXBUS_CSPMCR_Group2, kFLEXBUS_CSPMCR_GROUP2_BE_31_24);
     FLEXBUS_PortMuxConfig(kFLEXBUS_CSPMCR_Group1, kFLEXBUS_CSPMCR_GROUP1_CS1);
-    
+
 }
 
-//×Ô²âÊÔ³ÌĞò£¬ÏòsramÖĞĞ´Êı¾İ£¬È»ºó¶Á³öÊı¾İ£¬ÑéÖ¤Êı¾İµÄÕıÈ·ĞÔ
+//è‡ªæµ‹è¯•ç¨‹åºï¼Œå‘sramä¸­å†™æ•°æ®ï¼Œç„¶åè¯»å‡ºæ•°æ®ï¼ŒéªŒè¯æ•°æ®çš„æ­£ç¡®æ€§
 uint32_t SRAM_SelfTest(void)
 {
     uint32_t i;
@@ -107,7 +107,7 @@ uint32_t SRAM_SelfTest(void)
     address = SRAM_ADDRESS_BASE;
     size = SRAM_SIZE;
     SRAM_TRACE("memtest,address: 0x%08X size: 0x%08X\r\n", address, size);
-    
+
     /**< 8bit test */
     {
         uint8_t * p_uint8_t = (uint8_t *)address;
@@ -128,7 +128,7 @@ uint32_t SRAM_SelfTest(void)
         }
         SRAM_TRACE("8bit test pass!!\r\n");
     }
-    
+
     /**< 16bit test */
     {
         uint16_t * p_uint16_t = (uint16_t *)address;

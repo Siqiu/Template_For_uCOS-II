@@ -13,62 +13,55 @@
 *********************************************************************************************************
 */
 #include "Module_Init.h"
+#include "Module_Can.h"
 
-bool		Pile_State_Open;
-bool		Pile_State_Close;
-bool		Pile_State_Wait_Flag;
-bool		Pile_State_Open_Flag;
-bool		Pile_State_Close_Flag;
-uint16_t	Pile_State_Flag;
-uint8_t		Only_ID[12] = {0};//{'T','S','H','P','D','S','M','I','C','0','0','1'};//Î¨Ò»ID
+struct Pile_state Pile_State = {0};
+
+uint8_t		Only_ID[12] = {0};//{'T','S','H','P','D','S','M','I','C','0','0','1'};//å”¯ä¸€ID
 uint8_t		Can1_Buf[8] = {0};
 uint8_t		Can1_Buf_Flag[2] = {0xFF,0xFF};
 uint8_t		Pcak_Pile_State_All_Flag;
 uint16_t	Stitic_Time_Cnt;
-
+uint16_t    Rcv_Cnt;
 bool		Can1_Rev_Flag;
 bool		Uart1_Rev_Flag;
+bool		Uart_IDLE_Flag;
 
-
-
-
-
-OS_EVENT *key;																	//ÊÂ¼ş¿ØÖÆ¿é Ö¸Õë
-OS_EVENT * msg_test;                                                            //°´¼üÓÊÏäÊÂ¼ş¿éÖ¸Õë
-OS_EVENT * sem_test;                                                            //·äÃùÆ÷ĞÅºÅÁ¿Ö¸Õë
+Queue_t Q_dir = {0};
 
 
 uint16_t	debug;
-/* ½ÓÊÕ»º³åÇø */
+/* æ¥æ”¶ç¼“å†²åŒº */
 uint8_t UART_Buffer[UART1_RXD_MAX];
+uint8_t *PUART_Buffer = UART_Buffer;
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		Init_Timer_Cnt
-  * @º¯ÊıËµÃ÷		¸øÈ«¾Ö¼ÆÊıÆ÷ÇåÁã
-  * @ÊäÈë²ÎÊı		ÎŞ
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÎŞ
+  * @å‡½æ•°åç§°		Init_Timer_Cnt
+  * @å‡½æ•°è¯´æ˜		ç»™å…¨å±€è®¡æ•°å™¨æ¸…é›¶
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
 *******************************************************************************/
 void Init_Timer_Cnt(void)
 {
-	Pile_State_Open = 0;
-	Pile_State_Close = 0;
-	Pile_State_Wait_Flag = 0;
-	Pile_State_Open_Flag = 1;
-	Pile_State_Close_Flag = true;
-	Pile_State_Flag = 0;
+	Pile_State.Open_Flag = 1;
+	Pile_State.Close_Flag = true;
+
 	Pcak_Pile_State_All_Flag = 0;
 	Can1_Rev_Flag = false;
 	Uart1_Rev_Flag = false;
+    Uart_IDLE_Flag = false;
+    Rcv_Cnt = 0;
 	debug = 0;
-
 	Stitic_Time_Cnt = 0;
+
+    Queue_Create(&Q_dir,Q_DIR);
 
 	//Flash_Read_Inside(PROG_DATA_ADDR,Only_ID,12);
     //static uint8_t buf[20] = {'0','1','2','3','4','5','6','7','8','9','10','11'};
     //at24cxx_write(0, buf, 12);
-    at24cxx_read(0, Only_ID, 12);                                               /* read only ID */
+    eep_read(0, Only_ID, 12);                                               /* read only ID */
 
-	/* RTC ÅĞ¶ÏÊ±¼äÊÇ·ñºÏ·¨ */
+	/* RTC åˆ¤æ–­æ—¶é—´æ˜¯å¦åˆæ³• */
 	if(RTC_IsTimeValid())
 	{
 		RTC_DateTime_Type td = {0};
@@ -83,9 +76,9 @@ void Init_Timer_Cnt(void)
 #if DEBUG
 	RTC_DateTime_Type td = {0};
 	RTC_GetDateTime(&td);
-	printf("µÚÒ»´Î£º%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
+	printf("first:%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
 
-	/* ÉèÖÃÄÖÖÓÔÚµ±Ç°3Ãëºó */
+	/* è®¾ç½®é—¹é’Ÿåœ¨å½“å‰3ç§’å */
 	/*
 	RTC_GetDateTime(&td);
 	td.second += 3;

@@ -3,7 +3,7 @@
 
  /*
  * FIXME
- * CRCÖ»ÄÜÔÚMK64ÉÏÑéÖ¤Í¨¹ı, K60ÉÏ½á¹û²»¶Ô
+ * CRCåªèƒ½åœ¨MK64ä¸ŠéªŒè¯é€šè¿‡, K60ä¸Šç»“æœä¸å¯¹
  */
 
 /* common CRC protrool define */
@@ -48,8 +48,8 @@ uint16_t CRC16_GenerateSoftware(const uint8_t *src, uint32_t len)
 #endif
 
 /**
- * @brief  ³õÊ¼»¯CRCÓ²¼şÄ£¿é
- * @param  CRC_InitStruct  : CRC³õÊ¼»¯½á¹¹
+ * @brief  åˆå§‹åŒ–CRCç¡¬ä»¶æ¨¡å—
+ * @param  CRC_InitStruct  : CRCåˆå§‹åŒ–ç»“æ„
  * @retval None
  */
 void CRC_Init(CRC_InitTypeDef * CRC_InitStruct)
@@ -87,8 +87,8 @@ void CRC_Init(CRC_InitTypeDef * CRC_InitStruct)
 }
 
 /**
- * @brief  ¿ìËÙ³õÊ¼»¯CRCÓ²¼şÄ£¿é
- * @param  type  : CRCĞ­ÒéÀàĞÍ
+ * @brief  å¿«é€Ÿåˆå§‹åŒ–CRCç¡¬ä»¶æ¨¡å—
+ * @param  type  : CRCåè®®ç±»å‹
  * @retval None
  */
 void CRC_QuickInit(CRC_ProtocolType type)
@@ -135,10 +135,10 @@ static uint32_t CRC_HAL_GetCrcResult(void)
 }
 
 /**
- * @brief  ¼ÆËã²¢²úÉúCRCÔËËã½á¹û
- * @param  data  : Êı¾İÖ¸Õë
- * @param  len   : Êı¾İ³¤¶È
- * @retval CRC¼ÆËã½á¹û
+ * @brief  è®¡ç®—å¹¶äº§ç”ŸCRCè¿ç®—ç»“æœ
+ * @param  data  : æ•°æ®æŒ‡é’ˆ
+ * @param  len   : æ•°æ®é•¿åº¦
+ * @retval CRCè®¡ç®—ç»“æœ
  */
 uint32_t CRC_Generate(uint8_t* data, uint32_t len)
 {
@@ -222,15 +222,15 @@ uint32_t CRC_Generate(uint8_t* data, uint32_t len)
 
 
 /*******************************************************************************
- * @º¯ÊıÃû³Æ	crcCheck & crcCheck16
- * @º¯ÊıËµÃ÷	Òì»òĞ£Ñé
- * @ÊäÈë²ÎÊı	size£ºÊäÈëÊı¾İµÄ³¤¶È£¬ptr£ºÊı×éµÄÆğÊ¼Î»ÖÃ
- * @Êä³ö²ÎÊı	ÎŞ
- * @·µ»Ø²ÎÊı	Ğ£ÑéÖµ
+ * @å‡½æ•°åç§°	crcCheck & crcCheck16
+ * @å‡½æ•°è¯´æ˜	å¼‚æˆ–æ ¡éªŒ
+ * @è¾“å…¥å‚æ•°	sizeï¼šè¾“å…¥æ•°æ®çš„é•¿åº¦ï¼Œptrï¼šæ•°ç»„çš„èµ·å§‹ä½ç½®
+ * @è¾“å‡ºå‚æ•°	æ— 
+ * @è¿”å›å‚æ•°	æ ¡éªŒå€¼
  *******************************************************************************/
-uint8_t	crcCheck(uint32_t size, uint8_t* ptr )
+uint8_t	crcCheck(uint16_t size, uint8_t* ptr )
 {
-	uint32_t i = 0;
+	uint16_t i = 0;
 	uint8_t data = 0, crc1 = 0;
 	for( i = 0; i < size; i++, ptr++ )
 	{
@@ -243,10 +243,10 @@ uint8_t	crcCheck(uint32_t size, uint8_t* ptr )
 	return crc1;
 }
 
-uint32_t crcCheck16(uint32_t size, uint8_t* ptr )
+uint16_t crcCheck16(uint16_t size, uint8_t* ptr )
 {
-	uint32_t i = 0;
-	uint32_t data = 0, crc1 = 0;
+	uint16_t i = 0;
+	uint16_t data = 0, crc1 = 0;
 	for( i = 0; i < size; i++, ptr++ )
 	{
 		data = *ptr;

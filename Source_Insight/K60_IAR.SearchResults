@@ -1,0 +1,5 @@
+---- USBD_P_EP Matches (4 in 3 files) ----
+Usbd_event.h (e:\work\github\template_for_ucos-ii\software\usbstack\inc):extern void (* const USBD_P_EP[16])         (U32 event);
+Usbd_kk.c (e:\work\github\template_for_ucos-ii\software\usbstack\src):    if(USBD_P_EP[num])
+Usbd_kk.c (e:\work\github\template_for_ucos-ii\software\usbstack\src):        USBD_P_EP[num](cmd);
+Usb_lib.c (e:\work\github\template_for_ucos-ii\software\usbstack\port_templete):void (* const USBD_P_EP[16])         (U32 event) = {

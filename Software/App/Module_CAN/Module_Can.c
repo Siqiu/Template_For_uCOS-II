@@ -11,12 +11,8 @@
 #include "Module_Init.h"
 
 
-extern bool		Pile_State_Open;
-extern bool		Pile_State_Close;
-extern bool		Pile_State_Wait_Flag;
-extern bool		Pile_State_Open_Flag;
-extern bool		Pile_State_Close_Flag;
-extern uint16_t	Pile_State_Flag;
+extern struct Pile_state Pile_State;
+
 extern uint8_t		Can1_Buf[8];
 extern uint8_t		Can1_Buf_Flag[2];
 extern uint8_t		Pcak_Pile_State_All_Flag;
@@ -26,29 +22,27 @@ extern	uint8_t		Only_ID[12];
 
 extern	uint16_t	Stitic_Time_Cnt;
 
-extern OS_EVENT *key;																	//ÊÂ¼ş¿ØÖÆ¿é Ö¸Õë
-extern OS_EVENT * msg_test;                                                            //°´¼üÓÊÏäÊÂ¼ş¿éÖ¸Õë
-extern OS_EVENT * sem_test;                                                            //·äÃùÆ÷ĞÅºÅÁ¿Ö¸Õë
+extern OS_EVENT *key;																	//äº‹ä»¶æ§åˆ¶å— æŒ‡é’ˆ
+extern OS_EVENT * msg_test;                                                            //æŒ‰é”®é‚®ç®±äº‹ä»¶å—æŒ‡é’ˆ
+extern OS_EVENT * sem_test;                                                            //èœ‚é¸£å™¨ä¿¡å·é‡æŒ‡é’ˆ
 
 extern PROTOCOL pile_info[5];
-USART_CtrolBlock uart;
+USART_CtrolBlock uart = {0};
 
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		CAN_ISR
-  * @º¯ÊıËµÃ÷		CANÍ¨ĞÅ²âÊÔ,
-                    Ê¹ÓÃCAN1Ä£¿éµÄ3ºÅÓÊÏä²ÉÓÃÖĞ¶ÏµÄ·½Ê½½ÓÊÕÀ´×Ô0x56µÄÊı¾İ
-                    Ê¹ÓÃ2ºÅÓÊÏäÏò0x10µØÖ·µÄÉè±¸·¢ÉúÊı¾İ£¬Ê±¼ä¼ä¸ôÊÇ500ºÁÃë
-                    CANÍ¨ĞÅ ÖĞ¶Ï»Øµ÷º¯Êı£¬ÔÚÖĞ¶ÏÖĞ´¦Àí½ÓÊÕµ½µÄÊı¾İ
-  * @ÊäÈë²ÎÊı		ÎŞ
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÎŞ
+  * @å‡½æ•°åç§°		CAN_ISR
+  * @å‡½æ•°è¯´æ˜		CANé€šä¿¡æµ‹è¯•,
+                    ä½¿ç”¨CAN1æ¨¡å—çš„3å·é‚®ç®±é‡‡ç”¨ä¸­æ–­çš„æ–¹å¼æ¥æ”¶æ¥è‡ª0x56çš„æ•°æ®
+                    ä½¿ç”¨2å·é‚®ç®±å‘0x10åœ°å€çš„è®¾å¤‡å‘ç”Ÿæ•°æ®ï¼Œæ—¶é—´é—´éš”æ˜¯500æ¯«ç§’
+                    CANé€šä¿¡ ä¸­æ–­å›è°ƒå‡½æ•°ï¼Œåœ¨ä¸­æ–­ä¸­å¤„ç†æ¥æ”¶åˆ°çš„æ•°æ®
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
 *******************************************************************************/
 void CAN_ISR(void)
 {
-#if OS_CRITICAL_METHOD == 3
-	OS_CPU_SR cpu_sr;
-#endif
-	OS_ENTER_CRITICAL();
+//	OS_CPU_SR cpu_sr;
+//	OS_ENTER_CRITICAL();
 	uint8_t len;
 	uint32_t id;
 	if(CAN_ReadData(HW_CAN1, 3, &id, Can1_Buf, &len) == 0)
@@ -66,15 +60,15 @@ void CAN_ISR(void)
 	Can1_Rev_Flag = true;
 	CheckPack_Ding_Chong();
 	Pcak_Pile_State();
-	OS_EXIT_CRITICAL();
+//	OS_EXIT_CRITICAL();
 }
 
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		Pcak_Pile_State_All
-  * @º¯ÊıËµÃ÷		¼ì²é×®µÄËùÓĞµÄ×´Ì¬£º¹¦ÄÜÂë04¡¢05¡¢06
-  * @ÊäÈë²ÎÊı		ÎŞ
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÎŞ
+  * @å‡½æ•°åç§°		Pcak_Pile_State_All
+  * @å‡½æ•°è¯´æ˜		æ£€æŸ¥æ¡©çš„æ‰€æœ‰çš„çŠ¶æ€ï¼šåŠŸèƒ½ç 04ã€05ã€06
+  * @è¾“å…¥å‚æ•°		æ— 
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
 *******************************************************************************/
 void Pcak_Pile_State_All(void)
 {
@@ -90,79 +84,59 @@ void Pcak_Pile_State_All(void)
 	Pile_Send(0x01,READ_balance_info);
 	OSTimeDlyHMSM(0, 0, 0, 220);
 
-	//static uint8_t String[] = "È«²¿²éÑ¯½áÊø\r\n";
+	//static uint8_t String[] = "å…¨éƒ¨æŸ¥è¯¢ç»“æŸ\r\n";
 	//UART_DMASendByte(DMA_SEND_CH, String, sizeof(String));
 }
 
 /*******************************************************************************
-  * @º¯ÊıÃû³Æ		Pile_Send
-  * @º¯ÊıËµÃ÷		×®²éÑ¯,
-                    Ê¹ÓÃ2ºÅÓÊÏäÏò0x01µØÖ·µÄÉè±¸·¢ÉúÊı¾İ£¬Ê±¼ä¼ä¸ôÊÇ500ºÁÃë
-                    CANÍ¨ĞÅ ÖĞ¶Ï»Øµ÷º¯Êı£¬ÔÚÖĞ¶ÏÖĞ´¦Àí½ÓÊÕµ½µÄÊı¾İ
-  * @ÊäÈë²ÎÊı		pile_addr:×®µØÖ·¡¢send_type:·¢ËÍÀàĞÍ
-  * @Êä³ö²ÎÊı		ÎŞ
-  * @·µ»Ø²ÎÊı		ÎŞ
+  * @å‡½æ•°åç§°		Pile_Send
+  * @å‡½æ•°è¯´æ˜		æ¡©æŸ¥è¯¢,
+                    ä½¿ç”¨2å·é‚®ç®±å‘0x01åœ°å€çš„è®¾å¤‡å‘ç”Ÿæ•°æ®ï¼Œæ—¶é—´é—´éš”æ˜¯500æ¯«ç§’
+                    CANé€šä¿¡ ä¸­æ–­å›è°ƒå‡½æ•°ï¼Œåœ¨ä¸­æ–­ä¸­å¤„ç†æ¥æ”¶åˆ°çš„æ•°æ®
+  * @è¾“å…¥å‚æ•°		pile_addr:æ¡©åœ°å€ã€send_type:å‘é€ç±»å‹
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
 *******************************************************************************/
-void Pile_Send(uint8_t pile_addr, uint8_t send_type)
+void Pile_Send(uint32_t pile_addr, uint8_t send_type)
 {
 
-	uint8_t send_buf[8];
+	uint8_t send_buf[8] = {0};
+    send_buf[0] = pile_addr;
 	switch(send_type)
 	{
-		case CTRL_pile_open:
+		case CTRL_pile_open:/* æ‰“å¼€æ¡© */
 			{
-				uint8_t pile_open[8]	= {0x01, 0x02, 0x00, 0x00, 0x00, 0xff, 0x00, 0xFC};/* ´ò¿ª×® */
-				pile_open[0] = pile_addr;
-				pile_open[7] = crcCheck(7,pile_open);
-				memcpy(send_buf,pile_open,8);
+                send_buf[1] = CTRL_pile_open;
 				break;
 			}
-		case CTRL_pile_close:
+		case CTRL_pile_close:/* å…³é—­æ¡© */
 			{
-				uint8_t pile_close[8]	= {0x01, 0x02, 0x00, 0x00, 0x00, 0x00, 0xff, 0xFC};/* ¹Ø±Õ×® */
-				pile_close[0] = pile_addr;
-				pile_close[7] = crcCheck(7,pile_close);
-				memcpy(send_buf,pile_close,8);
+                send_buf[1] = CTRL_pile_close;
 				break;
 			}
-		case READ_pile_info:
+		case READ_pile_info:/* æ¡©ä¿¡æ¯ */
 			{
-				uint8_t pile_info[8]	= {0x01, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02};/* ×®ĞÅÏ¢ */
-				pile_info[0] = pile_addr;
-				pile_info[7] = crcCheck(7,pile_info);
-				memcpy(send_buf,pile_info,8);
+                send_buf[1] = READ_pile_info;
 				break;
 			}
-		case READ_card_info:
+		case READ_card_info:/* å¡ä¿¡æ¯ */
 			{
-				uint8_t card_info[8] 	= {0x01, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05};/* ¿¨ĞÅÏ¢ */
-				card_info[0] = pile_addr;
-				card_info[7] = crcCheck(7,card_info);
-				memcpy(send_buf,card_info,8);
+                send_buf[1] = READ_card_info;
 				break;
 			}
-		case READ_consume_info:
+		case READ_consume_info:/* æ¶ˆè´¹ä¿¡æ¯ */
 			{
-				uint8_t consume_info[8] = {0x01, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04};/* Ïû·ÑĞÅÏ¢ */
-				consume_info[0] = pile_addr;
-				consume_info[7] = crcCheck(7,consume_info);
-				memcpy(send_buf,consume_info,8);
+                send_buf[1] = READ_consume_info;
 				break;
 			}
-		case READ_balance_info:
+		case READ_balance_info:/* ä½™é¢ä¿¡æ¯ */
 			{
-				uint8_t balance_info[8]	= {0x01, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07};/* Óà¶îĞÅÏ¢ */
-				balance_info[0] = pile_addr;
-				balance_info[7] = crcCheck(7,balance_info);
-				memcpy(send_buf,balance_info,8);
+                send_buf[1] = READ_balance_info;
 				break;
 			}
-		case READ_time:
+		case READ_time:/* æ—¶é—´ä¿¡æ¯ */
 			{
-				uint8_t time_info[8]	= {0x01, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07};/* Ê±¼äĞÅÏ¢ */
-				time_info[0] = pile_addr;
-				time_info[7] = crcCheck(7,time_info);
-				memcpy(send_buf,time_info,8);
+                send_buf[1] = READ_time;
 				break;
 			}
 		case WRITE_pile_info:
@@ -177,6 +151,7 @@ void Pile_Send(uint8_t pile_addr, uint8_t send_type)
 			{
 				break;
 			}
+            send_buf[7] = crcCheck(7,send_buf);
 	};
 
 	CAN_WriteData(HW_CAN1, 2, pile_addr, send_buf, 8);
@@ -184,11 +159,40 @@ void Pile_Send(uint8_t pile_addr, uint8_t send_type)
 }
 
 /*******************************************************************************
- * @º¯ÊıÃû³Æ		Pcak_Pile_State
- * @º¯ÊıËµÃ÷		¼ì²é×®µÄ¿ª¹Ø×´Ì¬
- * @ÊäÈë²ÎÊı		ÎŞ
- * @Êä³ö²ÎÊı		ÎŞ
- * @·µ»Ø²ÎÊı		ÎŞ
+  * @å‡½æ•°åç§°		Pile_Send_Tcchager
+  * @å‡½æ•°è¯´æ˜		Tccharger
+  * @è¾“å…¥å‚æ•°		pile_addr:æ¡©åœ°å€ã€Max_voltage:æœ€å¤§ç”µå‹ã€Max_currents:æœ€å¤§ç”µæµã€flag:0å¼€å¯è¾“å‡ºã€1å…³é—­è¾“å‡º
+  * @è¾“å‡ºå‚æ•°		æ— 
+  * @è¿”å›å‚æ•°		æ— 
+*******************************************************************************/
+void Pile_Send_Tcchager(uint32_t pile_addr, uint16_t Max_voltage, uint16_t Max_currents, uint8_t flag)
+{
+    struct Tccharger Tc = {0};
+
+    Tc.Max_voltage_H    = ((Max_voltage>>8)&0xff);
+    Tc.Max_voltage_L    = (Max_voltage&0xff);
+    Tc.Max_currents_H   = ((Max_currents>>8)&0xff);
+    Tc.Max_currents_L   = (Max_currents&0xff);
+    Tc.open_control     = flag;
+
+	uint8_t send_buf[8] = {0};
+    /* æŠŠè¦å‘é€çš„æ•°æ®å¯¹åº”åˆ°å‘é€ç¼“å­˜åŒºä¸Š */
+    send_buf[0] = Tc.Max_voltage_H;
+    send_buf[1] = Tc.Max_voltage_L;
+    send_buf[2] = Tc.Max_currents_H;
+    send_buf[3] = Tc.Max_currents_L;
+    send_buf[4] = Tc.open_control;
+
+    CAN_WriteData(HW_CAN1, 2, pile_addr, send_buf, 8);
+}
+
+
+/*******************************************************************************
+ * @å‡½æ•°åç§°		Pcak_Pile_State
+ * @å‡½æ•°è¯´æ˜		æ£€æŸ¥æ¡©çš„å¼€å…³çŠ¶æ€
+ * @è¾“å…¥å‚æ•°		æ— 
+ * @è¾“å‡ºå‚æ•°		æ— 
+ * @è¿”å›å‚æ•°		æ— 
  *******************************************************************************/
 void Pcak_Pile_State(void)
 {
@@ -198,13 +202,13 @@ void Pcak_Pile_State(void)
 	OS_ENTER_CRITICAL();
 	static uint8_t String[50] = {0};
 	static uint8_t ID_Num[12] = {0};
-	if(Pile_State_Open)
+	if(Pile_State.Open)
 	{
 		if(pile_info[0].user_id|pile_info[1].user_id|pile_info[2].user_id|pile_info[3].user_id)
 		{
-			if(Pile_State_Open_Flag)
+			if(Pile_State.Open_Flag)
 			{
-				//static uint8_t String[] = "¿ªÊ¼³äµç\r\n";
+				//static uint8_t String[] = "å¼€å§‹å……ç”µ\r\n";
 				//2A 2A 54 57 00 01 00 0C 00 14
 				//31 33 38 31 32 33 34 31 32 33 34 00 00 00 00 00 00 00 00 00
 				//0D 00 2D
@@ -218,7 +222,7 @@ void Pcak_Pile_State(void)
 				*ptr++ = 0x2A;
 				*ptr++ = 0x54;
 				*ptr++ = 0x57;
-				/* Î¨Ò»ID */
+				/* å”¯ä¸€ID */
 				for(For_temp=0 ;For_temp<12;For_temp++)
 				{
 					*ptr++ = Only_ID[For_temp];
@@ -247,49 +251,49 @@ void Pcak_Pile_State(void)
 							}
 						}
 						Zero_Fill_Len = 11 - ID_Num_Len;
-						//²¹ASCIIÁã
+						//è¡¥ASCIIé›¶
 						for(For_temp_1=0;For_temp_1<Zero_Fill_Len;For_temp_1++)
 						{
 							*ptr++ = 0x30;
 						}
-						//IDµÄË³ĞòÎ»ÕıĞò
+						//IDçš„é¡ºåºä½æ­£åº
 						for(;ID_Num_Len>0;ID_Num_Len--)
 						{
 							*ptr++ = ID_Num[ID_Num_Len-1];
 						}
-						//²¹Áã
+						//è¡¥é›¶
 						Zero_Fill_Len = 9;
 						for(For_temp_1=0;For_temp_1<Zero_Fill_Len;For_temp_1++)
 						{
 							*ptr++ = 0x00;
 						}
-						*ptr++ = 0x0D;//°üÎ²
-						*ptr++ = 0x00;//°üÎ²
+						*ptr++ = 0x0D;//åŒ…å°¾
+						*ptr++ = 0x00;//åŒ…å°¾
 						*ptr++ = crcCheck(DATA_ALL_LEN-1, String);
 						uart.TxdPackLength = DATA_ALL_LEN;
 						UART_DMASendByte(DMA_SEND_CH, String, uart.TxdPackLength);
 					}
 				}
-				Pile_State_Wait_Flag = 1;
-				Pile_State_Open_Flag = 0;
+				Pile_State.Wait_Flag = 1;
+				Pile_State.Open_Flag = 0;
 			}
 		}
 	}
 
-	if(Pile_State_Close)
+	if(Pile_State.Close)
 	{
 		if(pile_info[0].user_id|pile_info[1].user_id|pile_info[2].user_id|pile_info[3].user_id)
 		{
-			if(Pile_State_Close_Flag)
+			if(Pile_State.Close_Flag)
 			{
-				if(Pile_State_Flag==2)
+				if(Pile_State.Flag==2)
 				{
-					static uint8_t String[] = "´ı»úÖĞ£¡£¡£¡\r\n";
-					UART_DMASendByte(DMA_SEND_CH, String, sizeof(String));
+					static uint8_t String1[] = "å¾…æœºä¸­ï¼ï¼ï¼\r\n";
+					UART_DMASendByte(DMA_SEND_CH, String1, sizeof(String1));
 				}
 				else
 				{
-					//static uint8_t String[] = "½áÊø³äµç\r\n";
+					//static uint8_t String[] = "ç»“æŸå……ç”µ\r\n";
 
 					uint16_t For_temp = 0;
 					uint16_t For_temp_1 = 0;
@@ -301,7 +305,7 @@ void Pcak_Pile_State(void)
 					*ptr++ = 0x2A;
 					*ptr++ = 0x54;
 					*ptr++ = 0x57;
-					/* Î¨Ò»ID */
+					/* å”¯ä¸€ID */
 					for(For_temp=0; For_temp<12;For_temp++)
 					{
 						*ptr++ = Only_ID[For_temp];
@@ -330,34 +334,34 @@ void Pcak_Pile_State(void)
 								}
 							}
 							Zero_Fill_Len = 11 - ID_Num_Len;
-							//²¹ASCIIÁã
+							//è¡¥ASCIIé›¶
 							for(For_temp_1=0;For_temp_1<Zero_Fill_Len;For_temp_1++)
 							{
 								*ptr++ = 0x30;
 							}
-							//IDµÄË³ĞòÎ»ÕıĞò
+							//IDçš„é¡ºåºä½æ­£åº
 							for(;ID_Num_Len>0;ID_Num_Len--)
 							{
 								*ptr++ = ID_Num[ID_Num_Len-1];
 							}
-							//²¹Áã
+							//è¡¥é›¶
 							Zero_Fill_Len = 9;
 							for(For_temp_1=0;For_temp_1<Zero_Fill_Len;For_temp_1++)
 							{
 								*ptr++ = 0x00;
 							}
 							String[22] = pile_info[For_temp].pay_power;
-							*ptr++ = 0x0D;//°üÎ²
-							*ptr++ = 0x00;//°üÎ²
+							*ptr++ = 0x0D;//åŒ…å°¾
+							*ptr++ = 0x00;//åŒ…å°¾
 							*ptr++ = crcCheck(DATA_ALL_LEN-1, String);
 							memset(&pile_info[For_temp],0,PROTOCOL_SIZE);
 						}
 					}
 					uart.TxdPackLength = DATA_ALL_LEN;
 					UART_DMASendByte(DMA_SEND_CH, String, uart.TxdPackLength);
-					Pile_State_Wait_Flag = 1;
+					Pile_State.Wait_Flag = 1;
 				}
-				Pile_State_Close_Flag = false;
+				Pile_State.Close_Flag = false;
 			}
 		}
 	}

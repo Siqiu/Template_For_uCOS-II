@@ -4,8 +4,9 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.25
+  * @date    2015.9.26 FreeXc 完善了ftm.c & ftm.h 文件的注释
   * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
-  * @note    ���ļ�ΪоƬFTMģ��ĵײ㹦�ܺ���
+  * @note    此文件为芯片FTM模块的底层功能函数
   ******************************************************************************
   */
 
@@ -18,14 +19,13 @@
 /* leagacy support for Kineis Z Version(inital version) */
 #if (!defined(FTM_BASES))
 
-#ifdef FTM1
-    #define FTM_BASES {FTM0, FTM1}
-#elif  FTM2
+
+#if !defined(FTM3)
     #define FTM_BASES {FTM0, FTM1, FTM2}
-#elif  FTM3
-    #define FTM_BASES {FTM0, FTM1, FTM2, FTM3}
+#elif !defined(FTM2)
+    #define FTM_BASES {FTM0, FTM1}
 #else
-    #define FTM_BASES {FTM0}     
+    #define FTM_BASES {FTM0, FTM1, FTM2, FTM3}
 #endif
 
 #endif
@@ -41,12 +41,19 @@ static const Reg_t SIM_FTMClockGateTable[] =
 {
     {(void*)&(SIM->SCGC6), SIM_SCGC6_FTM0_MASK},
     {(void*)&(SIM->SCGC6), SIM_SCGC6_FTM1_MASK},
-#ifdef FTM2
+#ifdef SIM_SCGC3_FTM2_MASK
     {(void*)&(SIM->SCGC3), SIM_SCGC3_FTM2_MASK},
 #endif
-#ifdef FTM3
+#ifdef SIM_SCGC6_FTM2_MASK
+    {(void*)&(SIM->SCGC6), SIM_SCGC6_FTM2_MASK},
+#endif
+    
+#ifdef SIM_SCGC3_FTM3_MASK
     {(void*)&(SIM->SCGC3), SIM_SCGC3_FTM3_MASK},
-#endif  
+#endif
+#ifdef SIM_SCGC6_FTM3_MASK
+    {(void*)&(SIM->SCGC6), SIM_SCGC6_FTM3_MASK},
+#endif 
 };
 static const IRQn_Type FTM_IRQnTable[] = 
 {
@@ -58,32 +65,13 @@ static const IRQn_Type FTM_IRQnTable[] =
 };
 
 
-/* FTM dual pin mode select */
-typedef enum
-{
-	kFTM_Combine,
-    kFTM_Complementary,
-    kFTM_DualEdgeCapture,
-    kFTM_DeadTime,
-    kFTM_Sync,
-    kFTM_FaultControl,
-}FTM_DualChlConfig_Type;
-
-/* internal use, FTM mode select */
-typedef enum
-{
-    kFTM_Mode_EdgeAligned,
-    kFTM_Mode_CenterAligned,
-    kFTM_Mode_Combine,
-    kFTM_Mode_Complementary,
-    kFTM_Mode_InputCapture,
-    kFTM_Mode_QuadratureDecoder,
-}FTM_Mode_Type;
-
 /* static functions declareation */
 static void FTM_SetMode(uint32_t instance, uint8_t chl, FTM_Mode_Type mode);
 void FTM_PWM_InvertPolarity(uint32_t instance, uint8_t chl, uint32_t config);
 
+/**
+ * \brief FTM初始化，内部调用，用户无需使用
+ */
 static void _FTM_InitBasic(uint32_t instance, uint32_t modulo, FTM_ClockDiv_Type ps)
 {
     /* enable clock gate */
@@ -109,9 +97,15 @@ static void _FTM_InitBasic(uint32_t instance, uint32_t modulo, FTM_ClockDiv_Type
 
 
 /**
- * @brief  �������ó�ʼ��FTMģ��ʵ���������빦��       
- * @param  MAP  : FTM��������������ģʽ�µı��룬���ftm.h�ļ�
- * @retval None
+ * @brief  快速配置初始化FTM模块实现正交解码功能       
+ * @param[in]  MAP  FTM工作在正交解码模式下的编码，详见ftm.h文件
+ * \param[in]  polarity QD 正交解码设置
+ *              \arg kFTM_QD_NormalPolarity 正常极性
+ *              \arg kFTM_QD_InvertedPolarity 反正极性
+ * \param[in]  mode QD模式选择
+ *              \arg kQD_PHABEncoding 使用AB相编码器 
+ *              \arg kQD_CountDirectionEncoding 使用方向-脉冲型编码器
+ * @return FTM模块号
  */
 uint32_t FTM_QD_QuickInit(uint32_t MAP, FTM_QD_PolarityMode_Type polarity, FTM_QD_Mode_Type mode)
 {
@@ -161,10 +155,15 @@ uint32_t FTM_QD_QuickInit(uint32_t MAP, FTM_QD_PolarityMode_Type polarity, FTM_Q
 }
 
 /**
- * @brief  ����������������     
- * @param  instance  :FTMģ���
- * @param  value     :�������ݴ洢��ַ
- * @param  direction :���巽��洢��ַ
+ * @brief  获得正交解码的数据     
+ * @param[in]  instance     FTM模块号
+ *　　　  　    \arg HW_FTM0 FTM0模块
+ *　　　  　    \arg HW_FTM1 FTM1模块
+ *　　　  　    \arg HW_FTM2 FTM2模块
+ *　　　  　    \arg HW_FTM3 FTM3模块
+ * \attention  instance的可输入的参数视不同芯片而定，例如K60没有FTM3模块
+ * @param[out] value     脉冲数据存储地址
+ * @param[out] direction 脉冲方向存储地址
  * @retval None
  */
 void FTM_QD_GetData(uint32_t instance, int* value, uint8_t* direction)
@@ -173,6 +172,16 @@ void FTM_QD_GetData(uint32_t instance, int* value, uint8_t* direction)
 	*value = (FTM_InstanceTable[instance]->CNT & 0xFFFF);
 }
 
+/**
+ * @brief  复位FTM模块的计数值（清零）     
+ * @param[in]  instance     FTM模块号
+ *　　　  　    \arg HW_FTM0 FTM0模块
+ *　　　  　    \arg HW_FTM1 FTM1模块
+ *　　　  　    \arg HW_FTM2 FTM2模块
+ *　　　  　    \arg HW_FTM3 FTM3模块
+ * \attention  instance的可输入的参数视不同芯片而定，例如K60没有FTM3模块
+ * @retval None
+ */
 void FTM_QD_ClearCount(uint32_t instance)
 {
     /* write any value to CNT will set CNT to CNTIN */
@@ -183,7 +192,7 @@ void FTM_QD_ClearCount(uint32_t instance)
 /*combine chl control*/
 /*dual capture control*/
 /**
- * @brief  �ڲ��������û��������
+ * @brief  内部函数，用户无需调用
  */
 static uint32_t get_chl_pair_index(uint8_t chl)
 {
@@ -205,17 +214,18 @@ static uint32_t get_chl_pair_index(uint8_t chl)
     }
 }
 
-
-/*!
- * @brief enable FTM peripheral timer chl pair output combine mode.
- * @param instance The FTM peripheral instance number.
- * @param chl  The FTM peripheral chl number.
- * @param enable  true to enable channle pair to combine, false to disable.
- */
-/**
- * @brief  �ڲ��������û��������
- */
 #define FTM_COMBINE_CHAN_CTRL_WIDTH  (8)
+
+/**
+ * @brief 内部函数，用户无需调用
+ * @brief enable FTM peripheral timer chl pair output combine mode.
+ * @param[in]  instance The FTM peripheral instance number.
+ * @param[in]  chl  The FTM peripheral chl number.
+ * \param[in]  mode 双通道模式配置
+ * @param[in]  newState  true to enable channle pair to combine, false to disable
+ *              \arg 0 disanble
+ *              \arg 1 enable
+ */
 static void FTM_DualChlConfig(uint32_t instance, uint8_t chl, FTM_DualChlConfig_Type mode, FunctionalState newState)
 {
     uint32_t mask = 0;
@@ -245,9 +255,8 @@ static void FTM_DualChlConfig(uint32_t instance, uint8_t chl, FTM_DualChlConfig_
     (newState == ENABLE)?(FTM_InstanceTable[instance]->COMBINE |= mask):(FTM_InstanceTable[instance]->COMBINE &= ~mask);
 }
 
-//!< ����FTM ����ģʽ
 /**
- * @brief  �ڲ��������û��������
+ * @brief  设置FTM工作模式，内部函数，用户无需调用
  */
 static void FTM_SetMode(uint32_t instance, uint8_t chl, FTM_Mode_Type mode)
 {
@@ -339,9 +348,8 @@ static void FTM_SetMode(uint32_t instance, uint8_t chl, FTM_Mode_Type mode)
     }
 }
 
-//!< ��ת FTM����
 /**
- * @brief  �ڲ��������û��������
+ * @brief  翻转FTM极性，内部函数，用户无需调用
  */
 void FTM_PWM_InvertPolarity(uint32_t instance, uint8_t chl, uint32_t config)
 {
@@ -362,14 +370,17 @@ void FTM_PWM_InvertPolarity(uint32_t instance, uint8_t chl, uint32_t config)
 
 
 /**
- * @brief  �������ó�ʼ��FTMģ��ʵ��PWM����
+ * @brief  快速配置初始化FTM模块实现PWM功能
  * @code
- *      
- * //����FTM0ģ���3ͨ����PTA6�����в���1000HZ��pwm����
- *      FTM_PWM_QuickInit(FTM0_CH3_PA06, 1000); 
+ *      //设置FTM0模块的3通道在PTA6引脚中产生1000HZ的pwm波形，默认50%占空比
+ *      FTM_PWM_QuickInit(FTM0_CH3_PA06, kPWM_EdgeAligned, 1000);
  * @endcode         
- * @param  MAP        : FTM������PWMģʽ�µı��룬���ftm.h�ļ�
- * @param  frequencyInHZ  : FTM��������Ƶ������
+ * @param[in]  MAP  FTM工作在PWM模式下的编码，详见ftm.h文件
+ * \param[in]  mode PWM波形输出模式
+ *              \arg kPWM_EdgeAligned 边沿对齐 最常用
+ *              \arg kPWM_Combine 组合模式
+ *              \arg kPWM_Complementary 互补模式 类似组合模式 但是Chl(n) 和 Chl(n+1) 是互补输出
+ * @param[in]  req  FTM工作频率设置
  * @retval None
  */
 uint8_t FTM_PWM_QuickInit(uint32_t MAP, FTM_PWM_Mode_Type mode, uint32_t req)
@@ -441,14 +452,28 @@ uint8_t FTM_PWM_QuickInit(uint32_t MAP, FTM_PWM_Mode_Type mode, uint32_t req)
 }
 
 /**
- * @brief  ����ָ�����ŵ�PWM����ռ�ձ�
+ * @brief  更改指定引脚的PWM波形占空比
  * @code
- *      //����FTM0ģ���3ͨ����PWM����ռ�ձ�Ϊ50%
- *      FTM_PWM_ChangeDuty(HW_FTM0, 3, 5000); 
+ *      //设置FTM0模块的3通道的PWM波形占空比为50%
+ *      FTM_PWM_ChangeDuty(HW_FTM0, HW_FTM_CH3, 5000); 
  * @endcode         
- * @param  instance       : ģ���
- * @param  chl            : FTM ͨ����
- * @param  pwmDuty        : ռ�ձ�
+ * @param[in]  instance     模块号
+ *　　　  　    \arg HW_FTM0 FTM0模块
+ *　　　  　    \arg HW_FTM1 FTM1模块
+ *　　　  　    \arg HW_FTM2 FTM2模块
+ *　　　  　    \arg HW_FTM3 FTM3模块
+ * \attention  instance的可输入的参数视不同芯片而定，例如K60没有FTM3模块
+ * @param[in]  chl          通道
+ *　　　  　    \arg HW_FTM_CH0 通道0
+ *　　　  　    \arg HW_FTM_CH1 通道1
+ *　　　  　    \arg HW_FTM_CH2 通道2
+ *　　　  　    \arg HW_FTM_CH3 通道3
+ *　　　  　    \arg HW_FTM_CH4 通道4
+ *　　　  　    \arg HW_FTM_CH5 通道5
+ *　　　  　    \arg HW_FTM_CH6 通道6
+ *　　　  　    \arg HW_FTM_CH7 通道7
+ * \attention  chl的可输入的参数视不同芯片而定,例如FTM1模块就没有通道7
+ * @param  pwmDuty        占空比 = pwmDuty/10000*100%
  * @retval None
  */
 void FTM_PWM_ChangeDuty(uint32_t instance, uint8_t chl, uint32_t pwmDuty)
@@ -477,9 +502,13 @@ void FTM_PWM_ChangeDuty(uint32_t instance, uint8_t chl, uint32_t pwmDuty)
 }
 
 /**
- * @brief  ��ʼ��FTM ���벶׽����
- * @param  MAP          : ���ٳ�ʼ��ͨ���б�
- * @param  ps           : ��Ƶ
+ * @brief  初始化FTM 输入捕捉功能
+ * @code
+ *      // 快速初始化FTM1模块通道1的输入捕捉功能，128分频
+ *      FTM_IC_QuickInit(FTM1_CH1_PA09, kFTM_ClockDiv128);
+ * @endcode
+ * @param[in]  MAP          快速初始化通道列表
+ * @param[in]  ps           分频,详细请见FTM_ClockDiv_Type枚举类型
  * @retval None
  */
 void FTM_IC_QuickInit(uint32_t MAP, FTM_ClockDiv_Type ps)
@@ -504,10 +533,31 @@ void FTM_IC_QuickInit(uint32_t MAP, FTM_ClockDiv_Type ps)
 }
 
 /**
- * @brief  �������벶׽����ģʽ
- * @param  instance     : ģ���
- * @param  chl          : ͨ��
- * @param  mode         : ����ģʽ
+ * @brief  设置输入捕捉触发模式
+ * @code
+ *      // 设置FTM1模块通道1的输入捕捉模式为下降沿中断
+ *      FTM_IC_SetTriggerMode(HW_FTM1, HW_FTM_CH1, kFTM_IC_FallingEdge);
+ * @endcode
+ * @param[in]  instance     模块号
+ *　　　  　    \arg HW_FTM0 FTM0模块
+ *　　　  　    \arg HW_FTM1 FTM1模块
+ *　　　  　    \arg HW_FTM2 FTM2模块
+ *　　　  　    \arg HW_FTM3 FTM3模块
+ * \attention  instance的可输入的参数视不同芯片而定，例如K60没有FTM3模块
+ * @param[in]  chl          通道
+ *　　　  　    \arg HW_FTM_CH0 通道0
+ *　　　  　    \arg HW_FTM_CH1 通道1
+ *　　　  　    \arg HW_FTM_CH2 通道2
+ *　　　  　    \arg HW_FTM_CH3 通道3
+ *　　　  　    \arg HW_FTM_CH4 通道4
+ *　　　  　    \arg HW_FTM_CH5 通道5
+ *　　　  　    \arg HW_FTM_CH6 通道6
+ *　　　  　    \arg HW_FTM_CH7 通道7
+ * \attention  chl的可输入的参数视不同芯片而定,例如FTM1模块就没有通道7
+ * @param[in]  mode         触发模式
+ *              \arg kFTM_IC_FallingEdge 下降沿触发
+ *              \arg kFTM_IC_RisingEdge 上升沿触发
+ *              \arg kFTM_IC_RisingFallingEdge 跳变沿触发
  * @retval None
  */
 void FTM_IC_SetTriggerMode(uint32_t instance, uint32_t chl, FTM_IC_Mode_Type mode)
@@ -533,10 +583,29 @@ void FTM_IC_SetTriggerMode(uint32_t instance, uint32_t chl, FTM_IC_Mode_Type mod
 }
 
 /**
- * @brief  ���FTMͨ������ֵ
- * @param  instance     : ģ���
- * @param  chl          : ͨ��
- * @retval ͨ��Counterֵ
+ * @brief  获得FTM通道计数值
+ * @code
+ *      // 获得FTM1模块通道1的计数值
+ *      uint32_t InputCaptureValue;
+ *      InputCaptureValue = FTM_GetChlCounter(HW_FTM1, HW_FTM_CH1);
+ * @endcode
+ * @param[in]  instance     模块号
+ *　　　  　    \arg HW_FTM0 FTM0模块
+ *　　　  　    \arg HW_FTM1 FTM1模块
+ *　　　  　    \arg HW_FTM2 FTM2模块
+ *　　　  　    \arg HW_FTM3 FTM3模块
+ * \attention  instance的可输入的参数视不同芯片而定，例如K60没有FTM3模块
+ * @param[in]  chl          通道
+ *　　　  　    \arg HW_FTM_CH0 通道0
+ *　　　  　    \arg HW_FTM_CH1 通道1
+ *　　　  　    \arg HW_FTM_CH2 通道2
+ *　　　  　    \arg HW_FTM_CH3 通道3
+ *　　　  　    \arg HW_FTM_CH4 通道4
+ *　　　  　    \arg HW_FTM_CH5 通道5
+ *　　　  　    \arg HW_FTM_CH6 通道6
+ *　　　  　    \arg HW_FTM_CH7 通道7
+ * \attention  chl的可输入的参数视不同芯片而定,例如FTM1模块就没有通道7
+ * @retval 通道Counter值
  */
 uint32_t FTM_GetChlCounter(uint32_t instance, uint32_t chl)
 {
@@ -544,9 +613,18 @@ uint32_t FTM_GetChlCounter(uint32_t instance, uint32_t chl)
 }
 
 /**
- * @brief  ����FTM������Counterֵ
- * @param  instance     : ģ���
- * @param  val          : Value
+ * @brief  设置FTM主计数Counter值
+ * @code
+ *      // reset the value of the FTM1 counter
+ *      FTM_SetMoudleCounter(HW_FTM1, 0);
+ * @endcode
+ * @param[in]  instance     模块号
+ *　　　  　    \arg HW_FTM0 FTM0模块
+ *　　　  　    \arg HW_FTM1 FTM1模块
+ *　　　  　    \arg HW_FTM2 FTM2模块
+ *　　　  　    \arg HW_FTM3 FTM3模块
+ * \attention  instance的可输入的参数视不同芯片而定
+ * @param[in]  val counter value
  * @retval None
  */
 void FTM_SetMoudleCounter(uint32_t instance, uint32_t val)
@@ -555,9 +633,22 @@ void FTM_SetMoudleCounter(uint32_t instance, uint32_t val)
 }
 
 /**
- * @brief  ����FTM�ص�����
- * @param  instance     : ģ���
- * @param  AppCBFun     : �ص�����ָ��
+ * @brief  设置FTM回调函数
+ * @code
+ *      // 注册FTM1模块的中断回调函数FTM1_ISR,名字可任取
+ *      static void FTM1_ISR(void)
+ *　　　{
+ *          ;//用户程序
+ *      }
+ *      FTM_CallbackInstall(HW_FTM1, FTM1_ISR);
+ * @endcode
+ * @param[in]  instance     模块号
+ *　　　  　    \arg HW_FTM0 FTM0模块
+ *　　　  　    \arg HW_FTM1 FTM1模块
+ *　　　  　    \arg HW_FTM2 FTM2模块
+ *　　　  　    \arg HW_FTM3 FTM3模块
+ * \attention  instance的可输入的参数视不同芯片而定
+ * @param[in]  AppCBFun      回调函数指针
  * @retval None
  */
 void FTM_CallbackInstall(uint32_t instance, FTM_CallBackType AppCBFun)
@@ -569,10 +660,17 @@ void FTM_CallbackInstall(uint32_t instance, FTM_CallBackType AppCBFun)
 }
 
 /**
- * @brief  FTM�ж�DMA����
- * @param  instance     : ģ���
- * @param  config       : ���Ʋ���
- * @param  flag         : ʱ�ܻ��߽�ֹ
+ * @brief  FTM中断DMA控制
+ * @param[in]  instance     模块号
+ *　　　  　    \arg HW_FTM0 FTM0模块
+ *　　　  　    \arg HW_FTM1 FTM1模块
+ *　　　  　    \arg HW_FTM2 FTM2模块
+ *　　　  　    \arg HW_FTM3 FTM3模块
+ * \attention  instance的可输入的参数视不同芯片而定
+ * @param[in]  config       控制参数，详细请见FTM_ITDMAConfig_Type的枚举类型
+ * @param[in]  flag         中断/DMA使能或者禁止
+ *              \arg 0 disable
+ *              \arg 1 enable
  * @retval None
  */
 void FTM_ITDMAConfig(uint32_t instance, FTM_ITDMAConfig_Type config, bool flag)
@@ -610,6 +708,9 @@ void FTM_ITDMAConfig(uint32_t instance, FTM_ITDMAConfig_Type config, bool flag)
     NVIC_EnableIRQ(FTM_IRQnTable[instance]);
 }
 
+/**
+ * \brief 系统FTM0中断函数，用户无需使用
+ */
 void FTM0_IRQHandler(void)
 {
     uint32_t i;
@@ -632,6 +733,9 @@ void FTM0_IRQHandler(void)
     }
 }
 
+/**
+ * \brief 系统FTM1中断函数，用户无需使用
+ */
 void FTM1_IRQHandler(void)
 {
     uint32_t i;
@@ -654,6 +758,10 @@ void FTM1_IRQHandler(void)
     }
 }
 
+#if defined(FTM2)
+/**
+ * \brief 系统FTM2中断函数，用户无需使用
+ */
 void FTM2_IRQHandler(void)
 {
     uint32_t i;
@@ -675,6 +783,7 @@ void FTM2_IRQHandler(void)
         }
     }
 }
+#endif
 
 
 /*

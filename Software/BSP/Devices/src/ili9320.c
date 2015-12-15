@@ -420,7 +420,7 @@ int ili9320_init(void)
     return ret;
 }
 
-void GUI_DrawPixel(int color, int x, int y)
+void GUI_DrawPixel111(int color, int x, int y)
 {
     switch(lcd_id)
     {

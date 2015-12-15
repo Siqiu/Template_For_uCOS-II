@@ -4,8 +4,8 @@
   * @author  YANDLD
   * @version V2.5
   * @date    2014.3.26
-  * @brief   www.beyondcore.net   http://upcmcu.taobao.com 
-  * @note    ´ËÎÄ¼şÎªĞ¾Æ¬DMAÄ£¿éµÄµ×²ã¹¦ÄÜº¯Êı
+  * @brief   www.beyondcore.net   http://upcmcu.taobao.com
+  * @note    æ­¤æ–‡ä»¶ä¸ºèŠ¯ç‰‡DMAæ¨¡å—çš„åº•å±‚åŠŸèƒ½å‡½æ•°
   ******************************************************************************
   */
 
@@ -25,9 +25,9 @@ static uint32_t DMAChlMAP;
 uint32_t _DMA_ChlAlloc(void);
 void DMA_ChlFree(uint32_t chl);
 
-/* DMAÖĞ¶ÏÏòÁ¿Èë¿Ú */
-/* Ä¬ÈÏµÚÒ»¸öDMAÖĞ¶ÏÏòÁ¿Èë¿ÚÎª0 */
-static const IRQn_Type DMA_IRQnTable[] = 
+/* DMAä¸­æ–­å‘é‡å…¥å£ */
+/* é»˜è®¤ç¬¬ä¸€ä¸ªDMAä¸­æ–­å‘é‡å…¥å£ä¸º0 */
+static const IRQn_Type DMA_IRQnTable[] =
 {
     (IRQn_Type)(0 + 0),
     (IRQn_Type)(0 + 1),
@@ -49,16 +49,16 @@ static const IRQn_Type DMA_IRQnTable[] =
 
 
 /**
- * @brief  ³õÊ¼»¯DMAÄ£¿é
- * @param  DMA_InitStruct :DMA³õÊ¼»¯ÅäÖÃ½á¹¹Ìå£¬Ïê¼ûdma.h
- * @retval ·ÖÅäµ½µÄDMA Í¨µÀ
+ * @brief  åˆå§‹åŒ–DMAæ¨¡å—
+ * @param  DMA_InitStruct :DMAåˆå§‹åŒ–é…ç½®ç»“æ„ä½“ï¼Œè¯¦è§dma.h
+ * @retval åˆ†é…åˆ°çš„DMA é€šé“
  */
 uint32_t DMA_Init(DMA_InitTypeDef *DMA_InitStruct)
 {
     uint8_t chl;
-    
+
 	/* enable DMA and DMAMUX clock */
-#if defined(DMAMUX0)  
+#if defined(DMAMUX0)
     SIM->SCGC6 |= SIM_SCGC6_DMAMUX0_MASK;
 #endif
 #if  defined(DMAMUX1)
@@ -67,9 +67,9 @@ uint32_t DMA_Init(DMA_InitTypeDef *DMA_InitStruct)
 #if  defined(DMAMUX)
     SIM->SCGC6 |= SIM_SCGC6_DMAMUX_MASK;
 #endif
-	
+
 	SIM->SCGC7 |= SIM_SCGC7_DMA_MASK;
-    
+
     chl = DMA_InitStruct->chl;
 
     /* disable chl first */
@@ -112,7 +112,7 @@ uint32_t DMA_Init(DMA_InitTypeDef *DMA_InitStruct)
     DMA0->TCD[chl].CSR |= DMA_CSR_DREQ_MASK;
 	/* enable DMAMUX */
 	DMAMUX_InstanceTable[0]->CHCFG[chl] |= DMAMUX_CHCFG_ENBL_MASK;
-    
+
     return chl;
 }
 
@@ -120,10 +120,10 @@ uint32_t DMA_ChlAlloc(void)
 {
     uint32_t i;
     uint32_t MaxDMAChl;
-    
+
     /* get max DMA chl on this device */
     MaxDMAChl = (ARRAY_SIZE(DMAMUX_InstanceTable[0]->CHCFG)>32)?(ARRAY_SIZE(DMAMUX_InstanceTable[0]->CHCFG)):(32);
-    
+
     /* alloc a chl */
     for(i=0;i<MaxDMAChl;i++)
     {
@@ -134,7 +134,7 @@ uint32_t DMA_ChlAlloc(void)
         }
     }
     return 0;
-} 
+}
 
 void DMA_ChlFree(uint32_t chl)
 {
@@ -142,13 +142,13 @@ void DMA_ChlFree(uint32_t chl)
 }
 
 /**
- * @brief  »ñµÃ DMA MajorLoopCount ¼ÆÊıÖµ
- * @param  chl: DMAÍ¨µÀºÅ
+ * @brief  è·å¾— DMA MajorLoopCount è®¡æ•°å€¼
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
  *         @arg HW_DMA_CH3
- * @retval ¼ÆÊıÖµ
+ * @retval è®¡æ•°å€¼
  */
 uint32_t DMA_GetMajorLoopCount(uint8_t chl)
 {
@@ -156,14 +156,14 @@ uint32_t DMA_GetMajorLoopCount(uint8_t chl)
 }
 
 /**
- * @brief  ÉèÖÃ DMA MajorLoopCount ¼ÆÊıÖµ
- * @param  chl: DMAÍ¨µÀºÅ
+ * @brief  è®¾ç½® DMA MajorLoopCount è®¡æ•°å€¼
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
  *         @arg HW_DMA_CH3
  * @retval None
- * @note   ÊıÖµ²»ÄÜ³¬¹ı DMA_CITER_ELINKNO_CITER_MASK
+ * @note   æ•°å€¼ä¸èƒ½è¶…è¿‡ DMA_CITER_ELINKNO_CITER_MASK
  */
 void DMA_SetMajorLoopCounter(uint8_t chl, uint32_t val)
 {
@@ -173,12 +173,12 @@ void DMA_SetMajorLoopCounter(uint8_t chl, uint32_t val)
 
 
 /**
- * @brief  Ê¹ÄÜÍ¨µÀÏìÓ¦´«Êä
+ * @brief  ä½¿èƒ½é€šé“å“åº”ä¼ è¾“
  * @code
- *     //¿ªÆôDMA µÄ0Í¨µÀ½øĞĞÊı¾İ´«Êä
+ *     //å¼€å¯DMA çš„0é€šé“è¿›è¡Œæ•°æ®ä¼ è¾“
  *     DMA_EnableRequest(HW_DMA_CH0);
  * @endcode
- * @param  chl: DMAÍ¨µÀºÅ
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
@@ -191,12 +191,12 @@ void DMA_EnableRequest(uint8_t chl)
 }
 
 /**
- * @brief  ½ûÖ¹Í¨µÀÏìÓ¦´«Êä
+ * @brief  ç¦æ­¢é€šé“å“åº”ä¼ è¾“
  * @code
- *     //¿ªÆôDMA µÄ0Í¨µÀ½øĞĞÊı¾İ´«Êä
+ *     //å¼€å¯DMA çš„0é€šé“è¿›è¡Œæ•°æ®ä¼ è¾“
  *     DMA_EnableRequest(HW_DMA_CH0);
  * @endcode
- * @param  chl: DMAÍ¨µÀºÅ
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
@@ -209,7 +209,7 @@ void DMA_DisableRequest(uint8_t chl)
 }
 
 /**
- * @brief  ÔÚMajloop ½áÊøºó  ÊÇ·ñ×Ô¶¯¹Ø±ÕRequest
+ * @brief  åœ¨Majloop ç»“æŸå  æ˜¯å¦è‡ªåŠ¨å…³é—­Request
  */
 void DMA_EnableAutoDisableRequest(uint8_t chl , bool flag)
 {
@@ -219,16 +219,16 @@ void DMA_EnableAutoDisableRequest(uint8_t chl , bool flag)
     }
     else
     {
-        DMA0->TCD[chl].CSR &= ~DMA_CSR_DREQ_MASK;  
+        DMA0->TCD[chl].CSR &= ~DMA_CSR_DREQ_MASK;
     }
 }
 
 /**
- * @brief  Ê¹ÄÜMajor LoopLink ¹¦ÄÜ
- * @note   µ±Ò»¸öÍ¨µÀ½áÊøMajorLoopLinkºó ×Ô¶¯¿ªÊ¼ÁíÒ»¸öÍ¨µÀµÄ´«Êä
- * @param  chl: DMAÍ¨µÀºÅ
- * @param  linkChl: ĞèÒªÁ¬½Óµ½Í¨µÀºÅ
- * @param  flag Ê¹ÄÜ»òÕß¹Ø±Õ
+ * @brief  ä½¿èƒ½Major LoopLink åŠŸèƒ½
+ * @note   å½“ä¸€ä¸ªé€šé“ç»“æŸMajorLoopLinkå è‡ªåŠ¨å¼€å§‹å¦ä¸€ä¸ªé€šé“çš„ä¼ è¾“
+ * @param  chl: DMAé€šé“å·
+ * @param  linkChl: éœ€è¦è¿æ¥åˆ°é€šé“å·
+ * @param  flag ä½¿èƒ½æˆ–è€…å…³é—­
  * @retval None
  */
 void DMA_EnableMajorLink(uint8_t chl , uint8_t linkChl, bool flag)
@@ -248,20 +248,20 @@ void DMA_EnableMajorLink(uint8_t chl , uint8_t linkChl, bool flag)
 }
 
 /**
- * @brief  ÉèÖÃDMA´«ÊäÍê³ÉÖĞ¶Ï
+ * @brief  è®¾ç½®DMAä¼ è¾“å®Œæˆä¸­æ–­
  * @code
- *     //¿ªÆôDMA µÄ0Í¨µÀµÄ´«ÊäÍê³ÉÖĞ¶Ï¹¦ÄÜ
+ *     //å¼€å¯DMA çš„0é€šé“çš„ä¼ è¾“å®Œæˆä¸­æ–­åŠŸèƒ½
  *     DMA_StartTransfer(HW_DMA_CH0);
- * @param  chl: DMAÍ¨µÀºÅ
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
  *         @arg HW_DMA_CH3
- * @param config: ÅäÖÃÄ£Ê½
- *         @arg kDMA_IT_Half_Disable ½ûÖ¹DMA´«ÊäÒ»°ëÖĞ¶Ï´¥·¢
- *         @arg kDMA_IT_Major_Disable ½ûÖ¹DMA´«ÊäÍê³ÉÖĞ¶Ï´¥·¢
- *         @arg kDMA_IT_Half ¿ªÆôDMA´«ÊäÒ»°ëÖĞ¶Ï´¥·¢
- *         @arg kDMA_IT_Major ¿ªÆôDMA´«ÊÀÍê³ÉÖĞ¶Ï´¥·¢
+ * @param config: é…ç½®æ¨¡å¼
+ *         @arg kDMA_IT_Half_Disable ç¦æ­¢DMAä¼ è¾“ä¸€åŠä¸­æ–­è§¦å‘
+ *         @arg kDMA_IT_Major_Disable ç¦æ­¢DMAä¼ è¾“å®Œæˆä¸­æ–­è§¦å‘
+ *         @arg kDMA_IT_Half å¼€å¯DMAä¼ è¾“ä¸€åŠä¸­æ–­è§¦å‘
+ *         @arg kDMA_IT_Major å¼€å¯DMAä¼ ä¸–å®Œæˆä¸­æ–­è§¦å‘
  * @retval None
  */
 void DMA_ITConfig(uint8_t chl, DMA_ITConfig_Type config, bool status)
@@ -281,20 +281,20 @@ void DMA_ITConfig(uint8_t chl, DMA_ITConfig_Type config, bool status)
             (status)?
             (DMA0->TCD[chl].CSR |= DMA_CSR_INTMAJOR_MASK):
             (DMA0->TCD[chl].CSR &= ~DMA_CSR_INTMAJOR_MASK);
-            break; 
+            break;
         default:
             break;
     }
 }
 
 /**
- * @brief  ×¢²áÖĞ¶Ï»Øµ÷º¯Êı
- * @param  chl: DMAÍ¨µÀºÅ
+ * @brief  æ³¨å†Œä¸­æ–­å›è°ƒå‡½æ•°
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
  *         @arg HW_DMA_CH3
- * @param AppCBFun: »Øµ÷º¯ÊıÖ¸Õë
+ * @param AppCBFun: å›è°ƒå‡½æ•°æŒ‡é’ˆ
  * @retval None
  */
 void DMA_CallbackInstall(uint8_t chl, DMA_CallBackType AppCBFun)
@@ -306,16 +306,16 @@ void DMA_CallbackInstall(uint8_t chl, DMA_CallBackType AppCBFun)
 }
 
 /**
- * @brief  ¼ì²âDMA´«ÊäÊÇ·ñÍê³É
+ * @brief  æ£€æµ‹DMAä¼ è¾“æ˜¯å¦å®Œæˆ
  * @code
- *     //¼ì²âDMAµÄ0Í¨µÀÊÇ·ñÍê³ÉÊı¾İ´«Êä
+ *     //æ£€æµ‹DMAçš„0é€šé“æ˜¯å¦å®Œæˆæ•°æ®ä¼ è¾“
  *     status = IsMajorLoopComplete(HW_DMA_CH0);
- * @param  chl: DMAÍ¨µÀºÅ
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
  *         @arg HW_DMA_CH3
- * @retval 0:Êı¾İ´«ÊäÍê³É 1:Êı¾İ´«ÊäÎ´Íê³É
+ * @retval 0:æ•°æ®ä¼ è¾“å®Œæˆ 1:æ•°æ®ä¼ è¾“æœªå®Œæˆ
  */
 
 uint8_t DMA_IsMajorLoopComplete(uint8_t chl)
@@ -339,13 +339,13 @@ uint8_t DMA_IsMajorLoopComplete(uint8_t chl)
 }
 
 /**
- * @brief  ÉèÖÃDMAÄ£¿éÖ¸¶¨Í¨µÀµÄÄ¿±êµØÖ·
- * @param  chl: DMAÍ¨µÀºÅ
+ * @brief  è®¾ç½®DMAæ¨¡å—æŒ‡å®šé€šé“çš„ç›®æ ‡åœ°å€
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
  *         @arg HW_DMA_CH3
- * @param address: 32Î»µÄÄ¿±êÊı¾İµØÖ·
+ * @param address: 32ä½çš„ç›®æ ‡æ•°æ®åœ°å€
  * @retval None
  */
 void DMA_SetDestAddress(uint8_t ch, uint32_t address)
@@ -359,13 +359,13 @@ uint32_t DMA_GetDestAddress(uint8_t ch)
 }
 
 /**
- * @brief  ÉèÖÃDMAÄ£¿éÖ¸¶¨Í¨µÀµÄÔ´µØÖ·
- * @param  chl: DMAÍ¨µÀºÅ
+ * @brief  è®¾ç½®DMAæ¨¡å—æŒ‡å®šé€šé“çš„æºåœ°å€
+ * @param  chl: DMAé€šé“å·
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
  *         @arg HW_DMA_CH2
  *         @arg HW_DMA_CH3
- * @param address: 32Î»µÄÔ´Êı¾İµØÖ·
+ * @param address: 32ä½çš„æºæ•°æ®åœ°å€
  * @retval None
  */
 void DMA_SetSourceAddress(uint8_t ch, uint32_t address)
@@ -379,7 +379,7 @@ uint32_t DMA_GetSourceAddress(uint8_t ch)
 }
 
 /**
- * @brief  È¡ÏûDMAÄ£¿éÖ¸¶¨Í¨µÀµÄÊı¾İ´«Êä
+ * @brief  å–æ¶ˆDMAæ¨¡å—æŒ‡å®šé€šé“çš„æ•°æ®ä¼ è¾“
  * @param  None
  * @retval None
  */

@@ -69,6 +69,7 @@
 */
 
 //#include  <bsp.h>
+#include "Module_USB.h"
 
 /*
 *********************************************************************************************************
@@ -96,40 +97,43 @@
 *********************************************************************************************************
 */
 /*******************************************************************************
- * @ºê¶¨ÒåÃû³Æ	ºê½øÖÆ×ª»»º¯Êı
+ * @å®å®šä¹‰åç§°	å®è¿›åˆ¶è½¬æ¢å‡½æ•°
  *******************************************************************************/
-//BCD×ª»»ÎªÊ®6½øÖÆ
-#define	BCD2DEC(data)				( ( ( (data) >> 4) * 16) + ((data) & 0x0f))
-//Ê®½øÖÆ×ª»»ÎªBCD
+//16to10
+#define	CONVERT_16_10(data)				( ( ( (data) >> 4) * 16) + ((data) & 0x0f))
+//åè¿›åˆ¶è½¬æ¢ä¸ºBCD
 #define	DEC2BCD(data)				( ( ( (data) / 10) << 4) + (((data) % 10) & 0x0f))
 
 //10to16
 #define	DEC2HEX(data)				( ( ( (data) >> 4) & 0x0f) + ((data) &0xf))
 
-//10toASCIIÊ®Î»
+//10toASCIIåä½
 #define	DEC2ASC10(data)				(((((((((data) / 10) << 4) + (((data) % 10) & 0x0f))) >> 4  & 0x0f) | 0x30))
 
-//10toASCII¸öÎ»
+//10toASCIIä¸ªä½
 #define	DEC2ASC01(data)				((((((((data) / 10) << 4) + (((data) % 10) & 0x0f))) & 0x0f) | 0x30 ))
 
-//ASCII×ª»»Ê®Áù½øÖÆÊ®Î»
+//ASCIIè½¬æ¢åå…­è¿›åˆ¶åä½
 #define	ASC2DEC10(data)				(((data) & 0xf) << 4)
 
-//ASCII×ª»»Ê®Áù½øÖÆ¸öÎ»
+//ASCIIè½¬æ¢åå…­è¿›åˆ¶ä¸ªä½
 #define	ASC2DEC01(data)				((data) & 0xf)
 
-//Ê®Áù½øÖÆ2ASCIIÊ®Î»
+//åå…­è¿›åˆ¶2ASCIIåä½
 #define	HEX2ASC10(data)				((((data) >> 4) & 0xf) + 0x30)
 
-//Ê®Áù½øÖÆ2ASCII¸öÎ»
+//åå…­è¿›åˆ¶2ASCIIä¸ªä½
 #define	HEX2ASC01(data)				(((data)&0xf ) + 0x30)
 
-#define	DATA_LEN					20											//Êı¾İÌå³¤¶È
-#define	DATA_ALL_LEN				45											//Êı¾İÌå³¤¶È
+#define	DATA_LEN					20											//æ•°æ®ä½“é•¿åº¦
+#define	DATA_ALL_LEN				45											//æ•°æ®ä½“é•¿åº¦
 
-#define	PROG_DATA_ADDR				0x00004000									//²ÎÊıÆğÊ¼Î»ÖÃ
-#define	PROG_DATA_ADDR_OFFSET		0x00000064									//²ÎÊıĞ´Ê±ºòµÄÆ«ÒÆ
+#define	PROG_DATA_ADDR				0x00004000									//å‚æ•°èµ·å§‹ä½ç½®
+#define	PROG_DATA_ADDR_OFFSET		0x00000064									//å‚æ•°å†™æ—¶å€™çš„åç§»
 
+#define MESAGE_1                    0x1806E5F4                                  //Tccharger
+
+#define Q_DIR                       ((20)+1)                                    /* å‰é¢æ˜¯å®é™…ä¿å­˜çš„å¤©æ•°,ä¸èƒ½å¤§äºC_MAX_SIZE */
 
 #endif
 
