@@ -17,16 +17,13 @@
 #include "stdio.h"
 #include "Module_malloc.h"
 #include "Module_USB.h"
-#include "Module_BSP.h"
+//#include "Module_BSP.h"
 
 
 #include "ff.h"
 
 extern uint8_t UART_Buffer[UART1_RXD_MAX];
 extern Queue_t Q_dir;
-
-
-
 
 
 
@@ -98,28 +95,41 @@ void log_write(FIL *fil)
     
     UINT bw;
 
-    static uint8_t src[30] = {0};
+    uint8_t src[33] = {0};
     
-    uint8_t time_data[16] = {0};
+    uint8_t time_data[30] = {0};
     
     
-    get_curr_time(time_data);
+    get_curr_time(time_data,"分");
     strcat(src,"0:/");
     strcat(src,time_data);
     strcat(src,".txt");
+    printf("%s\n",src);
     /* 写入文件 */
     rc = f_open(fil,src,FA_WRITE | FA_READ | FA_OPEN_ALWAYS);//FA_CREATE_ALWAYS
     ERROR_TRACE(rc);
     if(fil->fsize==0){
-        rc = f_write(fil, "           时间           总电压 充放电电流 电池温度 单体电压 剩余容量 循环次数 日发电量 总发电量 异常记录\r\n", 109, &bw);
+        rc = f_write(fil, "           时间           总电压 充放电电流 电池温度 单体电压 剩余容量 循环次数 日发电量 总发电量 异常记录\r\n", 108, &bw);
         ERROR_TRACE(rc);
     }
-    DWORD numm = 0;
-    numm = numm;
     rc = f_lseek(fil, fil->fsize);
     ERROR_TRACE(rc);
-    rc = f_write(fil, "1234567890\r\n0987654321\r\n", 24, &bw);
+    
+    memset(src,0,33);
+    memset(time_data,0,30);
+    
+    get_curr_time(time_data,"秒");
+    uint8_t space;;
+    space = 26 - strlen(time_data);
+    
+    memset(src,0x20,space);
+    strcat(src,time_data);
+    strcat(src,"\r\n");
+
+    
+    rc = f_write(fil, src, 28, &bw);
     ERROR_TRACE(rc);
+
     
     rc = f_close(fil);
     ERROR_TRACE(rc);
@@ -134,118 +144,86 @@ void log_write(FIL *fil)
 
 
 
-uint8_t buf[32];
+
 void dona_test(void)
 {
     FRESULT rc;//error number
-
-    FATFS fs_sd;
-
+    
     FIL fil;
 
-    FATFS *fs;
+    f_mkdir("0:/12015年12月21日");
+/******************************************************************************/
+    DIR path;
 
-    fs = &fs_sd;
-
-    //UINT bw,br; /* bw = byte writted br = byte readed */
-
-    /* 挂载文件系统 */
-    rc = f_mount(fs, "0:", 0);
+    FILINFO file_info;
+#if _USE_LFN
+        file_info.lfsize = 20  + 1;
+        file_info.lfname = malloc(file_info.lfsize);
+#endif
+    rc = f_opendir(&path,"/");
     ERROR_TRACE(rc);
+    
+    printf("共有%d个文件夹\n",dir_totle(&path,&file_info));
+    
+/******************************************************************************/    
+    uint8_t src[30] = {0};
+    get_curr_time(src,NULL);
+    printf("时间：%s\n",src);
 
-//    /* 写入文件 */
-//    rc = f_mkdir("0:/12015年12月21日");
-//    rc = f_mkdir("0:/22015年12月22日");
-//    rc = f_mkdir("0:/32015年12月23日");
-//    rc = f_mkdir("0:/42015年12月24日");
-//    rc = f_mkdir("0:/52015年12月25日");
-//    rc = f_mkdir("0:/62015年12月26日");
-//    rc = f_mkdir("0:/72015年12月27日");
-//    rc = f_mkdir("0:/82015年12月28日");
-//    rc = f_mkdir("0:/92015年12月29日");
-//    rc = f_mkdir("0:/2015年12月30日");
-//    rc = f_mkdir("0:/2015年12月31日");
-//    rc = f_mkdir("0:/2016年01月01日");
-//    rc = f_mkdir("0:/2016年01月02日");
-//    rc = f_mkdir("0:/2016年01月03日");
-//    rc = f_mkdir("0:/2016年01月04日");
-//    rc = f_mkdir("0:/2016年01月05日");
-//    rc = f_mkdir("0:/2016年01月06日");
-//    rc = f_mkdir("0:/2016年01月07日");
-//    rc = f_mkdir("0:/2016年01月08日");
-//    rc = f_mkdir("0:/2016年01月09日");    
-//    ERROR_TRACE(rc);
+    log_write(&fil);
 
-//    printf("creat Ok!\r\n");
+    f_closedir(&path);
+#if _USE_LFN
+    free(file_info.lfname);
+#endif
+    printf("write Ok!\r\n");
 
-//    /* 写入文件 */
+    //总电压 充放电电流 电池温度 单体电压 剩余容量 循环次数 日发电量 总发电量 异常记录（异常类型 发生时间 发生时以上各项目参数）
+}
+/*  USBreset
+    USBD_Connect(false);
+    DWT_DelayMs(1000);
+    USBD_Connect(true);
+*/
+
+/*  creat dir
+    rc = f_mkdir("0:/12015年12月21日");
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* 写入文件 */
 //    rc = f_open(&fil,"0:/2015年12月11日18时31分46.txt", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);//FA_CREATE_ALWAYS
 //    ERROR_TRACE(rc);
-
-//    DWORD numm = 0;
-//    numm = numm;
 //    rc = f_lseek(&fil, fil.fsize);
 //    ERROR_TRACE(rc);
 //    rc = f_write(&fil, "1234567890\r\n0987654321\r\n", 24, &bw);
 //    ERROR_TRACE(rc);
-
 //    rc = f_close(&fil);
 //    ERROR_TRACE(rc);
-
-    DIR path;
-    uint8_t *fn;
-    FILINFO file_info;
-
-    uint16_t max_dit = 20;
-#if _USE_LFN
-        file_info.lfsize = 20  + 1;
-        file_info.lfname = mymalloc(file_info.lfsize);
-#endif
-    if(f_opendir(&path,"/") != FR_OK)
-    {
-        //error operation
-    }
-    printf("共有%d个文件夹\n",dir_totle(&path,&file_info));
-    
-    uint8_t src[30] = {0};
-    get_curr_time(src);
-    printf("此时的时间为：%s\n",src);
-
-    log_write(&fil);
-
-
-
-
-    while(max_dit--)//设置的天数
-    {
-        if(f_readdir(&path,&file_info) == FR_OK)
-        {
-             if (file_info.fname[0] == 0) break;//错误了/到末尾了,退出
-        }
-#if _USE_LFN
-        fn = *file_info.lfname ? (uint8_t*)file_info.lfname : (uint8_t*)file_info.fname;
-#else
-        fn = (uint8_t*)file_info.fname;
-#endif
-        printf("%s\r\n",  fn);//打印文件名
-        str_get(fn);
-    }
-    myfree(file_info.lfname);
-
-    f_readdir(&path,&file_info);
-    f_closedir(&path);
-
-
-
-    USBD_Connect(false);
-    DWT_DelayMs(1000);
-    USBD_Connect(true);
-    printf("write Ok!\r\n");
-
-
-
-    //总电压 充放电电流 电池温度 单体电压 剩余容量 循环次数 日发电量 总发电量 异常记录（异常类型 发生时间 发生时以上各项目参数）
-
 
 
 //    /* 读取文件 */
@@ -261,17 +239,6 @@ void dona_test(void)
 //    }
 //    rc = f_close(&fil);
 //    ERROR_TRACE(rc);
-}
-
-
-
-
-
-
-
-
-
-
 
     /* 计算磁盘空间及剩余空间 */
 //    DWORD fre_clust, fre_sect, tot_sect;
@@ -339,36 +306,36 @@ void dona_test(void)
 	if(!show) while(1);
 */
 /* datasheet P656 */
-int partition_flash(int eeprom_size, int dflash_size)
-{
-    /* Test to make sure the device is not already partitioned. If it
-    * is already partitioned, then return with no action performed.
-    * 判断是否已经分区
-    */
-    if ((SIM->FCFG1 & SIM_FCFG1_DEPART(0xF)) != 0x00000F00)
-    {
-        printf("\nDevice is already partitioned.\n");
-        return 0;
-    }
-
-    /* Write the FCCOB registers *//* datasheet P713 29.4.12.15 Program Partition Command */
-    FTFL->FCCOB0 = FTFL_FCCOB0_CCOBn(0x80); // Selects the PGMPART command
-    FTFL->FCCOB1 = 0x00;
-    FTFL->FCCOB2 = 0x00;
-    FTFL->FCCOB3 = 0x00;
-
-    /* FCCOB4 is written with the code for the subsystem sizes (eeprom_size define) */
-    FTFL->FCCOB4 = eeprom_size;
-
-    /* FFCOB5 is written with the code for the Dflash size (dflash_size define) */
-    FTFL->FCCOB5 = dflash_size;
-
-
-    /* All required FCCOBx registers are written, so launch the command */
-    FTFL->FSTAT = FTFL_FSTAT_CCIF_MASK;
-
-    /* Wait for the command to complete */
-    while(!(FTFL->FSTAT & FTFL_FSTAT_CCIF_MASK));
-
-    return 1;
-}
+//int partition_flash(int eeprom_size, int dflash_size)
+//{
+//    /* Test to make sure the device is not already partitioned. If it
+//    * is already partitioned, then return with no action performed.
+//    * 判断是否已经分区
+//    */
+//    if ((SIM->FCFG1 & SIM_FCFG1_DEPART(0xF)) != 0x00000F00)
+//    {
+//        printf("\nDevice is already partitioned.\n");
+//        return 0;
+//    }
+//
+//    /* Write the FCCOB registers *//* datasheet P713 29.4.12.15 Program Partition Command */
+//    FTFL->FCCOB0 = FTFL_FCCOB0_CCOBn(0x80); // Selects the PGMPART command
+//    FTFL->FCCOB1 = 0x00;
+//    FTFL->FCCOB2 = 0x00;
+//    FTFL->FCCOB3 = 0x00;
+//
+//    /* FCCOB4 is written with the code for the subsystem sizes (eeprom_size define) */
+//    FTFL->FCCOB4 = eeprom_size;
+//
+//    /* FFCOB5 is written with the code for the Dflash size (dflash_size define) */
+//    FTFL->FCCOB5 = dflash_size;
+//
+//
+//    /* All required FCCOBx registers are written, so launch the command */
+//    FTFL->FSTAT = FTFL_FSTAT_CCIF_MASK;
+//
+//    /* Wait for the command to complete */
+//    while(!(FTFL->FSTAT & FTFL_FSTAT_CCIF_MASK));
+//
+//    return 1;
+//}

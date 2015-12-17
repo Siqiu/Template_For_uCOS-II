@@ -141,16 +141,9 @@ void Task_Mbox(void *pdata)
 	for(;;)
 	{
 		WDOG_Refresh();
-#if 1//DEBUG
-        if(debug){
-            debug--;
-            dona_test();
-        }
-#endif
+
 		UardDmaFlow();
-
-
-
+        
 		OSTimeDlyHMSM(0, 0, 0, 10);
 	}
 }
@@ -255,9 +248,33 @@ void Task_Time(void *pdata)
 void Task_Family_Energy_Storage(void *pdata)
 {
     pdata = pdata;
+#if OS_CRITICAL_METHOD == 3
+	OS_CPU_SR cpu_sr;
+#endif
+//    OS_ENTER_CRITICAL();
+//    OS_EXIT_CRITICAL();
+    /* 挂载文件系统 */
+    FRESULT rc;//error number
+    
+    FATFS fs_sd;
+
+    FATFS *fs;
+    
+    fs = &fs_sd;
+
+    rc = f_mount(fs, "0:", 0);
+    
+    if(rc)while(1);
     
 	for(;;)
 	{
+#if 1//DEBUG
+        if(debug){
+            debug--;
+            dona_test();
+        }
+
+#endif
         RTC_DateTime_Type td = {0};
         RTC_GetDateTime(&td);
         printf("first:%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
@@ -294,7 +311,7 @@ static void Task_Start(void *pdata)
 	pdata = pdata;
     
     uint8_t	err;                                                                //错误信息
-    
+#if 0
     //建立邮箱接收显示任务
     OSTaskCreate(Task_Mbox,(void *)0,
                 &STK_MBOX[TASK_STK_SIZE-1],
@@ -318,7 +335,7 @@ static void Task_Start(void *pdata)
 				 &STK_TIME[TASK_STK_SIZE-1],
 				 PRIO_TIME);
 	OSTaskNameSet(PRIO_TIME, (uint8_t*)"Time_to_one",&err);
-    
+#endif
     //家庭储能
 	OSTaskCreate(Task_Family_Energy_Storage,(void *)0,
 				 &STK_Family_Energy_Storage[TASK_STK_SIZE-1],

@@ -59,7 +59,7 @@
   </override>
   <override>
     <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\Module_BSP\Module_BSP.c</path>
-    <encoding>UTF-8</encoding>
+    <encoding>GB2312</encoding>
   </override>
   <override>
     <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\Module_CAN\Module_Can.c</path>

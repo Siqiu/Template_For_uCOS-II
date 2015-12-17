@@ -10920,7 +10920,7 @@ const WCHAR oem2uni[] = {
 };
 
 
-
+#if 0
 WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 	WCHAR	chr,	/* Character code to be converted */
 	UINT	dir		/* 0: Unicode to OEMCP, 1: OEMCP to Unicode */
@@ -10936,10 +10936,10 @@ WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 	} else {
 		if (dir) {		/* OEMCP to unicode */
 			p = oem2uni;
-			hi = sizeof(oem2uni) / 4 - 1;
+			hi = sizeof(oem2uni) / 4 - 1;//hi=21792
 		} else {		/* Unicode to OEMCP */
 			p = uni2oem;
-			hi = sizeof(uni2oem) / 4 - 1;
+			hi = sizeof(uni2oem) / 4 - 1;//hi=21792
 		}
 		li = 0;
 		for (n = 16; n; n--) {
@@ -10955,7 +10955,87 @@ WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 
 	return c;
 }
+#else
+WCHAR ff_convert (	/* Converted code, 0 means conversion error */
+        WCHAR	chr,	/* Character code to be converted */
+        UINT	dir		/* 0: Unicode to OEMCP, 1: OEMCP to Unicode */
+        )
+{
 
+
+    FIL fnew936; /* file objects */
+
+    FRESULT res936; 
+
+    UINT br936;               /* File R count */
+
+    WCHAR buffer936[2];          /* file copy buffer */
+
+    WCHAR c;
+
+    int i,n, li, hi;
+
+    if (chr < 0x80) {	/* ASCII */
+        c = chr;
+    } else {
+        if (dir) { /* OEMCP to unicode */ 
+
+            res936=f_open(&fnew936, "0:system/oem2uni.bin", FA_OPEN_EXISTING | FA_READ); 
+
+            if (res936==FR_OK)
+
+                hi = fnew936.fsize/4-1;   //hi=21792
+
+        } else  { /* Unicode to OEMCP */ 
+
+            res936=f_open(&fnew936, "0:system/uni2oem.bin", FA_OPEN_EXISTING | FA_READ);
+
+            if (res936==FR_OK)
+
+                hi = fnew936.fsize/4-1; //hi=21792
+
+        }
+
+        if (res936==FR_OK) {
+
+            li = 0;
+
+            for (n = 16; n; n--) {
+
+                i=li+(hi-li)/2;
+
+                res936=f_lseek (&fnew936, i*4);
+
+                res936=f_read(&fnew936,buffer936,sizeof(buffer936), &br936); 
+
+                if (chr == buffer936[0]) break;
+
+                if (chr > buffer936[0])
+
+                    li = i;
+
+                else
+
+                    hi = i;
+
+            }
+
+            c = n ? buffer936[1] : 0;
+
+        }
+
+        else
+
+            c=0;
+
+        f_close(&fnew936);
+
+    }
+
+    return c;
+
+}
+#endif
 
 
 WCHAR ff_wtoupper (	/* Upper converted character */

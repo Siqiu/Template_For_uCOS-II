@@ -20,7 +20,7 @@
 #include "uart.h"
 #include "IS61WV25616.h"
 #include "ff.h"
-
+#include "sys_arch.h"
 /* Exported valable -------------------------------------------------------- */
 /* Public functions ---------------------------------------------------------*/
 
@@ -28,7 +28,7 @@ void bsp_init(void);
 
 void itoa(int num,char str[]);
 
-void get_curr_time(uint8_t* src);
+void get_curr_time(uint8_t* src, const uint16_t *end);
 
 /* private functions---------------------------------------------------------*/
 
