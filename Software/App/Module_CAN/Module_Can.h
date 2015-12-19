@@ -16,6 +16,7 @@
 #include "chlib_k.h"//printf
 #include "Module_Protocol.h"
 #include "Module_Can.h"
+#include "ff.h"
 
 /* Exported valable -------------------------------------------------------- */
 //#define CAN_TX_ID  0x02

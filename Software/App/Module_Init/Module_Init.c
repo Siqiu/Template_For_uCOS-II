@@ -26,10 +26,10 @@ uint16_t    Rcv_Cnt;
 bool		Can1_Rev_Flag;
 bool		Uart1_Rev_Flag;
 bool		Uart_IDLE_Flag;
-
+/******************************************************************************/
 Queue_t Q_dir = {0};
-
-
+FATFS fs;
+/******************************************************************************/
 uint16_t	debug;
 /* 接收缓冲区 */
 uint8_t UART_Buffer[UART1_RXD_MAX];

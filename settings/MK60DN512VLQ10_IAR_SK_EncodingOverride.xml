@@ -86,6 +86,14 @@
     <encoding>UTF-8</encoding>
   </override>
   <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\fatfs\diskio.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\fatfs\ffconf.h</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
     <path>E:\work\GitHub\Template_For_uCOS-II\Software\lwip\arch\sys_arch.c</path>
     <encoding>UTF-8</encoding>
   </override>

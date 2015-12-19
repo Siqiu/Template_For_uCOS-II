@@ -14,7 +14,7 @@
 */
 #include "Module_BSP.h"
 
-
+extern FATFS fs;
 void bsp_init(void)
 {
     InitUpdataParam();                                                          /* 第一个初始化的函数 */
@@ -106,7 +106,10 @@ void bsp_init(void)
     Init_Timer_Cnt();															/* 要放置到bsp_init的最后 */
     /***************************************************************************/
 
+    /* 挂载文件系统 */
+    if(f_mount(&fs, "0:", 0) != FR_OK) while(1);
     
+
     
 	//OSENET_Init();
 	//OSLwIP_Init();

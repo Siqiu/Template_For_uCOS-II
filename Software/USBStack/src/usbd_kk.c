@@ -18,7 +18,6 @@
 #include <common.h>
 #include "usb_lib.h"
 
-
 #define __NO_USB_LIB_C
 #include "usb_config.h"
 

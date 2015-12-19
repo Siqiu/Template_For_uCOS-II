@@ -12,7 +12,7 @@
 #define MEM_MAX_SIZE			22*1024  						//最大管理内存 42K
 #define MEM_ALLOC_TABLE_SIZE	MEM_MAX_SIZE/MEM_BLOCK_SIZE 	//内存表大小
  
-		 
+
 //内存管理控制器
 struct _m_mallco_dev
 {

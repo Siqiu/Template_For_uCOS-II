@@ -24,7 +24,7 @@
 
 extern uint8_t UART_Buffer[UART1_RXD_MAX];
 extern Queue_t Q_dir;
-
+extern FATFS fs;
 
 
 /* 打印操作结果 */
@@ -148,17 +148,20 @@ void log_write(FIL *fil)
 void dona_test(void)
 {
     FRESULT rc;//error number
-    
-    FIL fil;
 
-    f_mkdir("0:/12015年12月21日");
+    FIL fil;
+    
+    rc = f_mkdir("0:/一");
+    if(rc)  printf("f_mkdir error\n");
+    else    printf("f_mkdir Ok!\n");
+
 /******************************************************************************/
     DIR path;
 
     FILINFO file_info;
 #if _USE_LFN
         file_info.lfsize = 20  + 1;
-        file_info.lfname = malloc(file_info.lfsize);
+        file_info.lfname = mymalloc(file_info.lfsize);
 #endif
     rc = f_opendir(&path,"/");
     ERROR_TRACE(rc);
@@ -174,9 +177,8 @@ void dona_test(void)
 
     f_closedir(&path);
 #if _USE_LFN
-    free(file_info.lfname);
+    myfree(file_info.lfname);
 #endif
-    printf("write Ok!\r\n");
 
     //总电压 充放电电流 电池温度 单体电压 剩余容量 循环次数 日发电量 总发电量 异常记录（异常类型 发生时间 发生时以上各项目参数）
 }

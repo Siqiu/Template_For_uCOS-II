@@ -10920,7 +10920,7 @@ const WCHAR oem2uni[] = {
 };
 
 
-#if 0
+#if 1
 WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 	WCHAR	chr,	/* Character code to be converted */
 	UINT	dir		/* 0: Unicode to OEMCP, 1: OEMCP to Unicode */
@@ -10951,6 +10951,7 @@ WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 				hi = i;
 		}
 		c = n ? p[i * 2 + 1] : 0;
+        printf("%d\n",c);
 	}
 
 	return c;
@@ -10984,54 +10985,36 @@ WCHAR ff_convert (	/* Converted code, 0 means conversion error */
 
             if (res936==FR_OK)
 
-                hi = fnew936.fsize/4-1;   //hi=21792
+                hi = fnew936.fsize / 4;   //hi=21792
 
         } else  { /* Unicode to OEMCP */ 
-
             res936=f_open(&fnew936, "0:system/uni2oem.bin", FA_OPEN_EXISTING | FA_READ);
-
             if (res936==FR_OK)
-
-                hi = fnew936.fsize/4-1; //hi=21792
-
+                hi = fnew936.fsize / 4; //hi=21792
         }
-
         if (res936==FR_OK) {
 
             li = 0;
 
             for (n = 16; n; n--) {
-
                 i=li+(hi-li)/2;
-
                 res936=f_lseek (&fnew936, i*4);
-
                 res936=f_read(&fnew936,buffer936,sizeof(buffer936), &br936); 
-
                 if (chr == buffer936[0]) break;
-
                 if (chr > buffer936[0])
-
                     li = i;
-
                 else
-
                     hi = i;
-
             }
 
             c = n ? buffer936[1] : 0;
-
+            printf("%d\n",c);
         }
-
         else
-
             c=0;
 
         f_close(&fnew936);
-
     }
-
     return c;
 
 }

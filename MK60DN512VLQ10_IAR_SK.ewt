@@ -275,6 +275,9 @@
       <name>$PROJ_DIR$\Software\App\Module_ISR\Module_ISR.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\Software\App\Module_log\Module_log.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Software\App\Module_malloc\Module_malloc.c</name>
     </file>
     <file>

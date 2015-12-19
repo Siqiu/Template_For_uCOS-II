@@ -44,13 +44,8 @@
 #define FTF    FTFA
 #endif
 
-
-static uint8_t _CommandLaunch(void)
+static inline uint8_t FlashCmdStart(void)
 {
-#if OS_CRITICAL_METHOD == 3
-	OS_CPU_SR cpu_sr;
-#endif
-	OS_ENTER_CRITICAL();
 	/* Clear command result flags */
 	FTF->FSTAT = ACCERR | FPVIOL;
 
@@ -63,11 +58,8 @@ static uint8_t _CommandLaunch(void)
 	/*check for errors*/
 	if(FTF->FSTAT & (ACCERR | FPVIOL | MGSTAT0)) return FLASH_ERROR;
 
-	OS_EXIT_CRITICAL();
-
 	/*No errors retur OK*/
 	return FLASH_OK;
-
 }
 
 uint32_t FLASH_GetSectorSize(void)
@@ -75,16 +67,21 @@ uint32_t FLASH_GetSectorSize(void)
     return SECTOR_SIZE;
 }
 
-
 void FLASH_Init(void)
 {
     /* Clear status */
     FTF->FSTAT = ACCERR | FPVIOL;
 }
 
-
-static uint8_t FLASH_EraseSector(uint32_t addr)
+ /**
+ * @brief  flash erase sector
+ * @note   this function will erase a flash sector
+ * @param  addr: start addr
+ * @retval Flash return code
+ */
+uint8_t FLASH_EraseSector(uint32_t addr)
 {
+    int ret;
 	union
 	{
 		uint32_t  word;
@@ -97,21 +94,24 @@ static uint8_t FLASH_EraseSector(uint32_t addr)
 	FTF->FCCOB1 = dest.byte[2];
 	FTF->FCCOB2 = dest.byte[1];
 	FTF->FCCOB3 = dest.byte[0];
-
-	if(FLASH_OK == _CommandLaunch())
-	{
-		return FLASH_OK;
-	}
-	else
-	{
-		return FLASH_ERROR;
-	}
+    __disable_irq();
+    ret = FlashCmdStart();
+    __enable_irq();
+    
+    return ret;
 }
 
-static uint8_t FLASH_WriteSector(uint32_t addr, const uint8_t *buf, uint32_t len)
+ /**
+ * @brief  flash write sector
+ * @note   len must = sector size
+ * @param  addr: start addr
+ * @param  buf : buffer pointer
+ * @param  len : len
+ * @retval Flash return code
+ */
+uint8_t FLASH_WriteSector(uint32_t addr, const uint8_t *buf, uint32_t len)
 {
-	uint16_t i;
-    uint16_t step;
+    uint16_t step, ret, i;
 	union
 	{
 		uint32_t  word;
@@ -157,7 +157,11 @@ static uint8_t FLASH_WriteSector(uint32_t addr, const uint8_t *buf, uint32_t len
 
 		dest.word += step; buf += step;
 
-		if(FLASH_OK != _CommandLaunch())
+        __disable_irq();
+        ret = FlashCmdStart();
+        __enable_irq();
+        
+		if(FLASH_OK != ret) 
         {
             return FLASH_ERROR;
         }
