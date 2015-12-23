@@ -128,8 +128,16 @@ void InitUpdataParam(void)
 
 
 
-
-
+void FlashErasePage(uint32_t erase_addr)
+{
+    erase_addr = erase_addr;
+}
+void IAP_Flash_Char(uint32_t new_cnt_addr, uint8_t *updata_cnt, uint32_t num)
+{
+    new_cnt_addr = new_cnt_addr;
+    updata_cnt = updata_cnt;
+    num = num;
+}
 
 
 

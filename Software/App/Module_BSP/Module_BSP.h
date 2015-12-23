@@ -11,22 +11,13 @@
 #define   __MODULE_BSP_H__
 
 #include "includes.h"
-#include "Module_Can.h"
-#include "Module_Protocol.h"
-#include "Module_Init.h"
-#include "Module_ISR.h"
-#include "Module_Updata.h"
-#include "dma.h"
-#include "uart.h"
-#include "IS61WV25616.h"
-#include "ff.h"
-#include "sys_arch.h"
+#include "chlib_k.h"
 /* Exported valable -------------------------------------------------------- */
 /* Public functions ---------------------------------------------------------*/
 
 void bsp_init(void);
 
-void itoa(int num,char str[]);
+void itoa(int num, char str[]);
 
 void get_curr_time(uint8_t* src, const uint16_t *end);
 

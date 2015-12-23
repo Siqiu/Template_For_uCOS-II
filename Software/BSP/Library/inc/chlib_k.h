@@ -43,15 +43,31 @@
 
 /* DSP lib */
 #define ARM_MATH_CM4
-
 #include "arm_const_structs.h"
 #include "arm_math.h"
 #include "arm_common_tables.h"
-
-
-#ifdef __cplusplus
-}
 #endif
 
+#if DEBUG
+#include "test.h"
+#endif
+     
+#include "ff.h"
+#include "sys_arch.h"
+#include "Module_BSP.h"
+#include "Module_Protocol.h"
+#include "Module_Queue.h"
+#include "Module_Init.h"
+#include "Module_Can.h"
+#include "Module_ISR.h"
+#include "Module_Updata.h"
+#include "Module_malloc.h"
+#include "Module_USB.h"
+#include "Module_log.h"
+
+     
+#include "IS61WV25616.h"
+#ifdef __cplusplus
+}
 #endif
 

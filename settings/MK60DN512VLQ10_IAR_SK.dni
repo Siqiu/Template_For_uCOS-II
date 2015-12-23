@@ -36,7 +36,7 @@ ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
 [DebugChecksum]
-Checksum=330992786
+Checksum=-1996242198
 [CodeCoverage]
 Enabled=_ 0
 [Disassembly]
@@ -56,14 +56,6 @@ Fmt8=uint8_t[8]	4	0
 [watch_formats]
 Fmt0={W}2:Pile_State	4	0
 Fmt1={W}2:i	4	0
-[CallStackLog]
-Enabled=0
-[DriverProfiling]
-Enabled=1
-Mode=3
-Graph=0
-Symbiont=0
-Exclusions=
 [SWOTraceWindow]
 PcSampling=0
 InterruptLogs=0
@@ -111,10 +103,18 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[CallStackLog]
+Enabled=0
 [PowerProbe]
 Frequency=10000
 Probe0=I0
 ProbeSetup0=2 1 1 2 0 0
+[DriverProfiling]
+Enabled=1
+Mode=3
+Graph=0
+Symbiont=0
+Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]

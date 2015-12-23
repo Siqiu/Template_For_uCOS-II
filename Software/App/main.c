@@ -18,13 +18,6 @@
 */
 
 #include "chlib_k.h"
-#include "Module_BSP.h"
-#include "Module_Protocol.h"
-#include "Module_Queue.h"
-#include "Module_Init.h"
-#if DEBUG
-#include "test.h"
-#endif
 
 /*
 *********************************************************************************************************
@@ -58,17 +51,17 @@
 OS_STK  STK_START[TASK_STK_SIZE];
 
 OS_STK  STK_LED[TASK_STK_SIZE];
-OS_STK  STK_MBOX[TASK_STK_SIZE];
+OS_STK  STK_MBOX[TASK_STK_SIZE*2];
 OS_STK  STK_SEM[TASK_STK_SIZE];
 OS_STK  STK_POST[TASK_STK_SIZE];
 OS_STK  STK_TIME[TASK_STK_SIZE];
-OS_STK  STK_Family_Energy_Storage[TASK_STK_SIZE*2];                             /* file operation need 256kb */
-
+OS_STK  STK_Family_Energy_Storage[TASK_STK_SIZE*3];                             /* file operation need 256kb */
 
 
 extern Queue_t msgQ;
 extern uint8_t		Only_ID[12];
 extern uint16_t	debug;
+extern uint8_t     log_w;
 /*
 *********************************************************************************************************
 *                                         FUNCTION PROTOTYPES
@@ -115,8 +108,6 @@ void Task_Mbox(void *pdata)
 
 		UardDmaFlow();
         
-        //printf("This Task_Mbox \n");
-        
 		OSTimeDlyHMSM(0, 0, 0, 10);
 	}
 }
@@ -143,7 +134,9 @@ void Task_Sem(void *pdata)
     pdata=pdata;
 	for(;;)
 	{
-        //printf("This Task_Sem \n");
+        if(debug){
+            debug--;
+        }
 		OSTimeDlyHMSM(0, 0, 20, 500);
 	}
 }
@@ -208,7 +201,7 @@ void Task_Time(void *pdata)
 
 		printf("%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
 #endif
-		OSTimeDlyHMSM(0, 0, 0, 500);
+		OSTimeDlyHMSM(0, 0, 1, 0);
 	}
 }
 
@@ -222,6 +215,7 @@ void Task_Time(void *pdata)
 void Task_Family_Energy_Storage(void *pdata)
 {
     pdata = pdata;
+    uint16_t cnt = 0;
 //#if OS_CRITICAL_METHOD == 3
 //	OS_CPU_SR cpu_sr;
 //#endif
@@ -229,14 +223,21 @@ void Task_Family_Energy_Storage(void *pdata)
 //    OS_EXIT_CRITICAL();
 	for(;;)
 	{
-#if DEBUG
-        if(debug){
-            debug--;
-            OS_ENTER_CRITICAL();
-            dona_test();
-            OS_EXIT_CRITICAL();
+        cnt++;
+        if (!log_w) {
+            if (bms_check_warning()) {
+                log_w_xinhua(true);
+                log_w = 1;
+            }
+            Send_BMS(1);
         }
-#endif
+        
+        if (cnt==5) {
+            cnt = 0;
+            Send_BMS(1);
+            log_w = 0;
+        }
+        OSTimeDlyHMSM(0, 0, 1, 0);
 	}
 }
 

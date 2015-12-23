@@ -15,10 +15,7 @@
 *********************************************************************************************************
 */
 #include "includes.h"
-#include "uart.h"
-#include "Module_Init.h"
-#include "Module_Protocol.h"
-#include "Module_Can.h"
+#include "chlib_k.h"
 
 /* Exported valable -------------------------------------------------------- */
 /* Public functions ---------------------------------------------------------*/

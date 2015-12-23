@@ -13,12 +13,12 @@
 *********************************************************************************************************
 */
 #include "Module_Init.h"
-#include "Module_Can.h"
 
 struct Pile_state Pile_State = {0};
 
 uint8_t		Only_ID[12] = {0};//{'T','S','H','P','D','S','M','I','C','0','0','1'};//唯一ID
 uint8_t		Can1_Buf[8] = {0};
+uint8_t     log_w;
 uint8_t		Can1_Buf_Flag[2] = {0xFF,0xFF};
 uint8_t		Pcak_Pile_State_All_Flag;
 uint16_t	Stitic_Time_Cnt;
@@ -52,6 +52,7 @@ void Init_Timer_Cnt(void)
     Uart_IDLE_Flag = false;
     Rcv_Cnt = 0;
 	debug = 0;
+    log_w = 0;
 	Stitic_Time_Cnt = 0;
 
     Queue_Create(&Q_dir,Q_DIR);

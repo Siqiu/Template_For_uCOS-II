@@ -13,8 +13,6 @@
 *********************************************************************************************************
 */
 #include "Module_Protocol.h"
-#include "Module_Init.h"
-#include "Module_Can.h"
 
 extern struct Pile_state Pile_State;
 
@@ -67,6 +65,7 @@ void UardDmaFlow(void)
         if(UART_Buffer[0] == 0x7E)                                              //BMS protocols
 		{
 			    CheckPack_Bms();
+                log_w_xinhua(false);
 		}
         uart.TxdPackLength = 0;
 		Uart1_Rev_Flag = false;
@@ -475,7 +474,7 @@ static uint16_t Bms_05_Temperature(uint8_t *buf)
 	Msg_Len = (*buf++);
     
 	bms.TEMP = 0;
-    
+    bms.TEMP_num = Msg_Len;
     for(for_temp=0; for_temp<Msg_Len; for_temp++)
 	{
 		if(*buf & MSK_O_under_TEMP)
@@ -675,6 +674,46 @@ static uint16_t Bms_06_Warning(uint8_t *buf)
     return ((Msg_Len*2)+1);
 }
 
+/*******************************************************************************
+  * @函数名称		bms_check_warning
+  * @函数说明		check bms warning
+  * @输入参数		无
+  * @输出参数		无
+  * @返回参数		0:no warning    1:warning
+*******************************************************************************/
+uint8_t bms_check_warning(void)
+{
+    if(bms.Warning.I_mos)                   return 1;
+    if(bms.Warning.O_mos)                   return 1;
+    if(bms.Warning.Voltage_sensor)          return 1;
+    if(bms.Warning.TEMP_Sen)                return 1;
+    if(bms.Warning.current_Sen)             return 1;
+    if(bms.Warning.charger_reverse)         return 1;
+    if(bms.Warning.O_over_TEMP_PTT)         return 1;
+    if(bms.Warning.O_under_TEMP_PTT)        return 1;
+    if(bms.Warning.charge_state)            return 1;
+    if(bms.Warning.discharge_state)         return 1;
+    if(bms.Warning.short_circuit_PTT)       return 1;
+    if(bms.Warning.overcurrent_PTT_return)  return 1;
+    if(bms.Warning.over_voltage_PTT)        return 1;
+    if(bms.Warning.under_voltage_PTT)       return 1;
+    if(bms.Warning.I_over_TEMP_PTT)         return 1;
+    if(bms.Warning.I_under_TEMP_PTT)        return 1;
+    if(bms.Warning.ENV_over_TEMP_ALM)       return 1;
+    if(bms.Warning.ENV_under_TEMP_ALM)      return 1;
+    if(bms.Warning.PCB_over_TEMP_ALM)       return 1;
+    if(bms.Warning.capacity_too_under_ALM)  return 1;
+    if(bms.Warning.differential_pressure)   return 1;
+    if(bms.Warning.one_over_voltage_ALM)    return 1;
+    if(bms.Warning.one_under_voltage_ALM)   return 1;
+    if(bms.Warning.all_over_voltage_ALM)    return 1;
+    if(bms.Warning.all_under_voltage_ALM)   return 1;
+    if(bms.Warning.I_over_current_ALM)      return 1;
+    if(bms.Warning.O_over_current_ALM)      return 1;
+    if(bms.Warning.Bat_over_TEMP_ALM)       return 1;
+    if(bms.Warning.Bat_under_TEMP_ALM)      return 1;
+    return 0;
+}
 
 
 
@@ -764,28 +803,28 @@ void	CheckPack_Bms(void)
 					for_temp += num;
 					break;
 				}
-			case 0x07:
+			case 0x07://07 循环次数(隐协议)
 				{
 					num = 3;
 					ptr += num;
 					for_temp += num;
 					break;
 				}
-			case 0x08:
+			case 0x08://08 总电压(隐协议)
 				{
 					num = 3;
 					ptr += num;
 					for_temp += num;
 					break;
 				}
-			case 0x09:
+			case 0x09://09 SOH健康度(隐协议)
 				{
 					num = 3;
 					ptr += num;
 					for_temp += num;
 					break;
 				}
-			case 0x0A:
+			case 0x0A://10 保护状态(隐协议)
 				{
 					num = 3;
 					ptr += num;
@@ -801,6 +840,27 @@ void	CheckPack_Bms(void)
 		*ptr++;
 	}
 	//OS_EXIT_CRITICAL();
+}
+
+/*******************************************************************************
+  * @函数名称		Send_BMS
+  * @函数说明		
+  * @输入参数		无
+  * @输出参数		无
+  * @返回参数		无
+*******************************************************************************/
+void Send_BMS(uint16_t addr)
+{
+    uint8_t buf[10] = {0};
+    uint8_t *ptr = buf;
+    //7E 00 01 00 00 0D
+    *ptr++ = 0x7E;
+    *ptr++ = 0x00;
+    *ptr++ = addr;
+    *ptr++ = 0x00;
+    *ptr++ = 0x00;
+    *ptr++ = 0x0D;
+    UART_DMASendByte(DMA_SEND_CH, buf, 6);
 }
 
 /*******************************************************************************

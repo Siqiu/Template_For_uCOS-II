@@ -70,6 +70,10 @@
     <encoding>UTF-8</encoding>
   </override>
   <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\Module_log\Module_log.c</path>
+    <encoding>GB2312</encoding>
+  </override>
+  <override>
     <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\main.c</path>
     <encoding>GB2312</encoding>
   </override>

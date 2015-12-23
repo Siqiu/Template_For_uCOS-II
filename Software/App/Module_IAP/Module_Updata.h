@@ -2,10 +2,7 @@
 #define __MODULE_UPDATA_H__
 
 #include "includes.h"
-
-#include "Module_Init.h"
-
-#include "cpuidy.h"
+#include "chlib_k.h"
 
 /*********************************************************/
 #define	TW_PACK_HEAD	'#'

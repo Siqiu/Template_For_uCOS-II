@@ -826,7 +826,7 @@ uint32_t UART_DMAGetRemainByte(uint32_t instance)
   * @输出参数	无
   * @返回参数	无
 *******************************************************************************/
-void UART_DMASendInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * txBuf)
+void UART_DMASendInit(uint32_t uartInstnace, uint8_t dmaChl/*, uint8_t * txBuf*/)
 {
     DMA_InitTypeDef DMA_InitStruct1 = {0};
     DMA_InitStruct1.chl = dmaChl; /* DMA通道号 */

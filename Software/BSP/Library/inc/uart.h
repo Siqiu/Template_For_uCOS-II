@@ -201,7 +201,7 @@ static const uint32_t UART_RevDMATriggerSourceTable[] =
 
 uint32_t UART_SendWithDMA(uint32_t dmaChl, const uint8_t *buf, uint32_t size);
 
-void UART_DMASendInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * txBuf);
+void UART_DMASendInit(uint32_t uartInstnace, uint8_t dmaChl/*, uint8_t * txBuf*/);
 
 void UART_DMARevInit(uint32_t uartInstnace, uint8_t dmaChl, uint8_t * rxBuf);
 
