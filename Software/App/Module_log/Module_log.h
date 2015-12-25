@@ -21,6 +21,8 @@ void fatfs_test(void);
 
 void log_w_xinhua(uint8_t warning);
 
+void SDFont_Init(void);
+
 /* private functions---------------------------------------------------------*/
 
 #endif	/* __MODULE_QUEUE_H__ */

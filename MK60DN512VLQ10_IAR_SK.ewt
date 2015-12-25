@@ -439,28 +439,28 @@
     <group>
       <name>lwip_api</name>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\api_lib.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\api\api_lib.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\api_msg.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\api\api_msg.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\err.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\api\err.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\netbuf.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\api\netbuf.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\netdb.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\api\netdb.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\netifapi.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\api\netifapi.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\sockets.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\api\sockets.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\api\tcpip.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\api\tcpip.c</name>
       </file>
     </group>
     <group>
@@ -472,145 +472,145 @@
     <group>
       <name>lwip_core</name>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\asn1_dec.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\snmp\asn1_dec.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\asn1_enc.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\snmp\asn1_enc.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\autoip.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\ipv4\autoip.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\def.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\def.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\dhcp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\dhcp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\dns.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\dns.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\icmp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\ipv4\icmp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\igmp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\ipv4\igmp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\inet.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\ipv4\inet.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\inet_chksum.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\ipv4\inet_chksum.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\init.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\init.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\ip.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\ipv4\ip.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\ip_addr.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\ipv4\ip_addr.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\ipv4\ip_frag.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\ipv4\ip_frag.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\mem.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\mem.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\memp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\memp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\mib2.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\snmp\mib2.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\mib_structs.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\snmp\mib_structs.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\msg_in.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\snmp\msg_in.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\snmp\msg_out.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\snmp\msg_out.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\netif.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\netif.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\pbuf.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\pbuf.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\raw.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\raw.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\stats.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\stats.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\sys.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\sys.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\tcp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\tcp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\tcp_in.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\tcp_in.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\tcp_out.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\tcp_out.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\timers.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\timers.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\core\udp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\core\udp.c</name>
       </file>
     </group>
     <group>
       <name>lwip_netif</name>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\auth.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\auth.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\chap.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\chap.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\chpms.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\chpms.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\etharp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\etharp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ethernetif.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ethernetif.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\fsm.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\fsm.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\ipcp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\ipcp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\lcp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\lcp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\magic.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\magic.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\md5.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\md5.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\pap.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\pap.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\ppp.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\ppp.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\ppp_oe.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\ppp_oe.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\randm.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\randm.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\slipif.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\slipif.c</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\Software\lwip\lwip-1.4.1\netif\ppp\vj.c</name>
+        <name>$PROJ_DIR$\Software\lwip\src\netif\ppp\vj.c</name>
       </file>
     </group>
   </group>

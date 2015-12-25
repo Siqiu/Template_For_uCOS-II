@@ -17,9 +17,9 @@
 
 void bsp_init(void);
 
-void itoa(int num, char str[]);
+void itoa(int num, uint8_t *str);
 
-void get_curr_time(uint8_t* src, const uint16_t *end);
+void get_curr_time(uint8_t* src, const char *end);
 
 /* private functions---------------------------------------------------------*/
 

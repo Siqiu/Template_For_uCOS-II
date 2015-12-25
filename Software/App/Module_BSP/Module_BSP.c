@@ -108,7 +108,7 @@ void bsp_init(void)
 
     /* 挂载文件系统 */
     if(f_mount(&fs, "0:", 0) != FR_OK) while(1);
-    
+    SDFont_Init();
 
     
 	//OSENET_Init();
@@ -124,7 +124,7 @@ void bsp_init(void)
 }
 
 
-void itoa(int num,char str[])
+void itoa(int num,uint8_t *str)
 {
 	int sign = num;
 	int i = 0;
@@ -173,7 +173,7 @@ void itoa(int num,char str[])
 * Returns    :  none
 *********************************************************************************************************
 */
-void get_curr_time(uint8_t* s, const uint16_t *end)
+void get_curr_time(uint8_t* s, const char *end)
 {
     RTC_DateTime_Type td = {0};
     RTC_GetDateTime(&td);
@@ -191,20 +191,20 @@ void get_curr_time(uint8_t* s, const uint16_t *end)
         case 0xEBC3: num = 6; break;/*ss*/
         default:    num = 6; break;
     }
-    itoa(td.year,dst);  strcat(s,dst);strcat(s,"年");
+    itoa(td.year,dst);  strcat((char*)s,(const char*)dst);strcat((char*)s,"年");
     if((--num)==0) return;
 
-    itoa(td.month,dst); strcat(s,dst);strcat(s,"月");
+    itoa(td.month,dst); strcat((char*)s,(const char*)dst);strcat((char*)s,"月");
     if((--num)==0) return;
 
-    itoa(td.day,dst);   strcat(s,dst);strcat(s,"日");
+    itoa(td.day,dst);   strcat((char*)s,(const char*)dst);strcat((char*)s,"日");
     if((--num)==0) return;
     
-    itoa(td.hour,dst);  strcat(s,dst);strcat(s,"时");
+    itoa(td.hour,dst);  strcat((char*)s,(const char*)dst);strcat((char*)s,"时");
     if((--num)==0) return;
     
-    itoa(td.minute,dst);strcat(s,dst);strcat(s,"分");
+    itoa(td.minute,dst);strcat((char*)s,(const char*)dst);strcat((char*)s,"分");
     if((--num)==0) return;
     
-    itoa(td.second,dst);strcat(s,dst);strcat(s,"秒\0");
+    itoa(td.second,dst);strcat((char*)s,(const char*)dst);strcat((char*)s,"秒\0");
 }

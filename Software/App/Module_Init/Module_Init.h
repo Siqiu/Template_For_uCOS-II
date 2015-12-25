@@ -20,7 +20,7 @@
 #include "rtc.h"
 #include "i2c.h"
 
-#define	UART1_RXD_MAX			1536
+#define	UART1_RXD_MAX			1100
 
 struct Pile_state{
     uint8_t     Open;

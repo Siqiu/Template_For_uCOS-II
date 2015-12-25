@@ -26,9 +26,9 @@ extern struct _m_mallco_dev mallco_dev;	//在mallco.c里面定义
 
 void mymemset(void *s,uint8_t c,uint32_t count);	//设置内存
 void mymemcpy(void *des,void *src,uint32_t n);//复制内存     
-void mem_init(void);					 //内存管理初始化函数(外/内部调用)
-uint32_t mem_malloc(uint32_t size);		 		//内存分配(内部调用)
-uint8_t mem_free(uint32_t offset);		 		//内存释放(内部调用)
+void mymem_init(void);					 //内存管理初始化函数(外/内部调用)
+uint32_t mymem_malloc(uint32_t size);		 		//内存分配(内部调用)
+uint8_t mymem_free(uint32_t offset);		 		//内存释放(内部调用)
 uint8_t mem_perused(void);					//得内存使用率(外/内部调用) 
 ////////////////////////////////////////////////////////////////////////////////
 //用户调用函数

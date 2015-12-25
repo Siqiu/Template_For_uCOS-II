@@ -1,7 +1,7 @@
 #include "Module_malloc.h"
 
 //内存池(4字节对齐)
-#pragma(4)
+#pragma pack(4)
 uint8_t membase[MEM_MAX_SIZE];			//SRAM内存池
 //内存管理表
 uint16_t memmapbase[MEM_ALLOC_TABLE_SIZE];			//SRAM内存池MAP
@@ -14,7 +14,7 @@ const uint32_t memsize=MEM_MAX_SIZE;					//内存总大小
 //内存管理控制器
 struct _m_mallco_dev mallco_dev=
 {
-	mem_init,			//内存初始化
+	mymem_init,			//内存初始化
 	mem_perused,		//内存使用率
 	membase,			//内存池
 	memmapbase,			//内存管理状态表
@@ -41,7 +41,7 @@ void mymemset(void *s,uint8_t c,uint32_t count)
     while(count--)*xs++=c;  
 }	   
 //内存管理初始化  
-static void mem_init(void)  
+static void mymem_init(void)  
 {  
     mymemset(mallco_dev.memmap, 0,memtblsize*2);//内存状态表数据清零  
 	mymemset(mallco_dev.membase, 0,memsize);	//内存池所有数据清零  
@@ -63,7 +63,7 @@ uint8_t mem_perused(void)
 //memx:所属内存块
 //size:要分配的内存大小(字节)
 //返回值:0XFFFFFFFF,代表错误;其他,内存偏移地址 
-static uint32_t mem_malloc(uint32_t size)  
+static uint32_t mymem_malloc(uint32_t size)  
 {  
     signed long offset=0;  
     uint16_t nmemb;	//需要的内存块数  
@@ -91,7 +91,7 @@ static uint32_t mem_malloc(uint32_t size)
 //释放内存(内部调用) 
 //offset:内存地址偏移
 //返回值:0,释放成功;1,释放失败;  
-static uint8_t mem_free(uint32_t offset)  
+static uint8_t mymem_free(uint32_t offset)  
 {
     int i;  
     if(!mallco_dev.memrdy)//未初始化,先执行初始化
@@ -117,7 +117,7 @@ void myfree(void *ptr)
 	uint32_t offset;  
     if(ptr==NULL)return;//地址为0.  
  	offset=(uint32_t)ptr-(uint32_t)mallco_dev.membase;  
-    mem_free(offset);	//释放内存     
+    mymem_free(offset);	//释放内存     
 }  
 //分配内存(外部调用)
 //size:内存大小(字节)
@@ -125,7 +125,7 @@ void myfree(void *ptr)
 void *mymalloc(uint32_t size)  
 {  
     uint32_t offset;  									      
-	offset=mem_malloc(size);  	   				   
+	offset=mymem_malloc(size);  	   				   
     if(offset==0XFFFFFFFF)return NULL;  
     else return (void*)((uint32_t)mallco_dev.membase+offset);  
 }  
@@ -136,7 +136,7 @@ void *mymalloc(uint32_t size)
 void *myrealloc(void *ptr,uint32_t size)  
 {  
     uint32_t offset;  
-    offset=mem_malloc(size);  
+    offset=mymem_malloc(size);  
     if(offset==0XFFFFFFFF)return NULL;     
     else  
     {  									   
@@ -145,15 +145,3 @@ void *myrealloc(void *ptr,uint32_t size)
         return (void*)((uint32_t)mallco_dev.membase+offset);  			//返回新内存首地址
     }  
 }
-
-
-
-
-
-
-
-
-
-
-
-

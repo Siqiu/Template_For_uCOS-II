@@ -34,7 +34,7 @@
 #include "lwip/def.h"
 #include "lwip/sys.h"
 #include "lwip/mem.h"
-
+#include "Module_malloc.h"
 #include <stdint.h>
 
 #ifdef USE_RTOS
@@ -55,24 +55,24 @@ const void * const pvNullPointer = (mem_ptr_t*)0xffffffff;
 //         其他,创建失败
 err_t sys_mbox_new( sys_mbox_t *mbox, int size)
 {
-    (*mbox) = malloc(sizeof(TQ_DESCR));
+    (*mbox) = mymalloc(sizeof(TQ_DESCR));
     memset((*mbox),0,sizeof(TQ_DESCR));
     
 	if(*mbox)
 	{
 		if(size > MAX_QUEUE_ENTRIES)
         {
-            size=MAX_QUEUE_ENTRIES;
+            size=MAX_QUEUE_ENTRIES;//消息队列最多容纳MAX_QUEUE_ENTRIES消息数目
         }
  		(*mbox)->pQ = OSQCreate(&((*mbox)->pvQEntries[0]), size);  //使用UCOS创建一个消息队列
 		LWIP_ASSERT("OSQCreate",(*mbox)->pQ!=NULL); 
 		if((*mbox)->pQ != NULL)
         {
-            return ERR_OK;
+            return ERR_OK;//返回ERR_OK,表示消息队列创建成功 ERR_OK=0
         }
 		else
 		{ 
-			free((*mbox));
+			myfree((*mbox));
 			return ERR_MEM;
 		}
 	}
@@ -85,7 +85,7 @@ void sys_mbox_free(sys_mbox_t * mbox)
 	u8_t ucErr;
 	(void)OSQDel((*mbox)->pQ, OS_DEL_ALWAYS, &ucErr);
 	LWIP_ASSERT( "OSQDel ",ucErr == OS_ERR_NONE ); 
-	free((*mbox)); 
+	myfree((*mbox)); 
 	*mbox=NULL;
 }
 //向消息邮箱中发送一条消息(必须发送成功)
@@ -195,6 +195,8 @@ err_t sys_sem_new(sys_sem_t * sem, u8_t count)
     {
         return ERR_MEM; 
     }
+	OSEventNameSet(*sem,"LWIP Sem",&err);
+	LWIP_ASSERT("OSSemCreate ",*sem != NULL );
 	return ERR_OK;
 } 
 //等待一个信号量

@@ -20,6 +20,8 @@ extern FATFS fs;
 extern struct BMS bms;
 extern uint16_t	debug;
 
+extern uint32_t    UGBKSIZE;
+extern uint32_t    UGBKADDR;
 
 /* 打印操作结果 */
 #if DEBUG
@@ -38,7 +40,32 @@ void str_get(uint8_t* str){
     }
 }
 
+/*******************************************************************************
+  * @函数名称		SDFont_Init
+  * @函数说明		把cc936.c文件中的two big static buf，转移到SD卡中，之前必须先初始化sd卡
+                    挂载文件系统，modify your own path
+  * @输入参数       无
+  * @输出参数		无
+  * @返回参数		无
+*******************************************************************************/
+void SDFont_Init(void)
+{  
+    FIL *uni_oem;  
 
+    uni_oem=(FIL*)mymalloc(sizeof(uni_oem));	      
+    
+    f_open(uni_oem,"0:/system/UNIGBK.BIN",FA_OPEN_EXISTING|FA_READ);
+    
+    UGBKSIZE=uni_oem->fsize;
+    
+    f_lseek(uni_oem,1);
+    
+    UGBKADDR = uni_oem->dsect;
+    
+    f_close(uni_oem);  
+    
+    myfree(uni_oem);  
+}
 
 
 
@@ -128,7 +155,7 @@ static uint8_t log_write_content(FIL *fil,uint8_t warning)
     strcat(src,time_data);
     write_len = 26;
 
-    //total voltage
+    /* total voltage */
     strcat(src, " ");
     if((bms.Voltage_All/100)==0){
         strcat(src, "000");
@@ -140,7 +167,7 @@ static uint8_t log_write_content(FIL *fil,uint8_t warning)
     write_len += 4;
     strcat(src, "  ");write_len += 2;
     
-    //Charge-DisCharge Currents
+    /* Charge-DisCharge Currents */
     strcat(src, " ");
     temp_num = (30000 - bms.Currents.Currents);
 
@@ -168,7 +195,7 @@ static uint8_t log_write_content(FIL *fil,uint8_t warning)
     write_len += 4;
     strcat(src, " ");write_len += 1;
     
-    //TEMP
+    /* TEMP */
     for (; for_temp<10; for_temp++) {
         strcat(src," ");
         if (bms.Temperature[for_temp].Temperature <= 0 || 
@@ -195,7 +222,7 @@ static uint8_t log_write_content(FIL *fil,uint8_t warning)
         write_len += 4;
     }
 
-    //an Voltage
+    /* an Voltage */
     for (for_temp = 0; for_temp<16; for_temp++) {
         strcat(src, " ");
         if (bms.Voltage[for_temp].Voltage/10 == 0) {
@@ -207,7 +234,7 @@ static uint8_t log_write_content(FIL *fil,uint8_t warning)
         write_len += 4;
     }
 
-    //Capacity
+    /* Capacity */
     strcat(src," ");
     if (bms.Capacity.Capacity == 0) {
         strcat(src, "0000");
@@ -257,7 +284,6 @@ uint8_t log_write(FIL *fil, uint8_t warning)
     rc = f_open(fil,src,FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
     ERROR_TRACE(rc);
     if(fil->fsize==0){
-        //rc = f_write(fil, "           时间           总电压 充放电电流 电池温度 单体电压 剩余容量 循环次数 日发电量 总发电量 异常记录\r\n", 108, &bw);
         rc = f_write(fil, "           时间           总电压 电流 电池温度                        PCB温度 单体电压0.01V                                                   剩余容量 异常\r\n",
                    strlen("           时间           总电压 电流 电池温度                        PCB温度 单体电压0.01V                                                   剩余容量 异常")+2, &bw);
         ERROR_TRACE(rc);

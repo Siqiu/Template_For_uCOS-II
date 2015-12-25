@@ -24,10 +24,6 @@ extern bool	Uart1_Rev_Flag;
 extern uint8_t	Can1_Buf[8];
 extern uint8_t UART_Buffer[UART1_RXD_MAX];
 
-
-extern OS_EVENT *key;																	//事件控制块 指针
-extern OS_EVENT * msg_test;                                                            //按键邮箱事件块指针
-extern OS_EVENT * sem_test;                                                            //蜂鸣器信号量指针
 extern uint8_t Only_ID[12];
 
 PROTOCOL pile_info[5];

@@ -135,5 +135,7 @@
 
 #define Q_DIR                       ((20)+1)                                    /* 前面是实际保存的天数,不能大于C_MAX_SIZE */
 
+#define BUFSZ                       1024
+
 #endif
 

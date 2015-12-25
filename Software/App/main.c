@@ -54,7 +54,7 @@ OS_STK  STK_LED[TASK_STK_SIZE];
 OS_STK  STK_MBOX[TASK_STK_SIZE*2];
 OS_STK  STK_SEM[TASK_STK_SIZE];
 OS_STK  STK_POST[TASK_STK_SIZE];
-OS_STK  STK_TIME[TASK_STK_SIZE];
+OS_STK  STK_TIME[TASK_STK_SIZE*2];
 OS_STK  STK_Family_Energy_Storage[TASK_STK_SIZE*3];                             /* file operation need 256kb */
 
 
@@ -108,7 +108,7 @@ void Task_Mbox(void *pdata)
 
 		UardDmaFlow();
         
-		OSTimeDlyHMSM(0, 0, 0, 10);
+		OSTimeDlyHMSM(0, 0, 0, 100);
 	}
 }
 /*
@@ -152,7 +152,7 @@ void Task_Post(void *pdata)
 {
     pdata = pdata;
     
-    OSStatInit();                   											//统计任务初始化
+    OSStatInit();                   											/* 统计任务初始化 */
 	
     for(;;)
 	{
@@ -181,20 +181,18 @@ void Task_Post(void *pdata)
 void Task_Time(void *pdata)
 {
     pdata = pdata;
-//    OSENET_Init();
+    OSENET_Init();
+    OSLwIP_Init();
 
-//    OSLwIP_Init();
-
-    //udp_server();
+    //tcp_server();
 	for(;;)
 	{
-        //udp_serv();//可是使用
-        //udp_client(10);
-//        tcp_serv();
-        //tcp_client();//可用
-        //printf("This Task_Time \n");
-        GPIO_ToggleBit(HW_GPIOE, 6);                                            //翻转GPIO,点亮led1来表示发送成功
-#if DEBUG//release don't use 
+        //tcp_serv();       //yes
+        //udp_serv();       //no
+        //udp_client(10);   //yes
+        //tcp_client();     //yes输出延时
+        GPIO_ToggleBit(HW_GPIOE, 6);
+#if 0//DEBUG//release don't use 
 		RTC_DateTime_Type td = {0};
 
 		RTC_GetDateTime(&td);
@@ -231,7 +229,7 @@ void Task_Family_Energy_Storage(void *pdata)
             }
             Send_BMS(1);
         }
-        
+
         if (cnt==5) {
             cnt = 0;
             Send_BMS(1);
@@ -331,7 +329,6 @@ int main(void)
     }
 #endif
     OSInit();
-
 	OSTaskCreate(Task_Start,(void *)0,
 							&STK_START[TASK_STK_SIZE-1],
 							PRIO_START);

@@ -1,18 +1,9 @@
 #include "includes.h"
 #include "lwip/sockets.h"
 
-//#include <lwip/netdb.h>
-//#include "lwip/inet.h"
+static const char send_data[] = "This is UDP Server from RT-Thread.";
 
-static const char send_data[] = "This is TCP Server from RT-Thread.";
-
-#define UDP_PRIO                8
-#define UDP_STK_SIZE            128
-OS_STK UDP_TASK_STK[UDP_STK_SIZE];
-
-#define UDP_PORT                7
-#define BUFSZ                   64
-uint8_t udp_demo_recvbuf[BUFSZ];
+#define UDP_PORT                    7
 
 //udp任务函数
 void udp_serv(void *arg)
@@ -97,7 +88,7 @@ void udp_client(uint16_t count)
     /* 初始化服务器地址 */
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(10000);
-    server_addr.sin_addr.s_addr = inet_addr("192.168.1.66");//服务器的ip地址，if server ip change，this must be change
+    server_addr.sin_addr.s_addr = inet_addr("192.168.1.67");//服务器的ip地址，if server ip change，this must be change
     memset(&(server_addr.sin_zero),0, sizeof(server_addr.sin_zero));
     
     /* 总计发送count次数据 */

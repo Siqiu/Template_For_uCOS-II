@@ -22,10 +22,6 @@ extern	uint8_t		Only_ID[12];
 
 extern	uint16_t	Stitic_Time_Cnt;
 
-extern OS_EVENT *key;																	//事件控制块 指针
-extern OS_EVENT * msg_test;                                                            //按键邮箱事件块指针
-extern OS_EVENT * sem_test;                                                            //蜂鸣器信号量指针
-
 extern PROTOCOL pile_info[5];
 USART_CtrolBlock uart = {0};
 

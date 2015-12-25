@@ -23,9 +23,9 @@ extern err_t ethernetif_input(struct netif *netif);
 
 void ENET_ISR(void)
 {
-	OSIntEnter();
+	//OSIntEnter();
     ethernetif_input(&fsl_netif0); 
-	OSIntExit();
+	//OSIntExit();
 }
 
 
@@ -76,9 +76,9 @@ uint32_t OSLwIP_Init(void)
     fsl_netif0_netmask.addr=0;
     fsl_netif0_gw.addr=0;
 #else    
-    IP4_ADDR(&fsl_netif0_ipaddr, 192,168,2,102);
+    IP4_ADDR(&fsl_netif0_ipaddr, 192,168,1,110);
     IP4_ADDR(&fsl_netif0_netmask, 255,255,255,0);
-    IP4_ADDR(&fsl_netif0_gw, 192,168,2,100);
+    IP4_ADDR(&fsl_netif0_gw, 192,168,1,100);
 #endif 
   
     netif_add(&fsl_netif0, &fsl_netif0_ipaddr, &fsl_netif0_netmask, &fsl_netif0_gw, NULL, ethernetif_init, ethernet_input);

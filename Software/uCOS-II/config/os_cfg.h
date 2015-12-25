@@ -15,7 +15,7 @@
 * LICENSING TERMS:
 * ---------------
 *   uC/OS-II is provided in source form for FREE evaluation, for educational use or for peaceful research.
-* If you plan on using  uC/OS-II  in a commercial product you need to contact Micriç¥„ to properly license
+* If you plan on using  uC/OS-II  in a commercial product you need to contact Micriµm to properly license
 * its use in your product. We provide ALL the source code for your convenience and to help you experience
 * uC/OS-II.   The fact that the  source is provided does  NOT  mean that you can use it without  paying a
 * licensing fee.
@@ -143,5 +143,5 @@
 #define OS_TMR_CFG_NAME_EN        1u   /*     Determine timer names                                    */
 #define OS_TMR_CFG_WHEEL_SIZE     8u   /*     Size of timer wheel (#Spokes)                            */
 #define OS_TMR_CFG_TICKS_PER_SEC  OS_TICKS_PER_SEC   /*     Rate at which timer management task runs (Hz)            */
-#define OS_TASK_TMR_PRIO          0u   //è½¯ä»¶å®šæ—¶å™¨çš„ä¼˜å…ˆçº§,è®¾ç½®ä¸ºæœ€é«˜
+#define OS_TASK_TMR_PRIO          0u   //Èí¼þ¶¨Ê±Æ÷µÄÓÅÏÈ¼¶,ÉèÖÃÎª×î¸ß
 #endif

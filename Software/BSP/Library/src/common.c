@@ -264,8 +264,7 @@ void BusFault_Handler(void)
 }
 
 #endif
-#define LIB_DEBUG       1
-#if LIB_DEBUG
+#if DEBUG
 struct exception_stack_frame
 {
     uint32_t r0;
@@ -289,7 +288,6 @@ void rt_hw_hard_fault_exception(struct exception_stack_frame *exception_stack)
     printf("r01: 0x%08x\r\n", exception_stack->r1);
     printf("r00: 0x%08x\r\n", exception_stack->r0);
 }
-
 void HardFault_Handler(void)
 {
     printf("\r\n HardFault_Handler interrupt!\r\n");

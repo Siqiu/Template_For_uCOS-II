@@ -26,6 +26,9 @@ uint16_t    Rcv_Cnt;
 bool		Can1_Rev_Flag;
 bool		Uart1_Rev_Flag;
 bool		Uart_IDLE_Flag;
+
+uint32_t    UGBKSIZE;
+uint32_t    UGBKADDR;
 /******************************************************************************/
 Queue_t Q_dir = {0};
 FATFS fs;
