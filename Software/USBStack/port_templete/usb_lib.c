@@ -18,8 +18,8 @@
 #include <usb.h>
 #include "usb_config.h"
 
-#pragma thumb
-#pragma O3
+//#pragma thumb
+//#pragma O3
 
 
 /*------------------------------------------------------------------------------
@@ -1147,9 +1147,9 @@ U32  usbd_os_evt_wait_or (U16 wait_flags, U16 timeout)                { return (
 #else
 const BOOL __rtx = __FALSE;
 
-void usbd_os_evt_set     (U16 event_flags, U32 task)                  { }
+void usbd_os_evt_set     (U16 event_flags, U32 task)                  { event_flags = event_flags;task = task;}
 U16  usbd_os_evt_get     (void)                                       { return (0); }
-U32  usbd_os_evt_wait_or (U16 wait_flags, U16 timeout)                { return (0); }
+U32  usbd_os_evt_wait_or (U16 wait_flags, U16 timeout)                { wait_flags = wait_flags;timeout=timeout;return (0); }
 #endif
 
 void usbd_class_init     (void)                                       {

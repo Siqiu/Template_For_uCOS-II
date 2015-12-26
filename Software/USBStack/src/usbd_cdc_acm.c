@@ -49,12 +49,12 @@ CDC_LINE_CODING line_coding;            /*!< Communication settings */
 
 /* Functions that should be provided by user to use standard Virtual COM port
    functionality                                                              */
-__weak int32_t USBD_CDC_ACM_PortInitialize          (void)                             { return (1); };
-__weak int32_t USBD_CDC_ACM_PortUninitialize        (void)                             { return (1); };
-__weak int32_t USBD_CDC_ACM_PortReset               (void)                             { return (1); };
-__weak int32_t USBD_CDC_ACM_PortSetLineCoding       (CDC_LINE_CODING *line_coding)     { return (1); };
-__weak int32_t USBD_CDC_ACM_PortGetLineCoding       (CDC_LINE_CODING *line_coding)     { return (1); };
-__weak int32_t USBD_CDC_ACM_PortSetControlLineState (uint16_t ctrl_bmp)                { return (1); };
+__weak int32_t USBD_CDC_ACM_PortInitialize          (void)                             { return (1); }//;
+__weak int32_t USBD_CDC_ACM_PortUninitialize        (void)                             { return (1); }//;
+__weak int32_t USBD_CDC_ACM_PortReset               (void)                             { return (1); }//;
+__weak int32_t USBD_CDC_ACM_PortSetLineCoding       (CDC_LINE_CODING *line_coding)     { line_coding=line_coding;return (1); }//;
+__weak int32_t USBD_CDC_ACM_PortGetLineCoding       (CDC_LINE_CODING *line_coding)     { line_coding=line_coding;return (1); }//;
+__weak int32_t USBD_CDC_ACM_PortSetControlLineState (uint16_t ctrl_bmp)                { ctrl_bmp=ctrl_bmp;return (1); }//;
 
 /* Functions that can be used by user to use standard Virtual COM port
    functionality                                                              */
@@ -62,7 +62,7 @@ __weak int32_t USBD_CDC_ACM_PortSetControlLineState (uint16_t ctrl_bmp)         
        int32_t USBD_CDC_ACM_PutChar                 (const uint8_t  ch);
        int32_t USBD_CDC_ACM_DataRead                (      uint8_t *buf, int32_t len);
        int32_t USBD_CDC_ACM_GetChar                 (void);
-__weak int32_t USBD_CDC_ACM_DataReceived            (                    int32_t len)  { return (0); };
+__weak int32_t USBD_CDC_ACM_DataReceived            (                    int32_t len)  { len=len;return (0); }//;
        int32_t USBD_CDC_ACM_DataAvailable           (void);
        int32_t USBD_CDC_ACM_Notify                  (uint16_t stat);
 
@@ -70,10 +70,10 @@ __weak int32_t USBD_CDC_ACM_DataReceived            (                    int32_t
    handling of CDC ACM requests)                                              */
 __weak int32_t USBD_CDC_ACM_SendEncapsulatedCommand (void)                             { return (0); }
 __weak int32_t USBD_CDC_ACM_GetEncapsulatedResponse (void)                             { return (0); }
-__weak int32_t USBD_CDC_ACM_SetCommFeature          (uint16_t feat)                    { return (0); }
-__weak int32_t USBD_CDC_ACM_GetCommFeature          (uint16_t feat)                    { return (0); }
-__weak int32_t USBD_CDC_ACM_ClearCommFeature        (uint16_t feat)                    { return (0); }
-__weak int32_t USBD_CDC_ACM_SendBreak               (uint16_t dur)                     { return (0); }
+__weak int32_t USBD_CDC_ACM_SetCommFeature          (uint16_t feat)                    { feat=feat;return (0); }
+__weak int32_t USBD_CDC_ACM_GetCommFeature          (uint16_t feat)                    { feat=feat;return (0); }
+__weak int32_t USBD_CDC_ACM_ClearCommFeature        (uint16_t feat)                    { feat=feat;return (0); }
+__weak int32_t USBD_CDC_ACM_SendBreak               (uint16_t dur)                     { dur=dur;return (0); }
 
 
 /* Local function prototypes                                                  */
@@ -483,6 +483,7 @@ void USBD_CDC_ACM_EP_INTIN_Event (uint32_t event) {
 
   /* Notification will be loadad aynchronously and sent automatically upon
      Interrupt IN token reception                                             */
+    event = event;
 }
 
 
@@ -595,7 +596,7 @@ static void USBD_CDC_ACM_EP_BULKIN_HandleData (void) {
  */
 
 void USBD_CDC_ACM_EP_BULKOUT_Event (uint32_t event) {
-
+  event = event;
   if (data_read_access) {               /* If data is being accessed from
                                            read function                      */
     data_received_pending_pckts++;      /* 1 more packet received and not
@@ -624,7 +625,7 @@ void USBD_CDC_ACM_EP_BULKOUT_Event (uint32_t event) {
  */
 
 void USBD_CDC_ACM_EP_BULKIN_Event (uint32_t event) {
-
+  event = event;
   if (data_send_access                  /* If send data is being accessed     */
 // ||((control_line_state & 3) != 3)    /* or if DTR or RTS is 0              */
     ) {

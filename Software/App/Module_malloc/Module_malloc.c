@@ -41,7 +41,7 @@ void mymemset(void *s,uint8_t c,uint32_t count)
     while(count--)*xs++=c;  
 }	   
 //内存管理初始化  
-static void mymem_init(void)  
+void mymem_init(void)  
 {  
     mymemset(mallco_dev.memmap, 0,memtblsize*2);//内存状态表数据清零  
 	mymemset(mallco_dev.membase, 0,memsize);	//内存池所有数据清零  
@@ -63,7 +63,7 @@ uint8_t mem_perused(void)
 //memx:所属内存块
 //size:要分配的内存大小(字节)
 //返回值:0XFFFFFFFF,代表错误;其他,内存偏移地址 
-static uint32_t mymem_malloc(uint32_t size)  
+uint32_t mymem_malloc(uint32_t size)  
 {  
     signed long offset=0;  
     uint16_t nmemb;	//需要的内存块数  
@@ -91,7 +91,7 @@ static uint32_t mymem_malloc(uint32_t size)
 //释放内存(内部调用) 
 //offset:内存地址偏移
 //返回值:0,释放成功;1,释放失败;  
-static uint8_t mymem_free(uint32_t offset)  
+uint8_t mymem_free(uint32_t offset)  
 {
     int i;  
     if(!mallco_dev.memrdy)//未初始化,先执行初始化

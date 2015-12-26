@@ -36,11 +36,11 @@ U16          DataFeatReceLen;
 
 
 /* Dummy Weak Functions that need to be provided by user */
-__weak void  usbd_hid_init         (void)                                        {};
-__weak int   usbd_hid_get_report   (U8  rtype, U8 rid, U8 *buf, U8  req)         { return (0); };
-__weak void  usbd_hid_set_report   (U8  rtype, U8 rid, U8 *buf, int len, U8 req) {};
-__weak U8    usbd_hid_get_protocol (void)                                        { return (0); };
-__weak void  usbd_hid_set_protocol (U8  protocol)                                {};
+__weak void  usbd_hid_init         (void)                                        {}//;
+__weak int   usbd_hid_get_report   (U8  rtype, U8 rid, U8 *buf, U8  req)         { rtype=rtype;rid=rid;buf=buf;req=req;return (0); }//;
+__weak void  usbd_hid_set_report   (U8  rtype, U8 rid, U8 *buf, int len, U8 req) {rtype=rtype;rid=rid;buf=buf;len=len;req=req;}//;
+__weak U8    usbd_hid_get_protocol (void)                                        { return (0); }//;
+__weak void  usbd_hid_set_protocol (U8  protocol)                                {protocol=protocol;}//;
 
 
 /*
@@ -168,6 +168,7 @@ BOOL USBD_HID_SetProtocol (void) {
  */
 
 void USBD_HID_EP_INTIN_Event (U32 event) {
+  event = event;
   U8  i;
   U16 bytes_to_send;
 
@@ -246,6 +247,7 @@ void USBD_HID_EP_INTIN_Event (U32 event) {
  */
 
 void USBD_HID_EP_INTOUT_Event (U32 event) {
+  event = event;
   U16 bytes_rece;
 
   if (!DataInReceLen) {                 /* Check if new reception             */

@@ -215,7 +215,37 @@ _loop:
     adx++;
     goto _loop;
 }
-
+//!< UART dma
+/* UART 模块数据寄存器 */
+const void* UART_DataPortAddrTable[] =
+{
+    (void*)&UART0->D,
+    (void*)&UART1->D,
+    (void*)&UART2->D,
+    (void*)&UART3->D,
+    (void*)&UART4->D,
+    (void*)&UART5->D,
+};
+/* UART 发送触发源编号 */
+const uint32_t UART_SendDMATriggerSourceTable[] =
+{
+    UART0_TRAN_DMAREQ,
+    UART1_TRAN_DMAREQ,
+    UART2_TRAN_DMAREQ,
+    UART3_TRAN_DMAREQ,
+    UART4_TRAN_DMAREQ,
+    UART5_TRAN_DMAREQ,
+};
+/* UART 接收触发源编号 */
+const uint32_t UART_RevDMATriggerSourceTable[] =
+{
+    UART0_REV_DMAREQ,
+    UART1_REV_DMAREQ,
+    UART2_REV_DMAREQ,
+    UART3_REV_DMAREQ,
+    UART4_REV_DMAREQ,
+    UART5_REV_DMAREQ,
+};
 
 //! @defgroup CHKinetis
 //! @{

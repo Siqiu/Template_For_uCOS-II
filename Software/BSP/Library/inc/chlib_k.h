@@ -40,6 +40,7 @@
 
 /* T90FS Flash */
 #include "flash.h"
+#include "drv_enet.h"
 
 /* DSP lib */
 #define ARM_MATH_CM4

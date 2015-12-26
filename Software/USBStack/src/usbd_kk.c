@@ -290,7 +290,7 @@ void USBD_WakeUp (void) {
   uint32_t i = 50000;
   if (USBD_DeviceStatus & USB_GETSTATUS_REMOTE_WAKEUP) {
     USB0->CTL |=  USB_CTL_RESUME_MASK;
-    while (i--)   __nop();
+    while (i--)   ;//__nop();
     USB0->CTL &= ~USB_CTL_RESUME_MASK;
   }
 }
@@ -304,6 +304,7 @@ void USBD_WakeUp (void) {
 
 void USBD_WakeUpCfg (uint32_t cfg) {
   /* Not needed                                                               */
+  cfg = cfg;
 }
 
 
@@ -327,6 +328,7 @@ void USBD_SetAddress (uint32_t  adr, uint32_t setup) {
  */
 
 void USBD_Configure (uint32_t cfg) {
+  cfg = cfg;
 }
 
 
@@ -357,6 +359,7 @@ void USBD_ConfigEP (USB_ENDPOINT_DESCRIPTOR *pEPD) {
 
 void USBD_DirCtrlEP (uint32_t dir) {
   /* Not needed                                                               */
+  dir = dir;
 }
 
 
@@ -467,6 +470,7 @@ void USBD_ClrStallEP (uint32_t EPNum) {
  */
 
 void USBD_ClearEPBuf (uint32_t EPNum) {
+  EPNum = EPNum;
 }
 
 

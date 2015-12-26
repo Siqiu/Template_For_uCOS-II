@@ -58,10 +58,10 @@ OS_STK  STK_TIME[TASK_STK_SIZE*2];
 OS_STK  STK_Family_Energy_Storage[TASK_STK_SIZE*3];                             /* file operation need 256kb */
 
 
-extern Queue_t msgQ;
-extern uint8_t		Only_ID[12];
-extern uint16_t	debug;
-extern uint8_t     log_w;
+extern Queue_t      msgQ;
+extern uint8_t      Only_ID[12];
+extern uint16_t     debug;
+extern uint8_t      log_w;
 /*
 *********************************************************************************************************
 *                                         FUNCTION PROTOTYPES
@@ -69,10 +69,6 @@ extern uint8_t     log_w;
 */
 
 static void Task_Start(void *pdata);
-
-
-
-
 
 /*
 *********************************************************************************************************
@@ -108,7 +104,7 @@ void Task_Mbox(void *pdata)
 
 		UardDmaFlow();
         
-		OSTimeDlyHMSM(0, 0, 0, 100);
+		OSTimeDlyHMSM(0, 0, 0, 200);
 	}
 }
 /*
@@ -184,15 +180,14 @@ void Task_Time(void *pdata)
     OSENET_Init();
     OSLwIP_Init();
 
-    //tcp_server();
 	for(;;)
 	{
         //tcp_serv();       //yes
-        //udp_serv();       //no
+        //udp_serv();       //yes
         //udp_client(10);   //yes
-        //tcp_client();     //yes输出延时
+        //tcp_client();     //yes
         GPIO_ToggleBit(HW_GPIOE, 6);
-#if 0//DEBUG//release don't use 
+#if 0//DEBUG//release don't use
 		RTC_DateTime_Type td = {0};
 
 		RTC_GetDateTime(&td);
@@ -268,6 +263,7 @@ static void Task_Start(void *pdata)
 	pdata = pdata;
     
     uint8_t	err;                                                                //错误信息
+    OSTaskNameSet(PRIO_START, (uint8_t*)"Task_Start",&err);
 #if 1
     //建立邮箱接收显示任务
     OSTaskCreate(Task_Mbox,(void *)0,

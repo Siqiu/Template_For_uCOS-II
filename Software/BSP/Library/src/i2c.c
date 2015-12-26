@@ -33,6 +33,7 @@ static i2c_gpio i2c;
 
 uint8_t I2C_QuickInit(uint32_t MAP, uint32_t baudrate)
 {
+    baudrate = baudrate;
     uint8_t i;
     map_t * pq = (map_t*)&(MAP);
 
@@ -88,7 +89,7 @@ uint8_t I2C_QuickInit(uint32_t MAP, uint32_t baudrate)
 
 void I2C_Init(I2C_InitTypeDef* I2C_InitStruct)
 {
-
+    I2C_InitStruct = I2C_InitStruct;
 }
 
 static inline uint8_t SDA_IN(void)
@@ -208,6 +209,7 @@ static uint8_t I2C_GetByte(void)
  */
 int I2C_BurstWrite(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t addrLen, uint8_t *buf, uint32_t len)
 {
+    instance = instance;
     uint8_t *p;
     uint8_t err;
 
@@ -260,6 +262,7 @@ int I2C_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, u
  */
 int I2C_BurstRead(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t addrLen, uint8_t *buf, uint32_t len)
 {
+    instance = instance;
     uint8_t *p;
     uint8_t err;
 
@@ -304,6 +307,7 @@ int I2C_BurstRead(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t a
  */
 int I2C_Probe(uint32_t instance, uint8_t chipAddr)
 {
+    instance = instance;
     uint8_t err;
 
     err = 0;
@@ -332,6 +336,7 @@ int I2C_ReadSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, ui
 
 int SCCB_ReadSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t* data)
 {
+    instance = instance;
     uint8_t err;
     uint8_t retry;
 

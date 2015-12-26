@@ -115,6 +115,7 @@ void PIT_QuickInit(uint8_t chl, uint32_t timeInUs)
  */
 void PIT_ITDMAConfig(uint8_t chl, PIT_ITDMAConfig_Type config,bool flag)
 {
+    config = config;
     SIM->SCGC6 |= SIM_SCGC6_PIT_MASK;
     if(flag)
     {

@@ -41,10 +41,10 @@ U32         BulkLen;                       /* Bulk In/Out Length */
 
 
 /* Dummy Weak Functions that need to be provided by user */
-__weak void usbd_msc_init       ()                                      {};
-__weak void usbd_msc_read_sect  (U32 block, U8 *buf, U32 num_of_blocks) {};
-__weak void usbd_msc_write_sect (U32 block, U8 *buf, U32 num_of_blocks) {};
-__weak void usbd_msc_start_stop (BOOL start)                            {};
+__weak void usbd_msc_init       ()                                      {}//;
+__weak void usbd_msc_read_sect  (U32 block, U8 *buf, U32 num_of_blocks) {block=block;buf=buf;num_of_blocks=num_of_blocks;}//;
+__weak void usbd_msc_write_sect (U32 block, U8 *buf, U32 num_of_blocks) {block=block;buf=buf;num_of_blocks=num_of_blocks;}//;
+__weak void usbd_msc_start_stop (BOOL start)                            {start=start;}//;
 
 
 /*
@@ -70,6 +70,7 @@ void USBD_MSC_SetStallEP (U32 EPNum) {     /* set EP halt status according stall
  */
 
 void USBD_MSC_ClrStallEP (U32 EPNum) {     /* clear EP halt status according stall status */
+  EPNum = EPNum;
   U32 n,m;
 
   n = USBD_SetupPacket.wIndexL & 0x8F;
@@ -983,6 +984,7 @@ void USBD_MSC_BulkOut (void) {
  */
 
 void USBD_MSC_EP_BULKIN_Event (U32 event) {
+  event = event;
   USBD_MSC_BulkIn();
 }
 
@@ -994,6 +996,7 @@ void USBD_MSC_EP_BULKIN_Event (U32 event) {
  */
 
 void USBD_MSC_EP_BULKOUT_Event (U32 event) {
+  event = event;
   BulkLen = USBD_ReadEP(usbd_msc_ep_bulkout, USBD_MSC_BulkBuf);
   USBD_MSC_BulkOut();
 }

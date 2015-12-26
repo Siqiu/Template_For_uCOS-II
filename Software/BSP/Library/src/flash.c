@@ -32,7 +32,7 @@
 
 #if defined(FTFL)
 #define FTF    FTFL
-#define SECTOR_SIZE     1024//(2048)
+#define SECTOR_SIZE     (2048)
 #define PROGRAM_CMD      PGM4
 #elif defined(FTFE)
 #define FTF    FTFE
@@ -121,7 +121,7 @@ uint8_t FLASH_WriteSector(uint32_t addr, const uint8_t *buf, uint32_t len)
 
 	FTF->FCCOB0 = PROGRAM_CMD;
 
-    switch(PROGRAM_CMD)
+    switch(FTF->FCCOB0)
     {
         case PGM4:
             step = 4;

@@ -265,6 +265,7 @@ void BusFault_Handler(void)
 
 #endif
 #if DEBUG
+#include "stdio.h"
 struct exception_stack_frame
 {
     uint32_t r0;

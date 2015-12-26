@@ -147,11 +147,10 @@ void Pile_Send(uint32_t pile_addr, uint8_t send_type)
 			{
 				break;
 			}
-            send_buf[7] = crcCheck(7,send_buf);
 	};
+    send_buf[7] = crcCheck(7,send_buf);
 
 	CAN_WriteData(HW_CAN1, 2, pile_addr, send_buf, 8);
-	//DelayMs(500);
 }
 
 /*******************************************************************************

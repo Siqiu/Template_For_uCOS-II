@@ -19,7 +19,7 @@ uint8_t udp_demo_recvbuf[BUFSZ];
 uint8_t tcp_demo_recvbuf[TCP_STK_SIZE];
 
 
-void tcp_serv(void* parameter)
+void tcp_serv(void)
 {
    char *recv_data; /* 用于接收的指针，后面会做一次动态分配以请求可用内存 */
    uint32_t sin_size;
@@ -135,7 +135,7 @@ void tcp_serv(void* parameter)
 void tcp_client(void)
 {
     char *recv_data;
-    struct hostent *host;
+    //struct hostent *host;
     int sock, bytes_received;
     struct sockaddr_in server_addr;
 
@@ -164,7 +164,7 @@ void tcp_client(void)
     /* 初始化预连接的服务端地址 */
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(10000);
-    server_addr.sin_addr.s_addr = inet_addr("192.168.1.67");
+    server_addr.sin_addr.s_addr = inet_addr("192.168.1.56");
     memset(&(server_addr.sin_zero), 0, sizeof(server_addr.sin_zero));
 
     /* 连接到服务端 */
@@ -219,17 +219,4 @@ void tcp_client(void)
 
     return;
 }
-uint8_t tcp_server(void)
-{
-	INT8U res;
-	OS_CPU_SR cpu_sr;
-    
-    OSENET_Init();
-    OSLwIP_Init();
-    
-	OS_ENTER_CRITICAL();	//关中断
-	res = OSTaskCreate(tcp_serv, (void*)0,(OS_STK*)&TCP_TASK_STK[TCP_STK_SIZE-1], TCP_PRIO); //创建UDP线程
-	OS_EXIT_CRITICAL();		//开中断
-	
-	return res;
-}
+

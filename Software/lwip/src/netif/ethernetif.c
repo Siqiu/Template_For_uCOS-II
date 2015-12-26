@@ -133,6 +133,7 @@ low_level_init(struct netif *netif)
 static err_t
 low_level_output(struct netif *netif, struct pbuf *p)
 {
+    netif = netif;
 //  struct ethernetif *ethernetif = netif->state;
   struct pbuf *q;
 //  uint32_t i;
@@ -178,6 +179,7 @@ low_level_output(struct netif *netif, struct pbuf *p)
 static struct pbuf *
 low_level_input(struct netif *netif)
 {
+    netif = netif;
 //    struct ethernetif *ethernetif = netif->state;
     struct pbuf *p, *q;
     u16_t len, rx_len;

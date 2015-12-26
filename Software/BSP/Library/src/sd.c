@@ -153,8 +153,8 @@ static void SDHC_WaitCommandLineIdle(void)
  */                                                            
 static void SD_SetBaudRate(uint32_t clock, uint32_t baudrate)
 {
-	uint32_t pres, div, min, minpres = 0x80, mindiv = 0x0F;
-	int  val;
+	int32_t pres, div, min, minpres = 0x80, mindiv = 0x0F;
+	int16_t val;
     
     /* Find closest setting */
     min = (uint32_t)-1;

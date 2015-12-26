@@ -1,12 +1,13 @@
 #include "includes.h"
 #include "lwip/sockets.h"
+#include "Module_malloc.h"
 
 static const char send_data[] = "This is UDP Server from RT-Thread.";
 
 #define UDP_PORT                    7
 
 //udp任务函数
-void udp_serv(void *arg)
+void udp_serv(void)
 {
     
     int sock;
@@ -15,7 +16,7 @@ void udp_serv(void *arg)
     uint32_t addr_len;
     struct sockaddr_in server_addr, client_addr;
     
-    recv_data = malloc(BUFSZ);
+    recv_data = mymalloc(BUFSZ);
     if(recv_data<0)
     {
         printf("malloc error\r\n");
@@ -25,7 +26,7 @@ void udp_serv(void *arg)
     {
         printf("Socket error\n");
         
-        free(recv_data);
+        myfree(recv_data);
         return;
     }
     
@@ -41,7 +42,7 @@ void udp_serv(void *arg)
     {
         /* 绑定失败 */
         printf("Bind error\n");
-        free(recv_data);
+        myfree(recv_data);
         return;
     }
     
@@ -66,7 +67,7 @@ void udp_serv(void *arg)
         {
             lwip_close(sock);
             
-            free(recv_data);
+            myfree(recv_data);
             break;
         }
     }

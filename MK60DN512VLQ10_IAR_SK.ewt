@@ -290,19 +290,19 @@
       <name>$PROJ_DIR$\Software\App\Module_Queue\Module_Queue.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\Software\App\Module_NET\Module_tcp.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\App\Module_NET\Module_udp.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Software\App\Module_IAP\Module_Updata.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\Software\App\Module_USB\Module_USB.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\Software\App\tcp_demo.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\Software\App\test.c</name>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\Software\App\udp_demo.c</name>
     </file>
   </group>
   <group>
