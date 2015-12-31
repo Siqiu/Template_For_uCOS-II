@@ -49,7 +49,11 @@
 #define UART2_RX_PF13_TX_PF14   (0x9B2AU)
 #define UART5_RX_PD08_TX_PD09   (0x90DDU) //芯片的UART5端口，使用PTD8引脚为接收引脚，使用PTD9引脚为发送引脚
 #define UART5_RX_PE08_TX_PE09   (0X90E5U)
-/*!< parity 选择 */
+
+/**
+ * \enum UART_ParityMode_Type
+ * \brief UART parity 选择
+ */
 typedef enum
 {
     kUART_ParityDisabled = 0x0,  // 校验位禁止
@@ -57,23 +61,33 @@ typedef enum
     kUART_ParityOdd      = 0x3,  // 1位 偶校验
 } UART_ParityMode_Type;
 
-/*!< 每帧数据位个数 */
+/**
+ * \enum UART_BitPerChar_Type
+ * \brief UART每帧数据位个数
+ */
 typedef enum
 {
     kUART_8BitsPerChar  = 0,   // 8-bit 数据 不包括校验位
     kUART_9BitsPerChar  = 1,   // 9-bit 数据 不包括校验位
 } UART_BitPerChar_Type;
 
-/*!< 中断及DMA配置 */
+/**
+ * \enum UART_ITDMAConfig_Type
+ * \brief UART中断及DMA配置
+ */
 typedef enum
 {
     kUART_IT_Tx,                // 开启每发送一帧传输完成中断
     kUART_DMA_Tx,               // 开启每发送一帧传输完成触发DMA
     kUART_IT_Rx,                // 开启每接收一帧传输完成中断
     kUART_DMA_Rx,               // 开启每接收一帧传输完成触发DMA
+    kUART_IT_IdleLine,
 }UART_ITDMAConfig_Type;
 
-/*!< UART初始化结构 */
+/**
+ * \struct PIT_InitTypeDef
+ * \brief UART初始化结构
+ */
 typedef struct
 {
     uint32_t                srcClock;       // 时钟源频率
@@ -135,7 +149,6 @@ void UART_SetRxFIFOWatermark(uint32_t instance, uint32_t size);
 void UART_CallbackTxInstall(uint32_t instance, UART_CallBackTxType AppCBFun);
 void UART_CallbackRxInstall(uint32_t instance, UART_CallBackRxType AppCBFun);
 void UART_ITDMAConfig(uint32_t instance, UART_ITDMAConfig_Type config, bool status);
-int UART_printf(const char *fmt, ...);
 
 
 /* DMA support */
@@ -146,7 +159,7 @@ uint32_t UART_Config();
 void UART_SendData();
 uint8_t UART_GetData();
 */
-int UART_printf(const char *format,...);
+
 void UART_DMASetCmd(uint32_t instance, uint32_t dir, bool status);
 void UART_DMASendData(uint32_t instance, uint8_t *buf, uint32_t len);
 void UART_DMAGetRemain(uint32_t instacne, uint32_t dir);
@@ -179,9 +192,9 @@ void DMA_ISR(void);
 
 void UART_SendString(uint32_t instance, uint8_t * str);
 
-bool DMA_UartRxd(void);
+bool DMA_UartRxd(uint32_t instance);
 
-void UART5_DMA_init(void);
+void UART_DMA_init(uint8_t instance);
 /* Private functions ---------------------------------------------------------*/
 
 

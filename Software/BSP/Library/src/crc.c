@@ -23,7 +23,10 @@ static CRC_InitTypeDef CRCProtocolAttrTable[] =
 };
 
 
-#if 0
+
+/**
+ * \brief not use
+ */
 uint16_t CRC16_GenerateSoftware(const uint8_t *src, uint32_t len)
 {
     uint32_t crc = 0;
@@ -45,7 +48,7 @@ uint16_t CRC16_GenerateSoftware(const uint8_t *src, uint32_t len)
     }
     return crc;
 }
-#endif
+
 
 /**
  * @brief  初始化CRC硬件模块
@@ -96,6 +99,10 @@ void CRC_QuickInit(CRC_ProtocolType type)
     CRC_Init(&CRCProtocolAttrTable[type]);
 }
 
+/**
+ * \brief  CRC_HAL_GetCrcResult,Internal function
+ * \return Crc result
+ */
 static uint32_t CRC_HAL_GetCrcResult(void)
 {
     uint32_t result = 0;

@@ -78,13 +78,13 @@ void InitUpdataParam(void)
 		uchar_pt = (uint8_t *)(PROG_BASE_ADDR_1+NEW_PRG_FLAG_OFFSET);// 烧写文件的版本信息
 		uchar_pt += 3;
 	}
-	else
-	{
-        *(int32_t*)0xE000ED08 = PROG_BASE_ADDR_2;
-		UpdataProg.IAP_ProgAddr = PROG_BASE_ADDR_2;
-		uchar_pt = (uint8_t *)(PROG_BASE_ADDR_2+NEW_PRG_FLAG_OFFSET);// 烧写文件的版本信息
-		uchar_pt += 3;
-	}
+//	else
+//	{
+//        *(int32_t*)0xE000ED08 = PROG_BASE_ADDR_2;
+//		UpdataProg.IAP_ProgAddr = PROG_BASE_ADDR_2;
+//		uchar_pt = (uint8_t *)(PROG_BASE_ADDR_2+NEW_PRG_FLAG_OFFSET);// 烧写文件的版本信息
+//		uchar_pt += 3;
+//	}
 #else
     *(int32_t*)0xE000ED08 = PROG_BASE_ADDR;
 	UpdataProg.IAP_ProgAddr = PROG_BASE_ADDR;

@@ -10,10 +10,10 @@
 /*********************************************************/
 
 #define	PROG_BASE_ADDR			0x00000000      //0K
-#define	PROG_BASE_ADDR_1		0x00010000UL 	//64K
+#define	PROG_BASE_ADDR_1		0x00010000 	//64K
 
-#define	PROG_BASE_ADDR_2		0x00020000UL 	//192K
-#define	PROG_ADDR_END			0x00030000UL 	//320K
+#define	PROG_BASE_ADDR_2		0x00040000 	//192K
+#define	PROG_ADDR_END			0x00050000 	//320K
 
 
 

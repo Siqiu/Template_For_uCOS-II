@@ -20,7 +20,6 @@ extern uint8_t	Pcak_Pile_State_All_Flag;
 extern bool	Rev_Flag;
 
 extern bool	Can1_Rev_Flag;
-extern bool	Uart1_Rev_Flag;
 extern uint8_t	Can1_Buf[8];
 extern uint8_t UART_Buffer[UART1_RXD_MAX];
 
@@ -50,8 +49,9 @@ void UardDmaFlow(void)
 		Can1_Rev_Flag = false;
 	}
 
-	if(Uart1_Rev_Flag)
+	if(uart.CommStatus & RXD_END)
 	{
+        
         if((UART_Buffer[0] ==0x23) & (UART_Buffer[1] == 0x23))                  //true win protocols
 		{
 			CheckPack_True_win();
@@ -64,7 +64,8 @@ void UardDmaFlow(void)
                 log_w_xinhua(false);
 		}
         uart.TxdPackLength = 0;
-		Uart1_Rev_Flag = false;
+        uart.RxdByteCnt = 0;
+        uart.CommStatus &= ~RXD_END;
 	}
 
 	if((Pile_State.Wait_Flag)|(Pile_State.Open))
@@ -189,7 +190,7 @@ void    CheckPack_True_win(void)
 				td.minute = CONVERT_16_10(Temp);
 				Temp = *ptr++;
 				td.second = CONVERT_16_10(Temp);
-				RTC_SetDateTime(&td);
+				RTC_SetTime(&td);
 
 				UART_Buffer[0] = 0x2A;
 				UART_Buffer[1] = 0x2A;

@@ -14,7 +14,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-
+/**
+ * \enum CRC_Transpose_Type
+ * \brief select the CRC type
+ */
 typedef enum
 {
     kCRCNoTranspose    = 0U, /*!< No transposition. @internal gui name="No Transpose" */
@@ -23,7 +26,10 @@ typedef enum
     kCRCTransposeBytes = 3U  /*!< Only bytes are transposed; no bits in a byte are transposed. @internal gui name="Transpose Bytes" */
 }CRC_Transpose_Type;
 
-/* CRC协议 用于快速初始化 */
+/**
+ * \enum CRC_ProtocolType
+ * \brief CRC协议 用于快速初始化
+ */
 typedef enum
 {
     kCRC16_IBM,
@@ -40,6 +46,10 @@ typedef enum
     kCRC_ProtocolNameMax,
 }CRC_ProtocolType;
 
+/**
+ * \struct CRC_InitTypeDef
+ * \brief CRC初始化结构
+ */
 typedef struct
 {
     uint8_t crcWidth;                   /*!< Selects 16 or 32-bit CRC protocol */
@@ -55,7 +65,7 @@ typedef struct
 //!< API functions
 void CRC_QuickInit(CRC_ProtocolType type);
 void CRC_Init(CRC_InitTypeDef * CRC_InitStruct);
-//uint16_t CRC16_GenerateSoftware(const uint8_t *src, uint32_t len);
+uint16_t CRC16_GenerateSoftware(const uint8_t *src, uint32_t len);
 uint32_t CRC_Generate(uint8_t* data, uint32_t len);
 
 

@@ -60,8 +60,7 @@
 #define IFNAME0 'e'
 #define IFNAME1 'n'
 
-//__align(4) static uint8_t gTxBuf[1520];
-//__align(4) static uint8_t gRxBuf[1520];
+#pragma pack(4)
 static uint8_t gTxBuf[1520];
 static uint8_t gRxBuf[1520];
 /**

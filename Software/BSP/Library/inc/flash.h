@@ -27,7 +27,6 @@
 //!< API declare
 void		FLASH_Init(void);
 uint32_t	FLASH_GetSectorSize(void);
-void		FLASH_ReadByte(uint32_t FlashStartAdd,uint32_t len,uint8_t *pbuffer);
 
 uint8_t Flash_Read_Inside(uint32_t FlashStartAdd,uint8_t *pbuffer, uint32_t len);
 uint8_t Flash_Write_Inside(uint16_t secNO, uint8_t* buf, uint16_t write_len);

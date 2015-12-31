@@ -1,7 +1,7 @@
 #include "includes.h"
 #include "lwip/sockets.h"
 #include "Module_malloc.h"
-
+#include "Module_udp.h"
 static const char send_data[] = "This is UDP Server from RT-Thread.";
 
 #define UDP_PORT                    7

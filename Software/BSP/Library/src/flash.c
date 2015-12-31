@@ -1,7 +1,6 @@
 #include "flash.h"
 #include "common.h"
 
-
 /* flash commands */
 #define RD1BLK    0x00  /* read 1 block */
 #define RD1SEC    0x01  /* read 1 section */
@@ -22,13 +21,12 @@
 #define NORMAL_LEVEL 0x0
 
 
-
-
 /* disable interrupt before lunch command */
 #define CCIF    (1<<7)
 #define ACCERR  (1<<5)
 #define FPVIOL  (1<<4)
 #define MGSTAT0 (1<<0)
+
 
 #if defined(FTFL)
 #define FTF    FTFL

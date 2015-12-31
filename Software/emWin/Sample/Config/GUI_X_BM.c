@@ -118,7 +118,7 @@ int GUI_TOUCH_X_MeasureY(void)
 
 void GUI_X_ErrorOut(const char * s)
 {
-
+    s = s;
 }
 
 

@@ -36,7 +36,7 @@ ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
 [DebugChecksum]
-Checksum=234665639
+Checksum=-241360725
 [CodeCoverage]
 Enabled=_ 0
 [Disassembly]
@@ -46,16 +46,25 @@ Path=C:\work\Template_For_uCOS-II\Debug\Exe\Project.out
 [array_types]
 Fmt0=struct <Unnamed 106> *[6]	4	0
 Fmt1=uint16_t[200]	4	0
-Fmt2=uint8_t[12]	4	0
-Fmt3=uint8_t[1536]	4	0
-Fmt4=uint8_t[16]	4	0
-Fmt5=uint8_t[200]	4	0
-Fmt6=uint8_t[20]	4	0
-Fmt7=uint8_t[50]	4	0
-Fmt8=uint8_t[8]	4	0
+Fmt2=uint8_t[1100]	4	0
+Fmt3=uint8_t[12]	4	0
+Fmt4=uint8_t[1536]	4	0
+Fmt5=uint8_t[16]	4	0
+Fmt6=uint8_t[200]	4	0
+Fmt7=uint8_t[20]	4	0
+Fmt8=uint8_t[50]	4	0
+Fmt9=uint8_t[8]	4	0
 [watch_formats]
 Fmt0={W}2:Pile_State	4	0
 Fmt1={W}2:i	4	0
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=1
+Mode=3
+Graph=0
+Symbiont=0
+Exclusions=
 [SWOTraceWindow]
 PcSampling=0
 InterruptLogs=0
@@ -103,25 +112,21 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[CallStackLog]
-Enabled=0
 [PowerProbe]
 Frequency=10000
 Probe0=I0
 ProbeSetup0=2 1 1 2 0 0
-[DriverProfiling]
-Enabled=1
-Mode=3
-Graph=0
-Symbiont=0
-Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
 Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\App\tcp_server_demo.c}.49.4" 0 0 1 "" 0 "" 0
 Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\App\tcp_server_demo.c}.37.2" 0 0 1 "" 0 "" 0
-Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\BSP\Library\src\common.c}.296.5" 0 0 1 "" 0 "" 0
-Count=3
+Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\App\Module_Protocol\Module_Protocol.c}.202.5" 0 0 1 "" 0 "" 0
+Bp3=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\App\Module_Protocol\Module_Protocol.c}.233.5" 0 0 1 "" 0 "" 0
+Bp4=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\BSP\Library\src\uart.c}.320.5" 0 0 1 "" 0 "" 0
+Bp5=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\BSP\Library\src\common.c}.296.5" 0 0 1 "" 0 "" 0
+Bp6=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\App\Module_CAN\Module_Can.c}.269.7" 0 0 1 "" 0 "" 0
+Count=7
 [Aliases]
 A0=_ "C:\Code\Template_For_uCOS-II\Software\App\Module_malloc\Module_malloc.c" ""
 A1=_ "C:\Code\Template_For_uCOS-II\Software\App\main.c" ""

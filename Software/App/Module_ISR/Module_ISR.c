@@ -15,12 +15,9 @@
 #include "Module_ISR.h"
 
 
-extern bool		Uart1_Rev_Flag;
 extern uint16_t	Stitic_Time_Cnt;
 extern uint8_t UART_Buffer[UART1_RXD_MAX];
 extern uint8_t *PUART_Buffer;
-extern uint16_t Rcv_Cnt;
-extern bool Uart_IDLE_Flag;
 extern uint16_t	debug;
 extern USART_CtrolBlock uart;
 
@@ -42,9 +39,6 @@ void PIT_ISR(void)
     {
         Stitic_Time_Cnt++;
     }
-#if DEBUG
-    //printf("PIT INT\r\n");
-#endif
 }
 /*******************************************************************************
   * @函数名称	RTC_ISR
@@ -68,20 +62,6 @@ void RTC_ISR(void)
 *******************************************************************************/
 void DMA_ISR(void)
 {
-    
-    if(Uart_IDLE_Flag)
-    {
-        Rcv_Cnt = 1;
-        Uart_IDLE_Flag = false;
-        debug = 0;
-        UART5->C2 |= UART_C2_ILIE_MASK;       // enable the IDLE line interrupt
-    }
-    else
-    {
-        Rcv_Cnt += 1;
-    }
-    
-        
 }
 
 /*******************************************************************************

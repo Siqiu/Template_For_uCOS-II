@@ -45,23 +45,17 @@ void bsp_init(void)
     CAN_SetRxMB(HW_CAN1, 3, CAN_RX_ID);											/* 设置 3号邮箱为CAN接收邮箱 */
 
     /***************************************************************************/
+    
+    UART_QuickInit(UART5_RX_PE09_TX_PE08, 115200);
+    
+    UART_DMA_init(HW_UART5);                                                    /* IDLE中断 */
+    
+    DMA_UartRxd(HW_UART5);                                                      /* DMA接收 */
 
-	DMA_UartRxd();
-    
-    UART5_DMA_init();
-    
-    UART_ITDMAConfig(HW_UART5, kUART_DMA_Rx, true);
-    
+    //UART_SetDMATxMode(HW_UART5,true);
     /***************************************************************************/
-    DMA_ITConfig(DMA_REV_CH1, kDMA_IT_Major, true);								/* 传输完成后产生中断 */
     
     UART_QuickInit(UART0_RX_PD06_TX_PD07, 115200);								/* 配置串口 */
-    
-    //DMA_EnableMajorLink(DMA_REV_CH, DMA_SEND_CH, true);						/* Chl-Chl Link: 当接收通道完成后 自动开启发送DMA通道 */
-
-    //UART_CallbackTxInstall(HW_UART0,UART_TX_ISR);								/* register callback function*/
-
-    //UART_ITDMAConfig(HW_UART0, kUART_IT_Tx, true);							/* open TX interrupt */
 
     UART_CallbackRxInstall(HW_UART0, UART_RX_ISR);								/*  配置UART 中断配置 打开接收中断 安装中断回调函数 */
 
@@ -77,6 +71,7 @@ void bsp_init(void)
     RTC_CallbackInstall(RTC_ISR);												/* 开启中断 */
 
     RTC_ITDMAConfig(kRTC_IT_TimeAlarm, true);
+    
 	/***************************************************************************/
 
 	/* 初始化PIT模块 */
@@ -96,26 +91,27 @@ void bsp_init(void)
     //SRAM_Init();                                                                /* SRAM初始化 */
 
     /***************************************************************************/
+	GUI_Init();
+	GUI_DispString("BMP file test\r\n");
+	GUI_DispString("please insert SD card...\r\n");
+    /***************************************************************************/
 
     I2C_QuickInit(I2C0_SCL_PB02_SDA_PB03, 100*1000);							/* I2C初始化 */
 
-    if( eep_init(1) ) while(1);													/* E2P初始化 */
+    if( eep_init(1) ) while(1);                                                /* E2P初始化 */
     /***************************************************************************/
+    SD_QuickInit(20*1000*1000);
+    
     usb_host_init();                                                            /* usb and SD init */
     /***************************************************************************/
-    Init_Timer_Cnt();															/* 要放置到bsp_init的最后 */
+    Init_Timer_Cnt();
     /***************************************************************************/
 
     /* 挂载文件系统 */
     if(f_mount(&fs, "0:", 0) != FR_OK) while(1);
     SDFont_Init();
+    /***************************************************************************/
 
-    
-	//OSENET_Init();
-	//OSLwIP_Init();
-//	GUI_Init();
-//	GUI_DispString("BMP file test\r\n");
-//	GUI_DispString("please insert SD card...\r\n");
 	
 	
 #if	DEBUG
@@ -176,7 +172,7 @@ void itoa(int num,uint8_t *str)
 void get_curr_time(uint8_t* s, const char *end)
 {
     RTC_DateTime_Type td = {0};
-    RTC_GetDateTime(&td);
+    RTC_GetTime(&td);
     
     uint8_t num;
     

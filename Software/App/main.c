@@ -33,6 +33,12 @@
 *********************************************************************************************************
 */
 #define TASK_STK_SIZE               (128)                                       /* 所有任务统一使用128字节堆栈地址 */
+#define TASK_0_STK_SIZE             (TASK_STK_SIZE)
+#define TASK_1_STK_SIZE             (TASK_STK_SIZE*2)
+#define TASK_2_STK_SIZE             (TASK_STK_SIZE*2)
+#define TASK_3_STK_SIZE             (TASK_STK_SIZE*2)
+#define TASK_4_STK_SIZE             (TASK_STK_SIZE*2)
+#define TASK_5_STK_SIZE             (TASK_STK_SIZE*2)
 
 #define PRIO_START                  (4)                                         /* 开始任务 */
 #define PRIO_MBOX                   (8)                                         /* 邮箱接收显示任务 */
@@ -48,14 +54,13 @@
 *                                       声明任务堆栈
 *********************************************************************************************************
 */
-OS_STK  STK_START[TASK_STK_SIZE];
+OS_STK  STK_START[TASK_0_STK_SIZE];
 
-OS_STK  STK_LED[TASK_STK_SIZE];
-OS_STK  STK_MBOX[TASK_STK_SIZE*2];
-OS_STK  STK_SEM[TASK_STK_SIZE];
-OS_STK  STK_POST[TASK_STK_SIZE];
-OS_STK  STK_TIME[TASK_STK_SIZE*2];
-OS_STK  STK_Family_Energy_Storage[TASK_STK_SIZE*3];                             /* file operation need 256kb */
+OS_STK  STK_MBOX[TASK_1_STK_SIZE];
+OS_STK  STK_SEM[TASK_2_STK_SIZE];
+OS_STK  STK_POST[TASK_3_STK_SIZE];
+OS_STK  STK_TIME[TASK_4_STK_SIZE];
+OS_STK  STK_Family_Energy_Storage[TASK_5_STK_SIZE];                             /* file operation need 256kb */
 
 
 extern Queue_t      msgQ;
@@ -92,19 +97,23 @@ static void Task_Start(void *pdata);
 *******************************************************************************/
 void Task_Mbox(void *pdata)
 {
-//#if OS_CRITICAL_METHOD == 3
-//	OS_CPU_SR cpu_sr;
-//#endif
+#if OS_CRITICAL_METHOD == 3
+	OS_CPU_SR cpu_sr;
+#endif
 //    OS_ENTER_CRITICAL();
 //    OS_EXIT_CRITICAL();
     pdata = pdata;
 	for(;;)
 	{
+        OS_ENTER_CRITICAL();
+        
 		WDOG_Refresh();
-
+        
+        OS_EXIT_CRITICAL();
+        
 		UardDmaFlow();
         
-		OSTimeDlyHMSM(0, 0, 0, 200);
+		OSTimeDlyHMSM(0, 0, 0, 10);
 	}
 }
 /*
@@ -128,12 +137,16 @@ void Task_Mbox(void *pdata)
 void Task_Sem(void *pdata)
 {
     pdata=pdata;
+        
+    OSENET_Init();
+    OSLwIP_Init();
+    tcp_serv();       //yes
+    //udp_serv();       //yes
+    //udp_client(10);   //yes
+    //tcp_client();     //yes
 	for(;;)
 	{
-        if(debug){
-            debug--;
-        }
-		OSTimeDlyHMSM(0, 0, 20, 500);
+		OSTimeDlyHMSM(0, 0, 1, 0);
 	}
 }
 
@@ -177,21 +190,19 @@ void Task_Post(void *pdata)
 void Task_Time(void *pdata)
 {
     pdata = pdata;
-    OSENET_Init();
-    OSLwIP_Init();
-
 	for(;;)
 	{
-        //tcp_serv();       //yes
-        //udp_serv();       //yes
-        //udp_client(10);   //yes
-        //tcp_client();     //yes
+//        if(debug){
+//            debug--;
+//            Send_BMS(1);
+//        }
+        server_sent(debug);
         GPIO_ToggleBit(HW_GPIOE, 6);
-#if 0//DEBUG//release don't use
+#if DEBUG
 		RTC_DateTime_Type td = {0};
-
-		RTC_GetDateTime(&td);
-
+        
+		RTC_GetTime(&td);
+        
 		printf("%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
 #endif
 		OSTimeDlyHMSM(0, 0, 1, 0);
@@ -260,47 +271,54 @@ void Task_Family_Energy_Storage(void *pdata)
 *******************************************************************************/
 static void Task_Start(void *pdata)
 {
+#if OS_CRITICAL_METHOD == 3
+	OS_CPU_SR cpu_sr;
+#endif
+    OS_ENTER_CRITICAL();
+    
 	pdata = pdata;
     
     uint8_t	err;                                                                //错误信息
-    OSTaskNameSet(PRIO_START, (uint8_t*)"Task_Start",&err);
+     OSTaskNameSet(PRIO_START, (uint8_t*)"Task_Start",&err);
+    OSTaskNameSet(TCPIP_THREAD_PRIO, (uint8_t*)"TCPIP",&err);
 #if 1
     //建立邮箱接收显示任务
     OSTaskCreate(Task_Mbox,(void *)0,
-                &STK_MBOX[TASK_STK_SIZE-1],
+                &STK_MBOX[TASK_1_STK_SIZE-1],
                 PRIO_MBOX);
 	OSTaskNameSet(PRIO_MBOX, (uint8_t*)"UardDmaFlow",&err);
 #endif
 #if 1
 	//建立信号量接收显示任务
 	OSTaskCreate(Task_Sem,(void *)0,
-				 &STK_SEM[TASK_STK_SIZE-1],
+				 &STK_SEM[TASK_2_STK_SIZE-1],
 				 PRIO_SEM);
 	OSTaskNameSet(PRIO_SEM, (uint8_t*)"Delay",&err);
 #endif
 #if 1
 	//建立邮箱，信号量投递任务
 	OSTaskCreate(Task_Post,(void *)0,
-				 &STK_POST[TASK_STK_SIZE-1],
+				 &STK_POST[TASK_3_STK_SIZE-1],
 				 PRIO_POST);
 	OSTaskNameSet(PRIO_POST, (uint8_t*)"Can_Post",&err);
 #endif
 #if 1
 	//建立时间
 	OSTaskCreate(Task_Time,(void *)0,
-				 &STK_TIME[TASK_STK_SIZE-1],
+				 &STK_TIME[TASK_4_STK_SIZE-1],
 				 PRIO_TIME);
 	OSTaskNameSet(PRIO_TIME, (uint8_t*)"Time_to_one",&err);
 #endif
 #if 1
     //家庭储能
 	OSTaskCreate(Task_Family_Energy_Storage,(void *)0,
-				 &STK_Family_Energy_Storage[TASK_STK_SIZE-1],
+				 &STK_Family_Energy_Storage[TASK_5_STK_SIZE-1],
 				 PRIO_Family_Energy_Storage);
-	OSTaskNameSet(PRIO_TIME, (uint8_t*)"2.5kwh",&err);
+	OSTaskNameSet(PRIO_Family_Energy_Storage, (uint8_t*)"2.5kwh",&err);
 #endif
 	//挂起起始任务.
 	OSTaskSuspend(PRIO_START);
+    OS_EXIT_CRITICAL();
 }
 
 /*
@@ -322,11 +340,14 @@ int main(void)
 #if 0
     while(1)
     {
+        WDOG_Refresh();
+        GPIO_ToggleBit(HW_GPIOE, 6);
+        DelayMs(500);
     }
 #endif
     OSInit();
 	OSTaskCreate(Task_Start,(void *)0,
-							&STK_START[TASK_STK_SIZE-1],
+							&STK_START[TASK_0_STK_SIZE-1],
 							PRIO_START);
     SYSTICK_Cmd(true);
     

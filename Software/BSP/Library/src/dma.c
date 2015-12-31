@@ -210,6 +210,14 @@ void DMA_DisableRequest(uint8_t chl)
 
 /**
  * @brief  在Majloop 结束后  是否自动关闭Request
+ * @param[in]  chl  DMA通道号
+ *         			@arg HW_DMA_CH0
+ *         			@arg HW_DMA_CH1
+ *         			@arg HW_DMA_CH2
+ *         			@arg HW_DMA_CH3
+ * \param[in] flag enable or disable
+ * 							\arg 0 not affect
+ *     					\arg 1 automatically clear
  */
 void DMA_EnableAutoDisableRequest(uint8_t chl , bool flag)
 {
@@ -226,9 +234,15 @@ void DMA_EnableAutoDisableRequest(uint8_t chl , bool flag)
 /**
  * @brief  使能Major LoopLink 功能
  * @note   当一个通道结束MajorLoopLink后 自动开始另一个通道的传输
- * @param  chl: DMA通道号
- * @param  linkChl: 需要连接到通道号
- * @param  flag 使能或者关闭
+ * @param[in]  chl  DMA通道号
+ *         			@arg HW_DMA_CH0
+ *         			@arg HW_DMA_CH1
+ *         			@arg HW_DMA_CH2
+ *         			@arg HW_DMA_CH3
+ * @param[in]  linkChl 需要连接到通道号
+ * \param[in] flag enable or disable
+ * 							\arg 0 disable
+ *     					\arg 1 enable
  * @retval None
  */
 void DMA_EnableMajorLink(uint8_t chl , uint8_t linkChl, bool flag)
@@ -252,6 +266,7 @@ void DMA_EnableMajorLink(uint8_t chl , uint8_t linkChl, bool flag)
  * @code
  *     //开启DMA 的0通道的传输完成中断功能
  *     DMA_StartTransfer(HW_DMA_CH0);
+ * \endcode
  * @param  chl: DMA通道号
  *         @arg HW_DMA_CH0
  *         @arg HW_DMA_CH1
@@ -262,6 +277,9 @@ void DMA_EnableMajorLink(uint8_t chl , uint8_t linkChl, bool flag)
  *         @arg kDMA_IT_Major_Disable 禁止DMA传输完成中断触发
  *         @arg kDMA_IT_Half 开启DMA传输一半中断触发
  *         @arg kDMA_IT_Major 开启DMA传世完成中断触发
+ * \param[in] status enable or disable
+ * 							\arg 0 disable
+ *     					\arg 1 enable
  * @retval None
  */
 void DMA_ITConfig(uint8_t chl, DMA_ITConfig_Type config, bool status)
@@ -310,12 +328,14 @@ void DMA_CallbackInstall(uint8_t chl, DMA_CallBackType AppCBFun)
  * @code
  *     //检测DMA的0通道是否完成数据传输
  *     status = IsMajorLoopComplete(HW_DMA_CH0);
- * @param  chl: DMA通道号
- *         @arg HW_DMA_CH0
- *         @arg HW_DMA_CH1
- *         @arg HW_DMA_CH2
- *         @arg HW_DMA_CH3
- * @retval 0:数据传输完成 1:数据传输未完成
+ * \endcode
+ * @param[in]  chl  DMA通道号
+ *         			@arg HW_DMA_CH0
+ *         			@arg HW_DMA_CH1
+ *         			@arg HW_DMA_CH2
+ *         			@arg HW_DMA_CH3
+ * @retval 0 数据传输完成 
+ * \retval 1 数据传输未完成
  */
 
 uint8_t DMA_IsMajorLoopComplete(uint8_t chl)
@@ -353,6 +373,15 @@ void DMA_SetDestAddress(uint8_t ch, uint32_t address)
     DMA0->TCD[ch].DADDR = address;
 }
 
+/**
+ * @brief  获取DMA模块指定通道的目标地址
+ * @param[in]  ch  DMA通道号
+ *         			@arg HW_DMA_CH0
+ *         			@arg HW_DMA_CH1
+ *         			@arg HW_DMA_CH2
+ *         			@arg HW_DMA_CH3
+ * @retval 32位的目标数据地址
+ */
 uint32_t DMA_GetDestAddress(uint8_t ch)
 {
     return DMA0->TCD[ch].DADDR;
@@ -373,6 +402,15 @@ void DMA_SetSourceAddress(uint8_t ch, uint32_t address)
     DMA0->TCD[ch].SADDR = address;
 }
 
+/**
+ * @brief  获取DMA模块指定通道的源地址
+ * @param[in]  ch  DMA通道号
+ *         			@arg HW_DMA_CH0
+ *         			@arg HW_DMA_CH1
+ *         			@arg HW_DMA_CH2
+ *         			@arg HW_DMA_CH3
+ * @retval 32位的源数据地址
+ */
 uint32_t DMA_GetSourceAddress(uint8_t ch)
 {
     return DMA0->TCD[ch].SADDR;
@@ -388,28 +426,79 @@ void DMA_CancelTransfer(void)
     DMA0->CR |= DMA_CR_CX_MASK;
 }
 
-
+/**
+ * @brief  DMA中断，Internal function
+ * @retval None
+ */
 static void DMA_IRQHandler(uint32_t instance)
 {
     DMA0->CINT = DMA_CINT_CINT(instance);
     if(DMA_CallBackTable[instance]) DMA_CallBackTable[instance]();
 }
 
+/**
+ * \brief DMA0中断函数入口，用户无需使用
+ */
 void DMA0_IRQHandler(void) {DMA_IRQHandler(0);}
+/**
+ * \brief DMA1中断函数入口，用户无需使用
+ */
 void DMA1_IRQHandler(void) {DMA_IRQHandler(1);}
+/**
+ * \brief DMA2中断函数入口，用户无需使用
+ */
 void DMA2_IRQHandler(void) {DMA_IRQHandler(2);}
+/**
+ * \brief DMA3中断函数入口，用户无需使用
+ */
 void DMA3_IRQHandler(void) {DMA_IRQHandler(3);}
+/**
+ * \brief DMA4中断函数入口，用户无需使用
+ */
 void DMA4_IRQHandler(void) {DMA_IRQHandler(4);}
+/**
+ * \brief DMA5中断函数入口，用户无需使用
+ */
 void DMA5_IRQHandler(void) {DMA_IRQHandler(5);}
+/**
+ * \brief DMA6中断函数入口，用户无需使用
+ */
 void DMA6_IRQHandler(void) {DMA_IRQHandler(6);}
+/**
+ * \brief DMA7中断函数入口，用户无需使用
+ */
 void DMA7_IRQHandler(void) {DMA_IRQHandler(7);}
+/**
+ * \brief DMA8中断函数入口，用户无需使用
+ */
 void DMA8_IRQHandler(void) {DMA_IRQHandler(8);}
+/**
+ * \brief DMA9中断函数入口，用户无需使用
+ */
 void DMA9_IRQHandler(void) {DMA_IRQHandler(9);}
+/**
+ * \brief DMA10中断函数入口，用户无需使用
+ */
 void DMA10_IRQHandler(void) {DMA_IRQHandler(10);}
+/**
+ * \brief DMA11中断函数入口，用户无需使用
+ */
 void DMA11_IRQHandler(void) {DMA_IRQHandler(11);}
+/**
+ * \brief DMA12中断函数入口，用户无需使用
+ */
 void DMA12_IRQHandler(void) {DMA_IRQHandler(12);}
+/**
+ * \brief DMA13中断函数入口，用户无需使用
+ */
 void DMA13_IRQHandler(void) {DMA_IRQHandler(13);}
+/**
+ * \brief DMA14中断函数入口，用户无需使用
+ */
 void DMA14_IRQHandler(void) {DMA_IRQHandler(14);}
+/**
+ * \brief DMA15中断函数入口，用户无需使用
+ */
 void DMA15_IRQHandler(void) {DMA_IRQHandler(15);}
 
 

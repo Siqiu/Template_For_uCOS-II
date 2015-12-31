@@ -51,9 +51,7 @@ void usbd_msc_write_sect (uint32_t block, uint8_t *buf, uint32_t num_of_blocks)
     }
 }
 void usb_host_init(void)
-{
-    SD_QuickInit(20*1000*1000);
-    
+{    
     usbd_init();                                                                /* USB Device Initialization          */
     
     usbd_connect(__TRUE);                                                       /* USB Device Connect                 */

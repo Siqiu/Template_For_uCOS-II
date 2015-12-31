@@ -17,14 +17,28 @@
 
 #include <stdint.h>
 
-
+/**
+ * \struct I2C_InitTypeDef
+ * \brief I2C初始化结构
+ */     
 typedef struct
 {
     uint32_t instance;    //!< I2C pin select
     uint32_t baudrate;   //!< baudrate some common baudrate: 48000Hz 76000Hz 96000Hz 376000Hz
 }I2C_InitTypeDef;
 
+/** 
+ * \struct i2c_gpio
+ * \brief i2c sda and scl
+ */
+typedef struct
+{
+    uint32_t instace;		///< I2C 模块号
+    uint32_t sda_pin;		///< I2C 数据线
+    uint32_t scl_pin;		///< I2C 时钟线
+}i2c_gpio;
 
+/* I2C模块号 */
 #define HW_I2C0         (0x00U)
 #define HW_I2C1         (0x01U)
 #define HW_I2C2         (0x02U)
@@ -41,6 +55,11 @@ typedef struct
 #define I2C0_SCL_PE24_SDA_PE25  (0X0000B160U)
 #define I2C1_SCL_PC01_SDA_PC02  (0X00008291U)
 #define I2Cx_SCL_PC14_SDA_PC15  (0X00009C50U)
+
+/**
+ * \enum I2C_Direction_Type
+ * \brief I2C 读写设置
+ */
 typedef enum
 {
     kI2C_Read,                  //!< I2C Master Read Data
@@ -48,6 +67,10 @@ typedef enum
     kI2C_DirectionNameCount,
 }I2C_Direction_Type;
 
+/**
+ * \enum I2C_ITDMAConfig_Type
+ * \brief I2C 中断DMA配置
+ */
 typedef enum
 {
     kI2C_IT_Disable,        //!< Disable Interrupt
@@ -62,13 +85,10 @@ typedef void (*I2C_CallBackType)(void);
 
 
 uint8_t I2C_QuickInit(uint32_t MAP, uint32_t baudrate);
-
 int I2C_BurstWrite(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t addrLen, uint8_t *buf, uint32_t len);
 int I2C_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t data);
-
 int I2C_BurstRead(uint32_t instance ,uint8_t chipAddr, uint32_t addr, uint32_t addrLen, uint8_t *buf, uint32_t len);
 int I2C_ReadSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t *data);
-
 int SCCB_ReadSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t* data);
 int SCCB_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t data);
 

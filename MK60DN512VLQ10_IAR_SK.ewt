@@ -420,6 +420,21 @@
     </file>
   </group>
   <group>
+    <name>emWin</name>
+    <file>
+      <name>$PROJ_DIR$\Software\emWin\Sample\Config\GUI_X_BM.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\emWin\Sample\Config\GUIConf_BM.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\emWin\Lib\GUIv5_7m_tl__r_trial.a</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Software\emWin\Sample\Config\LCDConf_BM.c</name>
+    </file>
+  </group>
+  <group>
     <name>Fatfs</name>
     <file>
       <name>$PROJ_DIR$\Software\fatfs\option\cc936.c</name>

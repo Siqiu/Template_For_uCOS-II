@@ -209,7 +209,7 @@
  * - mem_free_callback(m);
  */
 #ifndef LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
-#define LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT 0
+#define LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT 1
 #endif
 
 /*

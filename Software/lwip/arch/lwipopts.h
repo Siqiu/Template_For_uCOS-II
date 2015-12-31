@@ -150,7 +150,7 @@
 /* Define LWIP_DHCP to 1 if you want DHCP configuration of
    interfaces. DHCP is not implemented in lwIP 0.5.1, however, so
    turning this on does currently not work. */
-#define LWIP_DHCP               1
+#define LWIP_DHCP               0
 
 
 /* ---------- UDP options ---------- */
@@ -210,8 +210,9 @@ Some MCU allow computing and verifying the IP, UDP, TCP and ICMP checksums by ha
    ---------- Debugging options ----------
    ------------------------------------
 */
-
+#if DEBUG
 #define LWIP_DEBUG
+#endif
 //#define ICMP_DEBUG                      LWIP_DBG_ON
 //#define UDP_DEBUG                       LWIP_DBG_ON
 //#define TCP_DEBUG                       LWIP_DBG_ON

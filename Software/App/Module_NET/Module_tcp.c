@@ -4,21 +4,26 @@
 
 #include "cc.h"
 #include "Module_malloc.h"
+#include "Module_tcp.h"
+extern uint16_t	debug;
 static const char send_data[] = "This is TCP Server from RT-Thread.";
 
-
-
-#define TCP_STK_SIZE            128
-OS_STK TCP_TASK_STK[TCP_STK_SIZE];
-
-uint8_t udp_demo_recvbuf[BUFSZ];
+#if DEBUG
+#else
+#define printf(...)
+#endif
 
 #define TCP_PORT                7
-#define TCP_PRIO                20
 
-uint8_t tcp_demo_recvbuf[TCP_STK_SIZE];
+uint8_t tcp_demo_recvbuf[512];
 
-
+void server_sent(uint32_t connected)
+{
+    if (connected) {
+        /* 发送数据到connected socket */
+        send(connected, send_data, strlen(send_data), 0);
+    } return;
+}
 void tcp_serv(void)
 {
    char *recv_data; /* 用于接收的指针，后面会做一次动态分配以请求可用内存 */
@@ -27,7 +32,7 @@ void tcp_serv(void)
    struct sockaddr_in server_addr, client_addr;
    bool stop = false; /* 停止标志 */
 
-   recv_data = mymalloc(1024); /* 分配接收用的数据缓冲 */
+   recv_data = mymalloc(512); /* 分配接收用的数据缓冲 */
    if (recv_data == NULL)
    {
        printf("No memory\n");
@@ -76,11 +81,11 @@ void tcp_serv(void)
    while(stop != true)
    {
        sin_size = sizeof(struct sockaddr_in);
-
+       connected = 0;debug = connected;
        /* 接受一个客户端连接socket的请求，这个函数调用是阻塞式的 */
        connected = accept(sock, (struct sockaddr *)&client_addr, &sin_size);
        /* 返回的是连接成功的socket */
-
+       debug = connected;
        /* 接受返回的client_addr指向了客户端的地址信息 */
        printf("I got a connection from (%s , %d)\n",
                   inet_ntoa(client_addr.sin_addr),ntohs(client_addr.sin_port));
@@ -89,10 +94,10 @@ void tcp_serv(void)
        while (1)
        {
            /* 发送数据到connected socket */
-           send(connected, send_data, strlen(send_data), 0);
-
-           /* 从connected socket中接收数据，接收buffer是1024大小，但并不一定能够收到1024大小的数据 */
-           bytes_received = recv(connected,recv_data, 1024, 0);
+           //send(connected, send_data, strlen(send_data), 0);
+            OSTimeDlyHMSM(0, 0, 1, 0);
+           /* 从connected socket中接收数据，接收buffer是512大小，但并不一定能够收到512大小的数据 */
+           bytes_received = recv(connected,recv_data, 512, 0);
            if (bytes_received <= 0)
            {
                /* 接收失败，关闭这个connected socket */
@@ -118,7 +123,7 @@ void tcp_serv(void)
            else
            {
                /* 在控制终端显示收到的数据 */
-               printf("RECIEVED DATA = %s \n" , recv_data);
+               printf("REC DATA = %s\n" , recv_data);
            }
        }
    }

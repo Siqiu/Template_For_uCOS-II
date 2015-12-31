@@ -15,7 +15,10 @@
 #include "netif/etharp.h"
 
 #include "drv_enet.h"
-
+#if DEBUG
+#else
+#define printf(...)
+#endif
 uint8_t gCfgLoca_MAC[] = {0x22, 0x22, 0x22, 0x00, 0x00, 0x01};
 struct netif fsl_netif0;
 extern err_t ethernetif_init(struct netif *netif);
@@ -65,7 +68,6 @@ uint32_t OSENET_Init(void)
 
 uint32_t OSLwIP_Init(void)
 {
-    int i;
     ip_addr_t fsl_netif0_ipaddr, fsl_netif0_netmask, fsl_netif0_gw;
     
     tcpip_init(NULL, NULL);
@@ -76,9 +78,9 @@ uint32_t OSLwIP_Init(void)
     fsl_netif0_netmask.addr=0;
     fsl_netif0_gw.addr=0;
 #else    
-    IP4_ADDR(&fsl_netif0_ipaddr, 192,168,1,110);
+    IP4_ADDR(&fsl_netif0_ipaddr, 192,168,1,99);
     IP4_ADDR(&fsl_netif0_netmask, 255,255,255,0);
-    IP4_ADDR(&fsl_netif0_gw, 192,168,1,100);
+    IP4_ADDR(&fsl_netif0_gw, 192,168,1,1);
 #endif 
   
     netif_add(&fsl_netif0, &fsl_netif0_ipaddr, &fsl_netif0_netmask, &fsl_netif0_gw, NULL, ethernetif_init, ethernet_input);
@@ -86,6 +88,7 @@ uint32_t OSLwIP_Init(void)
     netif_set_up(&fsl_netif0);
     ENET_ITDMAConfig(kENET_IT_RXF);
 #if LWIP_DHCP
+    int i;
     printf("dhcp start getting addr...\r\n");
     
     dhcp_start(&fsl_netif0);

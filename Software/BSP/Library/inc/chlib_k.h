@@ -65,9 +65,12 @@
 #include "Module_malloc.h"
 #include "Module_USB.h"
 #include "Module_log.h"
+#include "Module_tcp.h"
+#include "Module_udp.h"
 
-     
+#include "GUI.h"
 #include "IS61WV25616.h"
+#include "lwipopts.h"
 #ifdef __cplusplus
 }
 #endif

@@ -49,12 +49,16 @@ void str_get(uint8_t* str){
   * @返回参数		无
 *******************************************************************************/
 void SDFont_Init(void)
-{  
+{
+    FRESULT rc;
+    
     FIL *uni_oem;  
 
     uni_oem=(FIL*)mymalloc(sizeof(uni_oem));	      
     
-    f_open(uni_oem,"0:/system/UNIGBK.BIN",FA_OPEN_EXISTING|FA_READ);
+    rc = f_open(uni_oem,"0:/system/UNIGBK.BIN",FA_OPEN_EXISTING|FA_READ);
+    
+    ERROR_TRACE(rc);
     
     UGBKSIZE=uni_oem->fsize;
     

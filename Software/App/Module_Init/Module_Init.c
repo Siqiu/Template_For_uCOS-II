@@ -22,10 +22,7 @@ uint8_t     log_w;
 uint8_t		Can1_Buf_Flag[2] = {0xFF,0xFF};
 uint8_t		Pcak_Pile_State_All_Flag;
 uint16_t	Stitic_Time_Cnt;
-uint16_t    Rcv_Cnt;
 bool		Can1_Rev_Flag;
-bool		Uart1_Rev_Flag;
-bool		Uart_IDLE_Flag;
 
 uint32_t    UGBKSIZE;
 uint32_t    UGBKADDR;
@@ -51,9 +48,6 @@ void Init_Timer_Cnt(void)
 
 	Pcak_Pile_State_All_Flag = 0;
 	Can1_Rev_Flag = false;
-	Uart1_Rev_Flag = false;
-    Uart_IDLE_Flag = false;
-    Rcv_Cnt = 0;
 	debug = 0;
     log_w = 0;
 	Stitic_Time_Cnt = 0;
@@ -66,7 +60,7 @@ void Init_Timer_Cnt(void)
     eep_read(0, Only_ID, 12);                                               /* read only ID */
 
 	/* RTC 判断时间是否合法 */
-	if(RTC_IsTimeValid())
+	if(!RTC_IsTimeValid())
 	{
 		RTC_DateTime_Type td = {0};
 		td.year = 2011;
@@ -75,16 +69,16 @@ void Init_Timer_Cnt(void)
 		td.hour = 11;
 		td.minute = 11;
 		td.second = 11;
-		RTC_SetDateTime(&td);
+		RTC_SetTime(&td);
 	}
 #if DEBUG
 	RTC_DateTime_Type td = {0};
-	RTC_GetDateTime(&td);
+	RTC_GetTime(&td);
 	printf("first:%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
 
 	/* 设置闹钟在当前3秒后 */
 	/*
-	RTC_GetDateTime(&td);
+	RTC_GetTime(&td);
 	td.second += 3;
 	RTC_SetAlarm(&td);
 	*/

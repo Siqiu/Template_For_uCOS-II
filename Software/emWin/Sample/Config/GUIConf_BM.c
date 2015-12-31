@@ -41,7 +41,7 @@ static uint8_t GUI_Mem[GUI_NUMBYTES];
 
 void GUI_Log(const char *s)
 {
-    
+    s = s;
 }
 
 
