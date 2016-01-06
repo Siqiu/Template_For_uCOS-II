@@ -21,6 +21,7 @@ void usb_host_init(void);
 
 void usbd_msc_init(void);
 
+void usb_connect(bool flag);
 /* private functions---------------------------------------------------------*/
 
 #endif	/* __MODULE_QUEUE_H__ */

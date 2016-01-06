@@ -914,7 +914,7 @@ void CheckPack_DGUS(void)
             }
     }
 }
-void DGUS_send_data(uint8_t type, uint8_t *buf, uint16_t len)
+void Protocol_S_DGUS(uint8_t type, uint8_t *buf, uint16_t len)
 {
 	uint8_t*	ptr = UART_Buffer;
 
@@ -923,5 +923,108 @@ void DGUS_send_data(uint8_t type, uint8_t *buf, uint16_t len)
     *ptr++ = len+1;//数据的长度加上指令
     *ptr++ = type;
     ptr = buf;
+    UART_DMASendByte(DMA_SEND_CH, UART_Buffer, uart.TxdPackLength);
+}
+
+/**
+ * Purpose:
+ * Params:
+ *  @
+ * Return:
+ * Limitation:
+ */
+/**
+ * Purpose:/**
+ * Purpose: follow Protocol DL/T645-2007
+ * Params:
+ *  @uint8_t   addr     prower meter address
+ *  @uint8_t   ctrl_ID  contorl ID
+ * Return:
+ * Limitation:
+ */
+ * Params:
+ *  @
+ * Return:
+ * Limitation:
+ */
+void CheckPack_Power_meter()
+{
+}
+/**
+ * Purpose: follow Protocol DL/T645-2007 CRC_Check
+ * Params:
+ *  @uint16_t   size    crc len
+ *  @uint8_t    ptr     data point
+ * Return:
+ * Limitation:
+ */
+static uint8_t	crc_power_meter(uint16_t size, uint8_t* ptr)
+{
+	uint16_t i = 0;
+	uint8_t data = 0, total = 0;
+	for( i = 0; i < size; i++, ptr++ )
+	{
+		data = *ptr;
+        total += data;
+	}
+    total %= (0x100);
+	return total;
+}
+//FE FE FE FE 68 80 02 00 10 14 00 68 11 04 33 33 34 33 58 16 
+//FE FE FE FE 68 80 02 00 10 14 00 68 91 08 33 33 34 33 5B 34 33 33 
+/**
+ * Purpose: follow Protocol DL/T645-2007
+ * Params:
+ *  @uint8_t   addr     prower meter address
+ *  @uint8_t   ctrl_ID  contorl ID
+ * Return:
+ * Limitation:
+ */
+void Protocol_S_Power_meter(uint8_t* addr, uint8_t ctrl_ID)
+{
+    uint8_t*	ptr = UART_Buffer;
+    uint8_t*	ptr_crc;
+    uint16_t    send_len = 0;
+    /* awaken 485 bus */
+    (*ptr++) = 0xFE;
+    (*ptr++) = 0xFE;
+    (*ptr++) = 0xFE;
+    (*ptr++) = 0xFE;
+    send_len += 4;
+
+    ptr_crc = ptr;
+    /* frame start one and addr*/
+    (*ptr++) = 0x68;
+    (*ptr++) = *(addr+0);
+    (*ptr++) = *(addr+1);
+    (*ptr++) = *(addr+2);
+    (*ptr++) = *(addr+3);
+    (*ptr++) = *(addr+4);
+    (*ptr++) = *(addr+5);
+    send_len += 7;
+
+    /* frame start two */
+    (*ptr++) = 0x68;
+    (*ptr++) = ctrl_ID;
+    send_len += 2;
+
+    switch(ctrl_ID){
+        case 0x11:/* read power meter 00 01 00 00 desc */
+            {
+                (*ptr++) = 0x04;/* len */
+                (*ptr++) = (0x00 + 0x33);
+                (*ptr++) = (0x00 + 0x33);
+                (*ptr++) = (0x01 + 0x33);FE FE FE FE 68 80 02 00 10 14 00 68 11 04 33 33 34 33 58 16 
+                (*ptr++) = (0x00 + 0x33);
+                send_len += 5;
+                break;       
+            }
+        default:
+            break;
+    }
+    (*ptr++) = crc_power_meter(send_len-4, ptr_crc);
+    (*ptr++) = 0x16;/* frame end */
+    send_len += 2;
+    uart.TxdPackLength = send_len;
     UART_DMASendByte(DMA_SEND_CH, UART_Buffer, uart.TxdPackLength);
 }

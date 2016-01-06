@@ -57,8 +57,8 @@
 typedef enum
 {
     kUART_ParityDisabled = 0x0,  // 校验位禁止
-    kUART_ParityEven     = 0x2,  // 1位 奇校验
-    kUART_ParityOdd      = 0x3,  // 1位 偶校验
+    kUART_ParityEven     = 0x2,  // 1位 偶校验
+    kUART_ParityOdd      = 0x3,  // 1位 奇校验
 } UART_ParityMode_Type;
 
 /**
@@ -129,7 +129,7 @@ typedef void (*UART_CallBackRxType)(uint16_t byteReceived);
 
 /*!< API functions */
 
-uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate);
+uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate, UART_ParityMode_Type crc);
 void UART_Init(UART_InitTypeDef * UART_InitStruct);
 void UART_DeInit(uint32_t instance);
 int UART_printf(const char *format,...);
@@ -193,6 +193,8 @@ void DMA_ISR(void);
 void UART_SendString(uint32_t instance, uint8_t * str);
 
 bool DMA_UartRxd(uint32_t instance);
+
+bool DMA_UartTxd(uint32_t instance);
 
 void UART_DMA_init(uint8_t instance);
 /* Private functions ---------------------------------------------------------*/

@@ -63,7 +63,7 @@ OS_STK  STK_TIME[TASK_4_STK_SIZE];
 OS_STK  STK_Family_Energy_Storage[TASK_5_STK_SIZE];                             /* file operation need 256kb */
 
 
-extern Queue_t      msgQ;
+
 extern uint8_t      Only_ID[12];
 extern uint16_t     debug;
 extern uint8_t      log_w;
@@ -100,16 +100,16 @@ void Task_Mbox(void *pdata)
 #if OS_CRITICAL_METHOD == 3
 	OS_CPU_SR cpu_sr;
 #endif
-//    OS_ENTER_CRITICAL();
-//    OS_EXIT_CRITICAL();
+    OS_ENTER_CRITICAL();
+    OS_EXIT_CRITICAL();
     pdata = pdata;
 	for(;;)
 	{
-        OS_ENTER_CRITICAL();
+        //OS_ENTER_CRITICAL();
         
 		WDOG_Refresh();
         
-        OS_EXIT_CRITICAL();
+        //OS_EXIT_CRITICAL();
         
 		UardDmaFlow();
         
@@ -138,9 +138,9 @@ void Task_Sem(void *pdata)
 {
     pdata=pdata;
         
-    OSENET_Init();
-    OSLwIP_Init();
-    tcp_serv();       //yes
+    //OSENET_Init();
+    //OSLwIP_Init();
+    //tcp_serv();       //yes
     //udp_serv();       //yes
     //udp_client(10);   //yes
     //tcp_client();     //yes
@@ -192,10 +192,13 @@ void Task_Time(void *pdata)
     pdata = pdata;
 	for(;;)
 	{
-//        if(debug){
-//            debug--;
-//            Send_BMS(1);
-//        }
+        if(debug){
+            debug--;
+            printf("\nSRAMIN %d\n",my_mem_perused(SRAMIN));
+            printf("\nSRAMEX %d\n",my_mem_perused(SRAMEX));
+            uint8_t address[] = {0x80,0x02,0x00,0x10,0x14,0x00};
+            Protocol_S_Power_meter(address,0x11);
+        }
         server_sent(debug);
         GPIO_ToggleBit(HW_GPIOE, 6);
 #if DEBUG
@@ -220,6 +223,7 @@ void Task_Family_Energy_Storage(void *pdata)
 {
     pdata = pdata;
     uint16_t cnt = 0;
+    //usb_connect(true);
 //#if OS_CRITICAL_METHOD == 3
 //	OS_CPU_SR cpu_sr;
 //#endif
@@ -227,20 +231,20 @@ void Task_Family_Energy_Storage(void *pdata)
 //    OS_EXIT_CRITICAL();
 	for(;;)
 	{
-        cnt++;
-        if (!log_w) {
-            if (bms_check_warning()) {
-                log_w_xinhua(true);
-                log_w = 1;
-            }
-            Send_BMS(1);
-        }
-
-        if (cnt==5) {
-            cnt = 0;
-            Send_BMS(1);
-            log_w = 0;
-        }
+//        cnt++;
+//        if (!log_w) {
+//            if (bms_check_warning()) {
+//                log_w_xinhua(true);
+//                log_w = 1;
+//            }
+//            Send_BMS(1);
+//        }
+//
+//        if (cnt==5) {
+//            cnt = 0;
+//            Send_BMS(1);
+//            log_w = 0;
+//        }
         OSTimeDlyHMSM(0, 0, 1, 0);
 	}
 }
@@ -277,9 +281,10 @@ static void Task_Start(void *pdata)
     OS_ENTER_CRITICAL();
     
 	pdata = pdata;
-    
+    OSENET_Init();
+    OSLwIP_Init();
     uint8_t	err;                                                                //错误信息
-     OSTaskNameSet(PRIO_START, (uint8_t*)"Task_Start",&err);
+    OSTaskNameSet(PRIO_START, (uint8_t*)"Task_Start",&err);
     OSTaskNameSet(TCPIP_THREAD_PRIO, (uint8_t*)"TCPIP",&err);
 #if 1
     //建立邮箱接收显示任务

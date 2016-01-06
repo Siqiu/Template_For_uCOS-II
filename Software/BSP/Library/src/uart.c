@@ -403,7 +403,7 @@ void UART_Init(UART_InitTypeDef* Init)
     /* if it's first initalized ,link getc and putc to it */
     if(is_fitst_init)
     {
-        UART_DebugInstance = Init->instance;
+        UART_DebugInstance = HW_UART0;//Init->instance;
     }
     is_fitst_init = false;
 }
@@ -756,14 +756,29 @@ void UART_CallbackRxInstall(uint32_t instance, UART_CallBackRxType AppCBFun)
  * @param  baudrate: 波特率 9600 115200...
  * @retval UART模块号
  */
-uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate)
+uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate, UART_ParityMode_Type crc)
 {
     uint8_t i;
     UART_InitTypeDef Init;
     map_t * pq = (map_t*)&(MAP);
     Init.baudrate = baudrate;
     Init.instance = pq->ip;
-    Init.parityMode = kUART_ParityDisabled;
+    switch(crc){
+        case 0x0:{
+            Init.parityMode = kUART_ParityDisabled;
+            break;
+        }
+        case 0x2:{
+            Init.parityMode = kUART_ParityEven;
+            break;
+        }
+        case 0x3:{
+            Init.parityMode = kUART_ParityOdd;
+            break;
+        }
+        default:
+            return 1;
+    }
     Init.bitPerChar = kUART_8BitsPerChar;
 
     /* init pinmux */
@@ -1145,32 +1160,33 @@ bool DMA_UartRxd(uint32_t instance)
 }
 bool DMA_UartTxd(uint32_t instance)
 {
-    DMA_InitTypeDef DMA_InitStruct1 = {0};
-    DMA_InitStruct1.chl = DMA_SEND_CH;
-    DMA_InitStruct1.chlTriggerSource = UART_SendDMATriggerSourceTable[instance];
-    DMA_InitStruct1.triggerSourceMode = kDMA_TriggerSource_Normal;//正常触发
-    DMA_InitStruct1.minorLoopByteCnt = 1;
-    DMA_InitStruct1.majorLoopCnt = 1;//多少次产生一次中断
+    DMA_InitTypeDef DMA_InitStruct = {0};
+    DMA_InitStruct.chl = DMA_SEND_CH;
+    DMA_InitStruct.chlTriggerSource = _DMA_UARTTrigTable[instance];
+    DMA_InitStruct.triggerSourceMode = kDMA_TriggerSource_Normal;//正常触发
+    DMA_InitStruct.minorLoopByteCnt = 1;
+    DMA_InitStruct.majorLoopCnt = 0;//多少次产生一次中断
 
-    DMA_InitStruct1.sAddr = (uint32_t)UART_Buffer;
-    DMA_InitStruct1.sLastAddrAdj = 0;
-    DMA_InitStruct1.sAddrOffset = 1;
-    DMA_InitStruct1.sDataWidth = kDMA_DataWidthBit_8;
-    DMA_InitStruct1.sMod = kDMA_ModuloDisable;
+    DMA_InitStruct.sAddr = NULL;
+    DMA_InitStruct.sLastAddrAdj = 0;
+    DMA_InitStruct.sAddrOffset = 1;
+    DMA_InitStruct.sDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct.sMod = kDMA_ModuloDisable;
 
-    DMA_InitStruct1.dAddr = (uint32_t)&UART5->D;
-    DMA_InitStruct1.dLastAddrAdj = 0;//把指针偏移回去
-    DMA_InitStruct1.dAddrOffset = 0;
-    DMA_InitStruct1.dDataWidth = kDMA_DataWidthBit_8;
-    DMA_InitStruct1.dMod = kDMA_ModuloDisable;
-    DMA_Init(&DMA_InitStruct1);
+    DMA_InitStruct.dAddr = (uint32_t)_UART_DMA_sAddrTable[instance];
+    DMA_InitStruct.dLastAddrAdj = 0;//把指针偏移回去
+    DMA_InitStruct.dAddrOffset = 0;
+    DMA_InitStruct.dDataWidth = kDMA_DataWidthBit_8;
+    DMA_InitStruct.dMod = kDMA_ModuloDisable;
+    DMA_Init(&DMA_InitStruct);
+    DMA2UARTChlTable[instance] = DMA_SEND_CH;
     /* 完成 Major Loop 后不停止 Request 继续等待DMA硬件触发源触发 */
     DMA_EnableAutoDisableRequest(DMA_SEND_CH, false);
     
     //DMA_CallbackInstall(DMA_SEND_CH, DMA_ISR);
     
     //DMA0->SERQ = DMA_SERQ_SERQ(DMA_SEND_CH);                                    //enable transfer
-    
+    UART_ITDMAConfig(instance, kUART_DMA_Tx, true);
     return true;
 }
 /*******************************************************************************
@@ -1188,10 +1204,9 @@ void UART_SendString(uint32_t instance, uint8_t * str)
     }
 }
 
-
 void UART_DMA_init(uint8_t instance)
 {
-    UARTBase[instance]->MODEM |= (UART_MODEM_TXRTSE_MASK | UART_MODEM_TXRTSPOL_MASK);
+    //UARTBase[instance]->MODEM |= (UART_MODEM_TXRTSE_MASK | UART_MODEM_TXRTSPOL_MASK);//init will send data
     
     UARTBase[instance]->C1 |= (UART_C1_ILT_MASK);       // Idle count start from the stop bit of previous byte
     
@@ -1199,7 +1214,7 @@ void UART_DMA_init(uint8_t instance)
     
     UARTBase[instance]->C2 |= (UART_C2_ILIE_MASK);      // IDLE interrupt requests enabled.
     
-    UARTBase[instance]->C5 |= (UART_C5_RDMAS_MASK);     // Turn on DMA request for UART5 received event
+    UARTBase[instance]->C5 |= (UART_C5_RDMAS_MASK | UART_C5_TDMAS_MASK);     // Turn on DMA request for UART5 received event
     
     NVIC_EnableIRQ(UART_IRQnTable[instance]);
 }

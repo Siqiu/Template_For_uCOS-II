@@ -1156,7 +1156,7 @@ void usbd_class_init     (void)                                       {
 #if (USBD_HID_ENABLE)
                                                                         usbd_hid_init();
 #endif
-#if (USBD_MSC_ENABLE)
+#if (USBD_MSC_ENABLE)//use
                                                                         usbd_msc_init();
 #endif
 #if (USBD_ADC_ENABLE)

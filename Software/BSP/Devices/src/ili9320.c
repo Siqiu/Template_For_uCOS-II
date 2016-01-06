@@ -7,7 +7,7 @@
 
 uint32_t lcd_id;
 
-//FlexBus总线定义
+//FlexBus鎬荤嚎瀹氫箟
 #define ILI9320_BASE                        (0x70000000)
 #define ILI9320_CMD_BASE                    (0x70000000)
 #define ILI9320_DATA_BASE                   (0x78000000)

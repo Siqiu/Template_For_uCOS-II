@@ -55,7 +55,7 @@ const void * const pvNullPointer = (mem_ptr_t*)0xffffffff;
 //         其他,创建失败
 err_t sys_mbox_new( sys_mbox_t *mbox, int size)
 {
-    (*mbox) = mymalloc(sizeof(TQ_DESCR));
+    (*mbox) = mymalloc(SRAMIN, sizeof(TQ_DESCR));
     memset((*mbox),0,sizeof(TQ_DESCR));
     
 	if(*mbox)
@@ -72,7 +72,7 @@ err_t sys_mbox_new( sys_mbox_t *mbox, int size)
         }
 		else
 		{ 
-			myfree((*mbox));
+			myfree(SRAMIN, (*mbox));
 			return ERR_MEM;
 		}
 	}
@@ -83,9 +83,10 @@ err_t sys_mbox_new( sys_mbox_t *mbox, int size)
 void sys_mbox_free(sys_mbox_t * mbox)
 {
 	u8_t ucErr;
-	(void)OSQDel((*mbox)->pQ, OS_DEL_ALWAYS, &ucErr);
+	sys_mbox_t m_box=*mbox;   
+	(void)OSQDel(m_box->pQ,OS_DEL_ALWAYS,&ucErr);
 	LWIP_ASSERT( "OSQDel ",ucErr == OS_ERR_NONE ); 
-	myfree((*mbox)); 
+	myfree(SRAMIN, mbox);
 	*mbox=NULL;
 }
 //向消息邮箱中发送一条消息(必须发送成功)
@@ -264,8 +265,8 @@ void sys_init(void)
 { 
     //这里,我们在该函数,不做任何事情
 } 
-
-OS_STK TCPIP_THREAD_TASK_STK[1024/2];
+extern OS_STK * TCPIP_THREAD_TASK_STK;//TCP IP内核任务堆栈,在lwip_comm函数定义
+//OS_STK TCPIP_THREAD_TASK_STK[1024/2];//wzx
 //创建一个新进程
 //*name:进程名称
 //thred:进程任务函数
@@ -293,28 +294,32 @@ u32_t sys_now(void)
 
 #else
 
-static uint32_t lwip_timer;//lwip本地时间计数器,单位:ms
-
-void PIT_ISR1(void)
-{
-    lwip_timer++;
-}
+//static uint32_t lwip_timer;//lwip本地时间计数器,单位:ms
+//
+//void PIT_ISR1(void)
+//{
+//    lwip_timer++;
+//}
 
 u32_t sys_now(void)
 {
-	return lwip_timer*10;
+	//return lwip_timer*10;
+	u32_t ucos_time, lwip_time;
+	ucos_time=OSTimeGet();	//获取当前系统时间 得到的是UCSO的节拍数
+	lwip_time=(ucos_time*1000/OS_TICKS_PER_SEC+1);//将节拍数转换为LWIP的时间MS
+	return lwip_time; 		//返回lwip_time;
 }
 
-u8_t timer_expired(u32_t *last_time,u32_t tmr_interval)
-{
-	u32_t time;
-	time = *last_time;	
-	if((lwip_timer-time)>=tmr_interval){
-		*last_time = lwip_timer;
-		return 1;
-	}
-	return 0;
-}
+//u8_t timer_expired(u32_t *last_time,u32_t tmr_interval)
+//{
+//	u32_t time;
+//	time = *last_time;	
+//	if((lwip_timer-time)>=tmr_interval){
+//		*last_time = lwip_timer;
+//		return 1;
+//	}
+//	return 0;
+//}
 
 #endif
 

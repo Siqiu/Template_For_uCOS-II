@@ -53,7 +53,6 @@ uint32_t GetClock(Clock_t clockName)
             clock = clock / MCGOUT_TO_FLASH_DIVIDER;
             break;
         case kMCGOutClock:
-            //clock = 0x05B88000;
             break;
         default:
             clock = 0;

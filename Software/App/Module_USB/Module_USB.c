@@ -29,7 +29,7 @@ void usbd_msc_init (void)
     USBD_MSC_BlockGroup = sizeof(BlockBuf)/SECTER_SIZE;
     USBD_MSC_BlockCount = USBD_MSC_MemorySize / USBD_MSC_BlockSize;
     USBD_MSC_BlockBuf   = BlockBuf;
-    
+
     USBD_MSC_MediaReady = __TRUE;
 }
 
@@ -53,7 +53,10 @@ void usbd_msc_write_sect (uint32_t block, uint8_t *buf, uint32_t num_of_blocks)
 void usb_host_init(void)
 {    
     usbd_init();                                                                /* USB Device Initialization          */
-    
-    usbd_connect(__TRUE);                                                       /* USB Device Connect                 */
+}
+void usb_connect(bool flag)
+{
+    if(flag) usbd_connect(__TRUE);                                              /* USB Device Connect                 */
+    else usbd_connect(__FALSE);                                                 /* USB Device UNConnect               */
 }
 

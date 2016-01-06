@@ -52,7 +52,7 @@ void usbd_init (void) {
   USBD_HighSpeed     = __FALSE;
 
   usbd_class_init();
-  USBD_RTX_TaskInit();
+  //USBD_RTX_TaskInit();
 
   USBD_Init();
 }

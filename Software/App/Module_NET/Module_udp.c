@@ -16,7 +16,7 @@ void udp_serv(void)
     uint32_t addr_len;
     struct sockaddr_in server_addr, client_addr;
     
-    recv_data = mymalloc(BUFSZ);
+    recv_data = mymalloc(SRAMEX, BUFSZ);
     if(recv_data<0)
     {
         printf("malloc error\r\n");
@@ -26,7 +26,7 @@ void udp_serv(void)
     {
         printf("Socket error\n");
         
-        myfree(recv_data);
+        myfree(SRAMEX, recv_data);
         return;
     }
     
@@ -42,7 +42,7 @@ void udp_serv(void)
     {
         /* °ó¶¨Ê§°Ü */
         printf("Bind error\n");
-        myfree(recv_data);
+        myfree(SRAMEX, recv_data);
         return;
     }
     
@@ -67,7 +67,7 @@ void udp_serv(void)
         {
             lwip_close(sock);
             
-            myfree(recv_data);
+            myfree(SRAMEX, recv_data);
             break;
         }
     }

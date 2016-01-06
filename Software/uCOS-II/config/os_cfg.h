@@ -27,17 +27,17 @@
 
 
                                        /* ---------------------- MISCELLANEOUS ----------------------- */
-#define OS_APP_HOOKS_EN           0   /* Application-defined hooks are called from the uC/OS-II hooks */
-#define OS_ARG_CHK_EN             1   /* Enable (1) or Disable (0) argument checking                  */
-#define OS_CPU_HOOKS_EN           1   /* uC/OS-II hooks are found in the processor port files         */
+#define OS_APP_HOOKS_EN           0u   /* Application-defined hooks are called from the uC/OS-II hooks */
+#define OS_ARG_CHK_EN             0u   /* Enable (1) or Disable (0) argument checking                  */
+#define OS_CPU_HOOKS_EN           1u   /* uC/OS-II hooks are found in the processor port files         */
 
 #if DEBUG
-#define OS_DEBUG_EN				  1   /* Enable(1) debug variables                                    */
+#define OS_DEBUG_EN				  1    /* Enable(1) debug variables                                    */
 #else
-#define OS_DEBUG_EN               0   /* Enable(1) debug variables                                    */
+#define OS_DEBUG_EN               0    /* Enable(1) debug variables                                    */
 #endif
 
-#define OS_EVENT_MULTI_EN         1u   /* Include code for OSEventPendMulti()                          */
+#define OS_EVENT_MULTI_EN         0u   /* Include code for OSEventPendMulti()                          */
 #define OS_EVENT_NAME_EN          1u   /* Enable names for Sem, Mutex, Mbox and Q                      */
 
 #define OS_LOWEST_PRIO           63u   /* Defines the lowest priority that can be assigned ...         */
@@ -46,13 +46,13 @@
 #define OS_MAX_EVENTS            10u   /* Max. number of event control blocks in your application      */
 #define OS_MAX_FLAGS              5u   /* Max. number of Event Flag Groups    in your application      */
 #define OS_MAX_MEM_PART           5u   /* Max. number of memory partitions                             */
-#define OS_MAX_QS                 4u   /* Max. number of queue control blocks in your application      */
-#define OS_MAX_TASKS             20u   /* Max. number of tasks in your application, MUST be >= 2       */
+#define OS_MAX_QS                 5u   /* Max. number of queue control blocks in your application      */
+#define OS_MAX_TASKS             30u   /* Max. number of tasks in your application, MUST be >= 2       */
 
-#define OS_SCHED_LOCK_EN          1   /* Include code for OSSchedLock() and OSSchedUnlock()           */
+#define OS_SCHED_LOCK_EN          1u   /* Include code for OSSchedLock() and OSSchedUnlock()           */
 
-#define OS_TICK_STEP_EN           1u    /* Enable tick stepping feature for uC/OS-View                  */
-#define OS_TICKS_PER_SEC          100   /* Set the number of ticks in one second                        */
+#define OS_TICK_STEP_EN           1u   /* Enable tick stepping feature for uC/OS-View                  */
+#define OS_TICKS_PER_SEC        1000u  /* Set the number of ticks in one second                        */
 
 
                                        /* --------------------- TASK STACK SIZE ---------------------- */
@@ -70,7 +70,7 @@
 #define OS_TASK_PROFILE_EN        1u   /*     Include variables in OS_TCB for profiling                */
 #define OS_TASK_QUERY_EN          1u   /*     Include code for OSTaskQuery()                           */
 #define OS_TASK_REG_TBL_SIZE      1u   /*     Size of task variables array (#of INT32U entries)        */
-#define OS_TASK_STAT_EN           1    /*     Enable (1) or Disable(0) the statistics task             */
+#define OS_TASK_STAT_EN           1u   /*     Enable (1) or Disable(0) the statistics task             */
 #define OS_TASK_STAT_STK_CHK_EN   1u   /*     Check task stacks from statistic task                    */
 #define OS_TASK_SUSPEND_EN        1u   /*     Include code for OSTaskSuspend() and OSTaskResume()      */
 #define OS_TASK_SW_HOOK_EN        1u   /*     Include code for OSTaskSwHook()                          */
@@ -138,10 +138,10 @@
 
 
                                        /* --------------------- TIMER MANAGEMENT --------------------- */
-#define OS_TMR_EN                 1   /* Enable (1) or Disable (0) code generation for TIMERS         */
-#define OS_TMR_CFG_MAX            16u   /*     Maximum number of timers                                 */
+#define OS_TMR_EN                 1    /* Enable (1) or Disable (0) code generation for TIMERS         */
+#define OS_TMR_CFG_MAX            16u  /*     Maximum number of timers                                 */
 #define OS_TMR_CFG_NAME_EN        1u   /*     Determine timer names                                    */
 #define OS_TMR_CFG_WHEEL_SIZE     8u   /*     Size of timer wheel (#Spokes)                            */
-#define OS_TMR_CFG_TICKS_PER_SEC  OS_TICKS_PER_SEC   /*     Rate at which timer management task runs (Hz)            */
+#define OS_TMR_CFG_TICKS_PER_SEC  100  /*     Rate at which timer management task runs (Hz)            */
 #define OS_TASK_TMR_PRIO          0u   //软件定时器的优先级,设置为最高
 #endif

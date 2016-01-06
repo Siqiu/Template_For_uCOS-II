@@ -61,8 +61,8 @@
 #define IFNAME1 'n'
 
 #pragma pack(4)
-static uint8_t gTxBuf[1520];
-static uint8_t gRxBuf[1520];
+uint8_t gTxBuf[1520];
+uint8_t gRxBuf[1520];
 /**
  * Helper struct to hold private data used to operate your ethernet interface.
  * Keeping the ethernet address of the MAC in this struct is not necessary
@@ -150,7 +150,6 @@ low_level_output(struct netif *netif, struct pbuf *p)
     }
     
     ENET_MacSendData(gTxBuf, tx_len);
-
   //  printf("sending frame:%d!!!!!!!!!!!!!\r\n", tx_len);
 //for(i=0;i<tx_len;i++)
     {
@@ -203,8 +202,7 @@ low_level_input(struct netif *netif)
   //  printf("low_level_input\r\n");
     /* We iterate over the pbuf chain until we have read the entire
      * packet into the pbuf. */
-    for(q = p; q != NULL; q = q->next)
-    {
+    for(q = p; q != NULL; q = q->next) {
         memcpy(q->payload, &gRxBuf[rx_len], q->len);
         rx_len += q->len;
     }
@@ -237,9 +235,13 @@ err_t ethernetif_input(struct netif *netif)
 {
 	err_t err;
 	struct pbuf *p;
+
+  /* move received packet into a new pbuf */
 	p=low_level_input(netif);
+  /* no packet could be read, silently ignore this */
 	if(p==NULL) return ERR_MEM;
-	err=netif->input(p, netif);
+    /* full packet send to tcpip_thread to process */
+	err = netif->input(p, netif);
 	if(err!=ERR_OK)
 	{
 		LWIP_DEBUGF(NETIF_DEBUG,("ethernetif_input: IP input error\n"));

@@ -209,7 +209,7 @@
  * - mem_free_callback(m);
  */
 #ifndef LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
-#define LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT 1
+#define LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT 0
 #endif
 
 /*
@@ -1331,7 +1331,7 @@
  * sys_thread_new() when the thread is created.
  */
 #ifndef DEFAULT_THREAD_STACKSIZE
-#define DEFAULT_THREAD_STACKSIZE        1024
+#define DEFAULT_THREAD_STACKSIZE        0//1024//wzx
 #endif
 
 /**
@@ -1340,7 +1340,7 @@
  * sys_thread_new() when the thread is created.
  */
 #ifndef DEFAULT_THREAD_PRIO
-#define DEFAULT_THREAD_PRIO             3
+#define DEFAULT_THREAD_PRIO             1//3//wzx
 #endif
 
 /**

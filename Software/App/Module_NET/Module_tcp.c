@@ -15,7 +15,7 @@ static const char send_data[] = "This is TCP Server from RT-Thread.";
 
 #define TCP_PORT                7
 
-uint8_t tcp_demo_recvbuf[512];
+uint8_t tcp_demo_recvbuf[1024];
 
 void server_sent(uint32_t connected)
 {
@@ -32,7 +32,7 @@ void tcp_serv(void)
    struct sockaddr_in server_addr, client_addr;
    bool stop = false; /* 停止标志 */
 
-   recv_data = mymalloc(512); /* 分配接收用的数据缓冲 */
+   recv_data = mymalloc(SRAMEX, 1024); /* 分配接收用的数据缓冲 */
    if (recv_data == NULL)
    {
        printf("No memory\n");
@@ -46,7 +46,7 @@ void tcp_serv(void)
        printf("Socket error\n");
 
        /* 释放已分配的接收缓冲 */
-       myfree(recv_data);
+       myfree(SRAMEX, recv_data);
        return;
    }
 
@@ -63,7 +63,7 @@ void tcp_serv(void)
        printf("Unable to bind\n");
 
        /* 释放已分配的接收缓冲 */
-       myfree(recv_data);
+       myfree(SRAMEX, recv_data);
        return;
    }
 
@@ -73,7 +73,7 @@ void tcp_serv(void)
        printf("Listen error\n");
 
        /* release recv buffer */
-       myfree(recv_data);
+       myfree(SRAMEX, recv_data);
        return;
    }
 
@@ -95,9 +95,9 @@ void tcp_serv(void)
        {
            /* 发送数据到connected socket */
            //send(connected, send_data, strlen(send_data), 0);
-            OSTimeDlyHMSM(0, 0, 1, 0);
-           /* 从connected socket中接收数据，接收buffer是512大小，但并不一定能够收到512大小的数据 */
-           bytes_received = recv(connected,recv_data, 512, 0);
+            //OSTimeDlyHMSM(0, 0, 1, 0);
+           /* 从connected socket中接收数据，接收buffer是1024大小，但并不一定能够收到1024大小的数据 */
+           bytes_received = recv(connected,recv_data, 1024, 0);
            if (bytes_received <= 0)
            {
                /* 接收失败，关闭这个connected socket */
@@ -132,7 +132,7 @@ void tcp_serv(void)
    lwip_close(sock);
 
    /* 释放接收缓冲 */
-   myfree(recv_data);
+   myfree(SRAMEX, recv_data);
 
    return ;
 }
@@ -148,7 +148,7 @@ void tcp_client(void)
     //host = gethostbyname(url);
 
     /* 分配用于存放接收数据的缓冲 */
-    recv_data = mymalloc(BUFSZ);
+    recv_data = mymalloc(SRAMEX, BUFSZ);
     if (recv_data == NULL)
     {
         printf("No memory\n");
@@ -162,7 +162,7 @@ void tcp_client(void)
         printf("Socket error\n");
 
         /* 释放接收缓冲 */
-        myfree(recv_data);
+        myfree(SRAMEX, recv_data);
         return;
     }
 
@@ -180,7 +180,7 @@ void tcp_client(void)
         lwip_close(sock);
 
         /*释放接收缓冲 */
-        myfree(recv_data);
+        myfree(SRAMEX, recv_data);
         return;
     }
 
@@ -196,7 +196,7 @@ void tcp_client(void)
             lwip_close(sock);
 
             /* 释放接收缓冲 */
-            myfree(recv_data);
+            myfree(SRAMEX, recv_data);
             break;
         }
 
@@ -209,7 +209,7 @@ void tcp_client(void)
             lwip_close(sock);
 
             /* 释放接收缓冲 */
-            myfree(recv_data);
+            myfree(SRAMEX, recv_data);
             break;
         }
         else

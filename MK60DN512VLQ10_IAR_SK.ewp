@@ -334,6 +334,7 @@
           <state>$PROJ_DIR$\Software\emWin\Sample\GUIDemo</state>
           <state>$PROJ_DIR$\Software\BSP\Library\inc</state>
           <state>$PROJ_DIR$\Software\lwip</state>
+          <state>$PROJ_DIR$\Software\lwip\lwip_comm</state>
           <state>$PROJ_DIR$\Software\lwip\arch</state>
           <state>$PROJ_DIR$\Software\lwip\src\include</state>
           <state>$PROJ_DIR$\Software\lwip\src\include\ipv4</state>
@@ -2063,6 +2064,9 @@
         <name>$PROJ_DIR$\Software\BSP\Library\src\can.c</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\inc\chlib_k.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\Software\BSP\Library\src\common.c</name>
       </file>
       <file>
@@ -2188,6 +2192,9 @@
     </group>
     <group>
       <name>lwip_arch</name>
+      <file>
+        <name>$PROJ_DIR$\Software\lwip\lwip_comm\lwip_comm.c</name>
+      </file>
       <file>
         <name>$PROJ_DIR$\Software\lwip\arch\sys_arch.c</name>
       </file>

@@ -27,7 +27,7 @@ extern err_t ethernetif_input(struct netif *netif);
 void ENET_ISR(void)
 {
 	//OSIntEnter();
-    ethernetif_input(&fsl_netif0); 
+        ethernetif_input(&fsl_netif0); 
 	//OSIntExit();
 }
 
@@ -68,6 +68,7 @@ uint32_t OSENET_Init(void)
 
 uint32_t OSLwIP_Init(void)
 {
+    if(lwip_comm_mem_malloc())return 1;	//内存申请失败
     ip_addr_t fsl_netif0_ipaddr, fsl_netif0_netmask, fsl_netif0_gw;
     
     tcpip_init(NULL, NULL);

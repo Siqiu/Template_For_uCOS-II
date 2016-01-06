@@ -27,7 +27,7 @@ extern uint32_t    UGBKADDR;
 #if DEBUG
 #   define ERROR_TRACE(rc)     do {if(rc != 0){printf("fatfs error:%d\r\n", rc);}} while(0)
 #else
-#   define ERROR_TRACE(rc)     do {if(rc != 0){while(1);}} while(0);
+#   define ERROR_TRACE(rc)
 #endif
 void str_get(uint8_t* str){
     while(*str!='\0'){
@@ -48,17 +48,25 @@ void str_get(uint8_t* str){
   * @输出参数		无
   * @返回参数		无
 *******************************************************************************/
-void SDFont_Init(void)
+uint8_t SDFont_Init(void)
 {
     FRESULT rc;
     
     FIL *uni_oem;  
 
-    uni_oem=(FIL*)mymalloc(sizeof(uni_oem));	      
+    uni_oem=(FIL*)mymalloc(SRAMEX, sizeof(uni_oem));	      
     
     rc = f_open(uni_oem,"0:/system/UNIGBK.BIN",FA_OPEN_EXISTING|FA_READ);
     
     ERROR_TRACE(rc);
+    
+    if (!FR_OK) {
+        f_close(uni_oem);
+        
+        myfree(SRAMEX, uni_oem);
+        
+        return 1;
+    }
     
     UGBKSIZE=uni_oem->fsize;
     
@@ -66,9 +74,10 @@ void SDFont_Init(void)
     
     UGBKADDR = uni_oem->dsect;
     
-    f_close(uni_oem);  
+    f_close(uni_oem);
     
-    myfree(uni_oem);  
+    myfree(SRAMEX, uni_oem);
+    return 0;
 }
 
 
@@ -353,7 +362,7 @@ void fatfs_test(void)
     FILINFO file_info;
 #if _USE_LFN
         file_info.lfsize = 20  + 1;
-        file_info.lfname = mymalloc(file_info.lfsize);
+        file_info.lfname = mymalloc(SRAMEX, file_info.lfsize);
 #endif
     rc = f_opendir(&path,"/");
     ERROR_TRACE(rc);
@@ -369,7 +378,7 @@ void fatfs_test(void)
 
     f_closedir(&path);
 #if _USE_LFN
-    myfree(file_info.lfname);
+    myfree(SRAMEX, file_info.lfname);
 #endif
 
     //总电压0.01v 充放电电流 电池温度 单体电压 剩余容量 循环次数 日发电量 总发电量 异常记录（异常类型 发生时间 发生时以上各项目参数）

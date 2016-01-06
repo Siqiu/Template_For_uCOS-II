@@ -1,2 +1,7 @@
----- (void *arg, struct tcp_pcb *newpcb, err_t err) Matches (1 in 1 files) ----
-Tcp.h (e:\work\github\template_for_ucos-ii\software\lwip-1.4.1\src\include\lwip):typedef err_t (*tcp_accept_fn)(void *arg, struct tcp_pcb *newpcb, err_t err);
+---- ram_heap Matches (6 in 2 files) ----
+Mem.c (e:\work\github\template_for_ucos-ii\software\lwip-1.4.1\src\core):u8_t ram_heap[MEM_SIZE_ALIGNED + (2*SIZEOF_STRUCT_MEM) + MEM_ALIGNMENT];
+Mem.c (e:\work\github\template_for_ucos-ii\software\lwip-1.4.1\src\core):#define LWIP_RAM_HEAP_POINTER ram_heap
+Mem.c (e:\work\github\template_for_ucos-ii\software\lwip-1.4.1\src\core):/** pointer to the heap (ram_heap): for alignment, ram is now a pointer instead of an array */
+Mem.c (e:\work\github\template_for_ucos-ii\software\lwip\src\core):u8_t ram_heap[MEM_SIZE_ALIGNED + (2*SIZEOF_STRUCT_MEM) + MEM_ALIGNMENT];
+Mem.c (e:\work\github\template_for_ucos-ii\software\lwip\src\core):#define LWIP_RAM_HEAP_POINTER ram_heap
+Mem.c (e:\work\github\template_for_ucos-ii\software\lwip\src\core):/** pointer to the heap (ram_heap): for alignment, ram is now a pointer instead of an array */

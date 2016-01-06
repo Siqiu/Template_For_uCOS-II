@@ -294,7 +294,7 @@ static uint8_t SD_InitCard(void)
 	do 
 	{								 
 		for(delay_cnt=0;delay_cnt<1000;delay_cnt++);
-		i++;   
+		i++;
 		cmd.cmd = ESDHC_CMD55;
 		cmd.arg =0;
         cmd.blkCount = 0;
@@ -310,8 +310,8 @@ static uint8_t SD_InitCard(void)
 			cmd.arg = 0x00300000;
 		}
 		result = SDHC_SendCmd(&cmd);
-	}while ((0 == (cmd.resp[0] & 0x80000000)) && (i < 300));
-    if(i == 300)
+	}while ((0 == (cmd.resp[0] & 0x80000000)) && (i < 100));
+    if(i == 100)
     {
         LIB_TRACE("Timeout\r\n");
         return ESDHC_ERROR_INIT_FAILED;

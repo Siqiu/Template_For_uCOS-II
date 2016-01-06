@@ -21,7 +21,7 @@ void fatfs_test(void);
 
 void log_w_xinhua(uint8_t warning);
 
-void SDFont_Init(void);
+uint8_t SDFont_Init(void);
 
 /* private functions---------------------------------------------------------*/
 

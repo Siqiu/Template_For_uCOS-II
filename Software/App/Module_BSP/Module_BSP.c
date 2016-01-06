@@ -13,10 +13,17 @@
 *********************************************************************************************************
 */
 #include "Module_BSP.h"
+#if	DEBUG
+#else
+#define printf(...)
+#endif
 
 extern FATFS fs;
+//return 0 is OK!
 void bsp_init(void)
 {
+    uint16_t err;
+    
     InitUpdataParam();                                                          /* 第一个初始化的函数 */
 
     DelayInit();																/* 延迟初始化 */
@@ -26,14 +33,7 @@ void bsp_init(void)
     SYSTICK_ITConfig(true);														/* 开启SysTick中断 */
 
     GPIO_QuickInit(HW_GPIOE, 6, kGPIO_Mode_OPP);								/* 配置GPIO */
-	/***************************************************************************/
-#if !DEBUG
-    WDOG_InitTypeDef WDOG_InitStruct1;											/* 初始化看门狗 */
-    WDOG_InitStruct1.windowInMs = 0;
-    WDOG_InitStruct1.mode = kWDOG_Mode_Normal;									/* 设置看门狗处于正常工作模式 */
-    WDOG_InitStruct1.timeOutInMs = 2000;										/* 时限 2000MS : 2000MS 内没有喂狗则复位 */
-    WDOG_Init(&WDOG_InitStruct1);
-#endif
+
     /***************************************************************************/
 
     CAN_QuickInit(CAN1_TX_PE24_RX_PE25, 20*1000);								/* 初始化 CAN 使用CAN1模块的PTE24/25引脚，通信速度为125k*/
@@ -46,16 +46,16 @@ void bsp_init(void)
 
     /***************************************************************************/
     
-    UART_QuickInit(UART5_RX_PE09_TX_PE08, 115200);
+    UART_QuickInit(UART5_RX_PE09_TX_PE08, 9600, kUART_ParityEven);
     
     UART_DMA_init(HW_UART5);                                                    /* IDLE中断 */
     
     DMA_UartRxd(HW_UART5);                                                      /* DMA接收 */
-
+    DMA_UartTxd(HW_UART5);
     //UART_SetDMATxMode(HW_UART5,true);
     /***************************************************************************/
     
-    UART_QuickInit(UART0_RX_PD06_TX_PD07, 115200);								/* 配置串口 */
+    UART_QuickInit(UART0_RX_PD06_TX_PD07, 9600, kUART_ParityDisabled);          /* 配置串口 */
 
     UART_CallbackRxInstall(HW_UART0, UART_RX_ISR);								/*  配置UART 中断配置 打开接收中断 安装中断回调函数 */
 
@@ -88,35 +88,71 @@ void bsp_init(void)
 	PIT_ITDMAConfig(HW_PIT_CH0, kPIT_IT_TOF, true);								/* 开启PIT0定时器中断 */
 	/***************************************************************************/
 
-    //SRAM_Init();                                                                /* SRAM初始化 */
-
+    SRAM_Init();                                                                /* SRAM初始化 */
+    my_mem_init(SRAMIN);
+    my_mem_init(SRAMEX);
     /***************************************************************************/
 	GUI_Init();
-	GUI_DispString("BMP file test\r\n");
-	GUI_DispString("please insert SD card...\r\n");
+#if 1
+    GUI_DispString("GUI_DispString\r\n");
+    
+    GUI_DispStringAt("Happy New Year!!!!",50,20);
+    GUI_DispStringAt("Dear Donatello",100,80);
+    
+    GUI_RECT Rect = {10,20,40,80};
+    char text[] = "GUI_DispStringInRectEx";
+    GUI_DispStringInRectEx(text,&Rect,GUI_TA_HCENTER|GUI_TA_VCENTER,
+                           strlen(text),GUI_ROTATE_CW);
+    
+    GUI_SetFont(&GUI_Font8x16);
+    GUI_SetBkColor(GUI_BLUE);
+    GUI_Clear();
+    GUI_SetPenSize(10);
+    GUI_SetColor(GUI_RED);
+    GUI_DrawLine(10, 10, 230, 310);
+    GUI_DrawLine(10, 310, 230, 10);
+    GUI_SetBkColor(GUI_BLACK);
+    GUI_SetColor(GUI_WHITE);
+    GUI_SetTextMode(GUI_TM_NORMAL);
+    GUI_DispStringHCenterAt("GUI_TM_NORMAL"            , 120, 10+130);
+    GUI_SetTextMode(GUI_TM_REV);
+    GUI_DispStringHCenterAt("GUI_TM_REV"               , 120, 26+130);
+    GUI_SetTextMode(GUI_TM_TRANS);
+    GUI_DispStringHCenterAt("GUI_TM_TRANS"             , 120, 42+130);
+    GUI_SetTextMode(GUI_TM_XOR);
+    GUI_DispStringHCenterAt("GUI_TM_XOR"               , 120, 58+130);
+    GUI_SetTextMode(GUI_TM_TRANS | GUI_TM_REV);
+    GUI_DispStringHCenterAt("GUI_TM_TRANS | GUI_TM_REV", 120, 74+130);
+#endif
+    //GUI_GIF_GetInfo
+    //GUI_MEMDEV_FadeDevices();
     /***************************************************************************/
 
     I2C_QuickInit(I2C0_SCL_PB02_SDA_PB03, 100*1000);							/* I2C初始化 */
 
     if( eep_init(1) ) while(1);                                                /* E2P初始化 */
     /***************************************************************************/
-    SD_QuickInit(20*1000*1000);
     
-    usb_host_init();                                                            /* usb and SD init */
-    /***************************************************************************/
     Init_Timer_Cnt();
+    
+    err = SD_QuickInit(20*1000*1000);
+    //printf("SD size:%dMB\r\n", SD_GetSizeInMB());
+    if (!err) {
+        /* 挂载文件系统 */
+        err = f_mount(&fs, "0:", 0);                                                /* 内部含有SD卡初始化 */
+        err = SDFont_Init();
+        usb_host_init();                                                        /* usb and SD init */
+    }
     /***************************************************************************/
-
-    /* 挂载文件系统 */
-    if(f_mount(&fs, "0:", 0) != FR_OK) while(1);
-    SDFont_Init();
-    /***************************************************************************/
-
-	
-	
-#if	DEBUG
-    printf("Bsp_Init_Finish\r\n");												/* 板级初始化完成 */
+#if !DEBUG
+    WDOG_InitTypeDef WDOG_InitStruct1;											/* 初始化看门狗 */
+    WDOG_InitStruct1.windowInMs = 0;
+    WDOG_InitStruct1.mode = kWDOG_Mode_Normal;									/* 设置看门狗处于正常工作模式 */
+    WDOG_InitStruct1.timeOutInMs = 10000;										/* 时限 2000MS : 2000MS 内没有喂狗则复位 */
+    WDOG_Init(&WDOG_InitStruct1);
 #endif
+    /***************************************************************************/
+    printf("Bsp_Init_Finish,errno%d  \r\n",err);									/* 板级初始化完成 */
 }
 
 
