@@ -153,8 +153,8 @@ static void SDHC_WaitCommandLineIdle(void)
  */                                                            
 static void SD_SetBaudRate(uint32_t clock, uint32_t baudrate)
 {
-	int32_t pres, div, min, minpres = 0x80, mindiv = 0x0F;
-	int16_t val;
+	uint32_t pres, div, min, minpres = 0x80, mindiv = 0x0F;
+	int  val;
     
     /* Find closest setting */
     min = (uint32_t)-1;
@@ -294,7 +294,7 @@ static uint8_t SD_InitCard(void)
 	do 
 	{								 
 		for(delay_cnt=0;delay_cnt<1000;delay_cnt++);
-		i++;
+		i++;   
 		cmd.cmd = ESDHC_CMD55;
 		cmd.arg =0;
         cmd.blkCount = 0;
@@ -310,8 +310,8 @@ static uint8_t SD_InitCard(void)
 			cmd.arg = 0x00300000;
 		}
 		result = SDHC_SendCmd(&cmd);
-	}while ((0 == (cmd.resp[0] & 0x80000000)) && (i < 100));
-    if(i == 100)
+	}while ((0 == (cmd.resp[0] & 0x80000000)) && (i < 300));
+    if(i == 300)
     {
         LIB_TRACE("Timeout\r\n");
         return ESDHC_ERROR_INIT_FAILED;
@@ -680,7 +680,7 @@ uint32_t SD_StatusWait (uint32_t  mask)
  * @brief SD_ReadMultiBlock legcy support
  * \note this function is same as SDHC_ReadBlock(...)
  */ 		
-uint8_t SD_ReadMultiBlock(uint32_t sector, uint8_t *buf, uint16_t len)
+uint8_t SD_ReadMultiBlock(uint32_t sector, uint8_t *buf, uint32_t len)
 {
     return SDHC_ReadBlock(sector, buf, len);
 }
@@ -689,7 +689,7 @@ uint8_t SD_ReadMultiBlock(uint32_t sector, uint8_t *buf, uint16_t len)
  * @brief SD_WriteMultiBlock legcy support
  * \note this function is same as SDHC_WriteBlock(...)
  */ 	
-uint8_t SD_WriteMultiBlock(uint32_t sector, uint8_t *buf, uint16_t len)
+uint8_t SD_WriteMultiBlock(uint32_t sector, uint8_t *buf, uint32_t len)
 {
     return SDHC_WriteBlock(sector, buf, len);
 }

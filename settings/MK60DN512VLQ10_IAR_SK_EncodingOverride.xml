@@ -74,6 +74,10 @@
     <encoding>GB2312</encoding>
   </override>
   <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\Module_shell\Module_shell.c</path>
+    <encoding>GB2312</encoding>
+  </override>
+  <override>
     <path>E:\work\GitHub\Template_For_uCOS-II\Software\App\main.c</path>
     <encoding>GB2312</encoding>
   </override>
@@ -99,6 +103,10 @@
   </override>
   <override>
     <path>E:\work\GitHub\Template_For_uCOS-II\Software\lwip\arch\sys_arch.c</path>
+    <encoding>UTF-8</encoding>
+  </override>
+  <override>
+    <path>E:\work\GitHub\Template_For_uCOS-II\Software\shell\shell.c</path>
     <encoding>UTF-8</encoding>
   </override>
   <override>

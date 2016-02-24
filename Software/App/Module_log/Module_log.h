@@ -11,6 +11,7 @@
 #define   __MODULE_LOG_H__
 
 #include "includes.h"
+#include "Module_Init.h"
 #include "chlib_k.h"
 
 /* Exported valable -------------------------------------------------------- */

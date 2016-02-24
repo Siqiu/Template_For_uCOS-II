@@ -68,16 +68,12 @@ uint32_t GetClock(Clock_t clockName)
  */
 void EnterSTOPMode(bool enSleepOnExit)
 {
+    /* unlock all VLP mode */
+    SMC->PMPROT |= 0xFF;
+    
     /* Set the SLEEPDEEP bit to enable deep sleep mode (STOP) */
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-    if (enSleepOnExit)
-    {
-        SCB->SCR |= SCB_SCR_SLEEPONEXIT_Msk;
-    }
-    else
-    {
-        SCB->SCR &= ~SCB_SCR_SLEEPONEXIT_Msk;
-    }
+    (enSleepOnExit)?(SCB->SCR |= SCB_SCR_SLEEPONEXIT_Msk):(SCB->SCR &= ~SCB_SCR_SLEEPONEXIT_Msk);
     
     /* WFI instruction will start entry into STOP mode */
     __ASM("WFI");
@@ -229,6 +225,12 @@ void assert_failed(char * file, uint32_t line)
 }
 #endif
 
+#pragma weak NMI_isr
+void NMI_isr(void)
+{
+    
+}
+
 /**
  * @brief  非可屏蔽中断 non maskable interrupt
  */
@@ -237,6 +239,7 @@ void NMI_Handler(void)
     /* clear NMI pending bit */
     // MCM->ISR |= MCM_ISR_NMI_MASK;
     // printf("NMI ENTER\r\n");
+    NMI_isr();
 }
 
 

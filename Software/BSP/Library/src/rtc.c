@@ -148,7 +148,7 @@ static void RTC_SecondToDateTime(const uint32_t * seconds, RTC_DateTime_Type * d
  * @code
  *      //获得RTC的时间
  *      RTC_DateTime_Type ts;    //申请一个结构体
- *      RTC_GetDateTime(&ts);    //将日期存储到ts中
+ *      RTC_GetTime(&ts);    //将日期存储到ts中
  * @endcode
  * @param  datetime  返回出来的年月日等信息结构体
  * @retval None
@@ -170,7 +170,7 @@ void RTC_GetTime(RTC_DateTime_Type * datetime)
  *    if(RTC_IsTimeValid())
  *    {
  *       printf("time invalid, reset time!\r\n");
- *       RTC_SetDateTime(&td);
+ *       RTC_SetTime(&td);
  *    }
  * \endcode
  * @retval 0  有效 

@@ -36,7 +36,7 @@ ITMportsTermIO=0
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
 [DebugChecksum]
-Checksum=994641814
+Checksum=-1373893553
 [CodeCoverage]
 Enabled=_ 0
 [Disassembly]
@@ -55,12 +55,14 @@ Fmt7=uint8_t[196608]	4	0
 Fmt8=uint8_t[200]	4	0
 Fmt9=uint8_t[20]	4	0
 Fmt10=uint8_t[50]	4	0
-Fmt11=uint8_t[8]	4	0
+Fmt11=uint8_t[6]	4	0
+Fmt12=uint8_t[8]	4	0
 [watch_formats]
-Fmt0={W}2:Pile_State	4	0
-Fmt1={W}2:i	4	0
-Fmt2={W}3:memp_memory	4	0
-Fmt3={W}3:ram_heap	4	0
+Fmt0={W}1:*ptr	4	0
+Fmt1={W}2:Pile_State	4	0
+Fmt2={W}2:i	4	0
+Fmt3={W}3:memp_memory	4	0
+Fmt4={W}3:ram_heap	4	0
 [SWOTraceWindow]
 PcSampling=0
 InterruptLogs=0
@@ -123,10 +125,11 @@ Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\App\Module_CAN\Module_Can.c}.269.7" 0 0 1 "" 0 "" 0
-Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\BSP\Library\src\common.c}.295.5" 0 0 1 "" 0 "" 0
-Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\CPU\DeviceSupport\IAR-ARM\startup_MK60D10.s}.348.1" 0 0 1 "" 0 "" 0
-Count=3
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\Software\App\Module_CAN\Module_Can.c}.269.7" 0 0 1 "" 0 "" 0
+Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\CPU\DeviceSupport\IAR-ARM\startup_MK60D10.s}.348.1" 0 0 1 "" 0 "" 0
+Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\BSP\Library\src\common.c}.296.5" 0 0 1 "" 0 "" 0
+Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\Software\shell\shell.c}.193.5" 0 0 1 "" 0 "" 0
+Count=4
 [Aliases]
 A0=_ "C:\Code\Template_For_uCOS-II\Software\App\Module_malloc\Module_malloc.c" ""
 A1=_ "C:\Code\Template_For_uCOS-II\Software\App\main.c" ""

@@ -1,7 +1,4 @@
----- ram_heap Matches (6 in 2 files) ----
-Mem.c (e:\work\github\template_for_ucos-ii\software\lwip-1.4.1\src\core):u8_t ram_heap[MEM_SIZE_ALIGNED + (2*SIZEOF_STRUCT_MEM) + MEM_ALIGNMENT];
-Mem.c (e:\work\github\template_for_ucos-ii\software\lwip-1.4.1\src\core):#define LWIP_RAM_HEAP_POINTER ram_heap
-Mem.c (e:\work\github\template_for_ucos-ii\software\lwip-1.4.1\src\core):/** pointer to the heap (ram_heap): for alignment, ram is now a pointer instead of an array */
-Mem.c (e:\work\github\template_for_ucos-ii\software\lwip\src\core):u8_t ram_heap[MEM_SIZE_ALIGNED + (2*SIZEOF_STRUCT_MEM) + MEM_ALIGNMENT];
-Mem.c (e:\work\github\template_for_ucos-ii\software\lwip\src\core):#define LWIP_RAM_HEAP_POINTER ram_heap
-Mem.c (e:\work\github\template_for_ucos-ii\software\lwip\src\core):/** pointer to the heap (ram_heap): for alignment, ram is now a pointer instead of an array */
+---- cmd_auto_complete Matches (3 in 2 files) ----
+Shell.c (e:\work\github\template_for_ucos-ii\software\shell):extern int cmd_auto_complete(const char * const prompt, char * buf, uint8_t * np, uint8_t * colp);
+Shell.c (e:\work\github\template_for_ucos-ii\software\shell):            if (cmd_auto_complete(prompt, buf, &num2, &col))
+Shell_autocomplete.c (e:\work\github\template_for_ucos-ii\software\shell):int cmd_auto_complete(const char * const prompt, char * buf, uint8_t * np, uint8_t * colp)

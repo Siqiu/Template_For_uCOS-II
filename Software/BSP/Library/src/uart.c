@@ -24,7 +24,7 @@ extern uint8_t UART_Buffer[UART1_RXD_MAX];
     #define UART_BASES {UART0, UART1, UART2, UART3}
 #elif   UART4
     #define UART_BASES {UART0, UART1, UART2, UART3, UART4}
-#elif   UART5
+#elif   UART5 
     #define UART_BASES {UART0, UART1, UART2, UART3, UART4, UART5}
 #else
     #define UART_BASES {UART0, UART1}
@@ -42,7 +42,7 @@ static uint8_t UART_DebugInstance;
 
 static const Reg_t ClkTbl[] =
 {
-
+    
     {(void*)&(SIM->SCGC4), SIM_SCGC4_UART0_MASK},
     {(void*)&(SIM->SCGC4), SIM_SCGC4_UART1_MASK},
     {(void*)&(SIM->SCGC4), SIM_SCGC4_UART2_MASK},
@@ -50,14 +50,14 @@ static const Reg_t ClkTbl[] =
     {(void*)&(SIM->SCGC4), SIM_SCGC4_UART3_MASK},
 #endif
 #ifdef UART4
-    {(void*)&(SIM->SCGC1), SIM_SCGC1_UART4_MASK},
+    {(void*)&(SIM->SCGC1), SIM_SCGC1_UART4_MASK}, 
 #endif
 #ifdef UART5
     {(void*)&(SIM->SCGC1), SIM_SCGC1_UART5_MASK},
 #endif
 };
 /* interrupt handler table */
-static const IRQn_Type UART_IRQnTable[] =
+static const IRQn_Type UART_IRQnTable[] = 
 {
     UART0_RX_TX_IRQn,
     UART1_RX_TX_IRQn,
@@ -78,17 +78,17 @@ static const uint32_t UART_TIFOSizeTable[] = {1, 4, 8, 16, 32, 64, 128};
 #ifdef __cplusplus
  extern "C" {
 #endif
-
-
+     
+     
 #ifdef __CC_ARM // MDK Support
-struct __FILE
-{
+struct __FILE 
+{ 
 	int handle;
-	/* Whatever you require here. If the only file you are using is */
-	/* standard output using printf() for debugging, no file handling */
-	/* is required. */
-};
-/* FILE is typedef’ d in stdio.h. */
+	/* Whatever you require here. If the only file you are using is */ 
+	/* standard output using printf() for debugging, no file handling */ 
+	/* is required. */ 
+}; 
+/* FILE is typedef’ d in stdio.h. */ 
 FILE __stdout;
 FILE __stdin;
 /**
@@ -197,7 +197,7 @@ static void printn(unsigned int n, unsigned int b)
     if (n / b)
     {
         a = n / b;
-        printn(a, b);
+        printn(a, b);  
     }
     m = n % b;
     UART_WriteByte(UART_DebugInstance, ntab[m]);
@@ -206,7 +206,7 @@ static void printn(unsigned int n, unsigned int b)
 /**
  * \brief UART printf function
  */
-int UART_printf(const char *fmt, ...)
+int UART_printf(uint32_t instance, const char *fmt, ...)
 {
     char c;
     unsigned int *adx = (unsigned int*)(void*)&fmt + 1;
@@ -214,7 +214,7 @@ _loop:
     while((c = *fmt++) != '%')
     {
         if (c == '\0') return 0;
-        UART_WriteByte(UART_DebugInstance, c);
+        UART_WriteByte(instance, c);
     }
     c = *fmt++;
     if (c == 'd' || c == 'l')
@@ -227,7 +227,7 @@ _loop:
     }
     if (c == 's')
     {
-        UART_putstr(UART_DebugInstance, (char*)*adx);
+        UART_putstr(instance, (char*)*adx);
     }
     adx++;
     goto _loop;
@@ -264,33 +264,12 @@ const uint32_t UART_RevDMATriggerSourceTable[] =
     UART5_REV_DMAREQ,
 };
 
-//! @defgroup CHKinetis
-//! @{
-
-//! @defgroup UART
-//! @brief UART API functions
-//! @{
-
-/*******************************************************************************
- * @函数名称	InitUartParam
- * @函数说明	初始化串口程序
- * @输入参数	无
- * @输出参数	无
- * @返回参数	无
- *******************************************************************************/
-void	InitUartParam(void)
-{
-//	STM_USARTCB.CommStatus	= (TXD_ENABLE | RXD_WAIT);
-//	STM_USARTCB.RxdByteCnt	= 0;
-//	STM_USARTCB.TxdPackLength	= 0;
-	//DMA_UartRxd();
-}
 
 /**
- * @brief  初始化UART模块
+ * @brief  初始化UART模块 
  * @note   用户需自己进行引脚的复用配置
  * @code
- *      //使用UART0模块 使用115200波特率进行通信
+ *    //使用UART0模块 使用115200波特率进行通信
  *    UART_InitTypeDef UART_InitStruct1;      //申请一个结构变量
  *    UART_InitStruct1.instance = HW_UART0;   //选择UART0模块
  *    UART_InitStruct1.baudrate = 115200;     //设置通信速度为115200
@@ -298,15 +277,7 @@ void	InitUartParam(void)
  *    UART_InitStruct1.bitPerChar = kUART_8BitsPerChar;   //每帧8bit
  *    UART_Init(&UART_InitStruct1);
  * @endcode
- * @param  UART_InitTypeDef: 串口工作配置存储结构体
- *         instance      :芯片串口端口
- *         @arg HW_UART0 :芯片的UART0端口
- *         @arg HW_UART1 :芯片的UART1端口
- *         @arg HW_UART2 :芯片的UART2端口
- *         @arg HW_UART3 :芯片的UART3端口
- *         @arg HW_UART4 :芯片的UART4端口
- *         @arg HW_UART5 :芯片的UART5端口
- * @param  baudrate  :串口通讯速率设置
+ * @param[in]  Init 指向串口工作配置存储结构体的指针,详细的定义请见uart.h文件
  * @retval None
  */
 void UART_Init(UART_InitTypeDef* Init)
@@ -315,7 +286,7 @@ void UART_Init(UART_InitTypeDef* Init)
     uint8_t brfa;
     uint32_t clock;
     static bool is_fitst_init = true;
-
+    
     /* src clock */
     clock = GetClock(kBusClock);
     if((Init->instance == HW_UART0) || (Init->instance == HW_UART1))
@@ -323,25 +294,25 @@ void UART_Init(UART_InitTypeDef* Init)
         clock = GetClock(kCoreClock); /* UART0 UART1 are use core clock */
     }
     Init->srcClock = clock;
-
+    
     IP_CLK_ENABLE(Init->instance);
-
+    
     /* disable Tx Rx first */
     UARTBase[Init->instance]->C2 &= ~((UART_C2_TE_MASK)|(UART_C2_RE_MASK));
     
     /* baud rate generation */
     sbr = (uint16_t)((Init->srcClock)/((Init->baudrate)*16));
     brfa = ((32*Init->srcClock)/((Init->baudrate)*16)) - 32*sbr;
-
+    
     /* config baudrate */
     UARTBase[Init->instance]->BDH &= ~UART_BDH_SBR_MASK;
     UARTBase[Init->instance]->BDL &= ~UART_BDL_SBR_MASK;
     UARTBase[Init->instance]->C4 &= ~UART_C4_BRFA_MASK;
-
-    UARTBase[Init->instance]->BDH |= UART_BDH_SBR(sbr>>8);
-    UARTBase[Init->instance]->BDL = UART_BDL_SBR(sbr);
+    
+    UARTBase[Init->instance]->BDH |= UART_BDH_SBR(sbr>>8); 
+    UARTBase[Init->instance]->BDL = UART_BDL_SBR(sbr); 
     UARTBase[Init->instance]->C4 |= UART_C4_BRFA(brfa);
-
+    
     /* parity */
     switch(Init->parityMode)
     {
@@ -360,7 +331,7 @@ void UART_Init(UART_InitTypeDef* Init)
         default:
             break;
     }
-
+    
     /* bit per char */
     /* note: Freescale's bit size config in register are including parity bit! */
     switch(Init->bitPerChar)
@@ -370,12 +341,12 @@ void UART_Init(UART_InitTypeDef* Init)
             {
                 /* parity is enabled it's actually 9bit*/
                 UARTBase[Init->instance]->C1 |= UART_C1_M_MASK;
-                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;
+                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;    
             }
             else
             {
                 UARTBase[Init->instance]->C1 &= ~UART_C1_M_MASK;
-                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;
+                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;    
             }
             break;
         case kUART_9BitsPerChar:
@@ -383,40 +354,52 @@ void UART_Init(UART_InitTypeDef* Init)
             {
                 /* parity is enabled it's actually 10 bit*/
                 UARTBase[Init->instance]->C1 |= UART_C1_M_MASK;
-                UARTBase[Init->instance]->C4 |= UART_C4_M10_MASK;
-            }
+                UARTBase[Init->instance]->C4 |= UART_C4_M10_MASK;  
+            } 
             else
             {
                 UARTBase[Init->instance]->C1 |= UART_C1_M_MASK;
-                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;
+                UARTBase[Init->instance]->C4 &= ~UART_C4_M10_MASK;      
             }
             break;
         default:
             break;
     }
     UARTBase[Init->instance]->S2 &= ~UART_S2_MSBF_MASK; /* LSB */
-
+    
     /* enable Tx Rx */
     UARTBase[Init->instance]->C2 |= ((UART_C2_TE_MASK)|(UART_C2_RE_MASK));
-
+    
     /* link debug instance */
     /* if it's first initalized ,link getc and putc to it */
     if(is_fitst_init)
     {
-        UART_DebugInstance = HW_UART0;//Init->instance;
+        UART_DebugInstance = Init->instance;
     }
     is_fitst_init = false;
 }
 
+/**
+ * @brief  Uart Deinitialization
+ * @param[in]  instance      芯片串口端口
+ *              @arg HW_UART0 芯片的UART0端口
+ *              @arg HW_UART1 芯片的UART1端口
+ *              @arg HW_UART2 芯片的UART2端口
+ *              @arg HW_UART3 芯片的UART3端口
+ *              @arg HW_UART4 芯片的UART4端口
+ *              @arg HW_UART5 芯片的UART5端口
+ * \attention 具体的UART资源依芯片而不同，请参见相应的引脚复用说明
+ * @retval None
+ */
 void UART_DeInit(uint32_t instance)
 {
     /* waitting sending complete */
     while(!(UARTBase[instance]->S1 & UART_S1_TDRE_MASK));
-
+	
     /* disable Tx Rx */
     UARTBase[instance]->C2 &= ~((UART_C2_TE_MASK)|(UART_C2_RE_MASK));
-
-
+    
+    
     IP_CLK_DISABLE(instance);
 }
 
@@ -448,11 +431,11 @@ void UART_EnableTxFIFO(uint32_t instance, bool status)
 {
     /* waitting for all data has been shifted out */
     //while(!(UARTBase[instance]->S1 & UART_S1_TDRE_MASK));
-
+    
     (status)?
     (UARTBase[instance]->PFIFO |= UART_PFIFO_TXFE_MASK):
     (UARTBase[instance]->PFIFO &= ~UART_PFIFO_TXFE_MASK);
-
+    
 }
 
 /**
@@ -556,20 +539,20 @@ void UART_SetRxFIFOWatermark(uint32_t instance, uint32_t size)
 
 /**
  * @brief  串口发送一个字节
- * @note   阻塞式发送 只有发送完后才会返回
+ * @attention   阻塞式发送 只有发送完后才会返回
  * @code
- *      //使用UART0模块 发送数据0x5A
+ *    //使用UART0模块 发送数据0x5A
  *    UART_WriteByte(HW_UART0, 0x5A);
  * @endcode
- * @param  instance      :芯片串口端口
- *         @arg HW_UART0 :芯片的UART0端口
- *         @arg HW_UART1 :芯片的UART1端口
- *         @arg HW_UART2 :芯片的UART2端口
- *         @arg HW_UART3 :芯片的UART3端口
- *         @arg HW_UART4 :芯片的UART4端口
- *         @arg HW_UART5 :芯片的UART5端口
+ * @param[in]  instance      芯片串口端口
+ *              @arg HW_UART0 芯片的UART0端口
+ *              @arg HW_UART1 芯片的UART1端口
+ *              @arg HW_UART2 芯片的UART2端口
+ *              @arg HW_UART3 芯片的UART3端口
+ *              @arg HW_UART4 芯片的UART4端口
+ *              @arg HW_UART5 芯片的UART5端口
  * \attention 具体的UART资源依芯片而不同，请参见相应的引脚复用说明
- * @param  ch: 需要发送的一字节数据
+ * @param[in]  ch 需要发送的一字节数据
  * @retval None
  */
 void UART_WriteByte(uint32_t instance, uint16_t ch)
@@ -585,9 +568,9 @@ void UART_WriteByte(uint32_t instance, uint16_t ch)
         /* no buffer is used */
         while(!(UARTBase[instance]->S1 & UART_S1_TDRE_MASK));
     }
-
+    
     UARTBase[instance]->D = (uint8_t)(ch & 0xFF);
-
+    
     /* config ninth bit */
     uint8_t ninth_bit = (ch >> 8) & 0x01U;
     (ninth_bit)?(UARTBase[instance]->C3 |= UART_C3_T8_MASK):(UARTBase[instance]->C3 &= ~UART_C3_T8_MASK);
@@ -598,17 +581,17 @@ void UART_WriteByte(uint32_t instance, uint16_t ch)
  * @brief  UART接受一个字节
  * @note   非阻塞式接收 立即返回
  * @code
- *      //接收UART0模块的数据
- *      uint8_t data; //申请变量，存储接收的数据
- *      UART_ReadByte(HW_UART0, &data);
+ *   //接收UART0模块的数据
+ *   uint8_t data; //申请变量，存储接收的数据
+ *   UART_ReadByte(HW_UART0, &data);
  * @endcode
- * @param  instance      :芯片串口端口
- *         @arg HW_UART0 :芯片的UART0端口
- *         @arg HW_UART1 :芯片的UART1端口
- *         @arg HW_UART2 :芯片的UART2端口
- *         @arg HW_UART3 :芯片的UART3端口
- *         @arg HW_UART4 :芯片的UART4端口
- *         @arg HW_UART5 芯片的UART5端口
+ * @param[in]  instance      芯片串口端口
+ *              @arg HW_UART0 芯片的UART0端口
+ *              @arg HW_UART1 芯片的UART1端口
+ *              @arg HW_UART2 芯片的UART2端口
+ *              @arg HW_UART3 芯片的UART3端口
+ *              @arg HW_UART4 芯片的UART4端口
+ *              @arg HW_UART5 芯片的UART5端口
  * \attention 具体的UART资源依芯片而不同，请参见相应的引脚复用说明
  * @param[in]  ch 接收到的数据指针
  * @retval 0        成功接收到数据
@@ -622,8 +605,8 @@ uint8_t UART_ReadByte(uint32_t instance, uint16_t *ch)
         /* get ninth bit */
         temp = (UARTBase[instance]->C3 & UART_C3_R8_MASK) >> UART_C3_R8_SHIFT;
         *ch = temp << 8;
-        *ch |= (uint8_t)(UARTBase[instance]->D);
-        return 0;
+        *ch |= (uint8_t)(UARTBase[instance]->D);	
+        return 0; 		  
     }
     return 1;
 }
@@ -631,25 +614,25 @@ uint8_t UART_ReadByte(uint32_t instance, uint16_t *ch)
 /**
  * @brief  配置UART模块的中断或DMA属性
  * @code
- *      //配置UART0模块开启接收中断功能
- *      UART_ITDMAConfig(HW_UART0, kUART_IT_Rx, true);
+ *   //配置UART0模块开启接收中断功能
+ *   UART_ITDMAConfig(HW_UART0, kUART_IT_Rx, true);
  * @endcode
- * @param  instance      :芯片串口端口
- *         @arg HW_UART0 :芯片的UART0端口
- *         @arg HW_UART1 :芯片的UART1端口
- *         @arg HW_UART2 :芯片的UART2端口
- *         @arg HW_UART3 :芯片的UART3端口
- *         @arg HW_UART4 :芯片的UART4端口
- *         @arg HW_UART5 :芯片的UART5端口
+ * @param[in]  instance      芯片串口端口
+ *              @arg HW_UART0 芯片的UART0端口
+ *              @arg HW_UART1 芯片的UART1端口
+ *              @arg HW_UART2 芯片的UART2端口
+ *              @arg HW_UART3 芯片的UART3端口
+ *              @arg HW_UART4 芯片的UART4端口
+ *              @arg HW_UART5 芯片的UART5端口
  * \attention 具体的UART资源依芯片而不同，请参见相应的引脚复用说明
- * @param  status      :开关
+ * @param[in]  status      使能开关
  *              \arg 0 disable
  *              \arg 1  enable
- * @param  config: 工作模式选择
- *         @arg kUART_IT_Tx:
- *         @arg kUART_DMA_Tx:
- *         @arg kUART_IT_Rx:
- *         @arg kUART_DMA_Rx:
+ * @param[in]  config 工作模式选择
+ *              @arg kUART_IT_Tx
+ *              @arg kUART_DMA_Tx
+ *              @arg kUART_IT_Rx
+ *              @arg kUART_DMA_Rx
  * @retval None
  */
 void UART_ITDMAConfig(uint32_t instance, UART_ITDMAConfig_Type config, bool status)
@@ -662,7 +645,7 @@ void UART_ITDMAConfig(uint32_t instance, UART_ITDMAConfig_Type config, bool stat
             (UARTBase[instance]->C2 |= UART_C2_TIE_MASK):
             (UARTBase[instance]->C2 &= ~UART_C2_TIE_MASK);
             NVIC_EnableIRQ(UART_IRQnTable[instance]);
-            break;
+            break; 
         case kUART_IT_Rx:
             (status)?
             (UARTBase[instance]->C2 |= UART_C2_RIE_MASK):
@@ -698,21 +681,21 @@ void UART_ITDMAConfig(uint32_t instance, UART_ITDMAConfig_Type config, bool stat
 
 /**
  * @brief  注册发送中断回调函数
- * @param  instance      :芯片串口端口
- *         @arg HW_UART0 :芯片的UART0端口
- *         @arg HW_UART1 :芯片的UART1端口
- *         @arg HW_UART2 :芯片的UART2端口
- *         @arg HW_UART3 :芯片的UART3端口
- *         @arg HW_UART4 :芯片的UART4端口
- *         @arg HW_UART5 :芯片的UART5端口
+ * @param[in]  instance      芯片串口端口
+ *              @arg HW_UART0 芯片的UART0端口
+ *              @arg HW_UART1 芯片的UART1端口
+ *              @arg HW_UART2 芯片的UART2端口
+ *              @arg HW_UART3 芯片的UART3端口
+ *              @arg HW_UART4 芯片的UART4端口
+ *              @arg HW_UART5 芯片的UART5端口
  * \attention 具体的UART资源依芯片而不同，请参见相应的引脚复用说明
- * @param AppCBFun: 回调函数指针入口
+ * @param[in] AppCBFun 回调函数指针入口
  * @retval None
  * @note 对于此函数的具体应用请查阅应用实例
  */
 void UART_CallbackTxInstall(uint32_t instance, UART_CallBackTxType AppCBFun)
 {
-
+    
     IP_CLK_ENABLE(instance);
     if(AppCBFun != NULL)
     {
@@ -722,23 +705,23 @@ void UART_CallbackTxInstall(uint32_t instance, UART_CallBackTxType AppCBFun)
 
 /**
  * @brief  注册接收中断回调函数
- * @param  instance      :芯片串口端口
- *         @arg HW_UART0 :芯片的UART0端口
- *         @arg HW_UART1 :芯片的UART1端口
- *         @arg HW_UART2 :芯片的UART2端口
- *         @arg HW_UART3 :芯片的UART3端口
- *         @arg HW_UART4 :芯片的UART4端口
- *         @arg HW_UART5 :芯片的UART5端口
+ * @param[in]  instance      芯片串口端口
+ *              @arg HW_UART0 芯片的UART0端口
+ *              @arg HW_UART1 芯片的UART1端口
+ *              @arg HW_UART2 芯片的UART2端口
+ *              @arg HW_UART3 芯片的UART3端口
+ *              @arg HW_UART4 芯片的UART4端口
+ *              @arg HW_UART5 芯片的UART5端口
  * \attention 具体的UART资源依芯片而不同，请参见相应的引脚复用说明
- * @param AppCBFun: 回调函数指针入口
+ * @param[in] AppCBFun 回调函数指针入口
  * @retval None
  * @note 对于此函数的具体应用请查阅应用实例
  */
 void UART_CallbackRxInstall(uint32_t instance, UART_CallBackRxType AppCBFun)
 {
-
+    
     IP_CLK_ENABLE(instance);
-
+    
     if(AppCBFun != NULL)
     {
         UART_CallBackRxTable[instance] = AppCBFun;
@@ -751,9 +734,9 @@ void UART_CallbackRxInstall(uint32_t instance, UART_CallBackRxType AppCBFun)
  *      // 初始化 UART4 属性: 115200-N-8-N-1, Tx:PC15 Rx:PC14
  *      UART_QuickInit(UART4_RX_PC14_TX_PC15, 115200);
  * @endcode
- * @param  MAP  : 串口引脚配置缩略图
- *         例如 UART1_RX_PE01_TX_PE00 ：使用串口1的PTE1/PTE0引脚
- * @param  baudrate: 波特率 9600 115200...
+ * @param[in]  MAP   串口引脚配置缩略图,详见uart.h
+ * \note       例如 UART1_RX_PE01_TX_PE00，使用串口1的PTE1/PTE0引脚
+ * @param[in]  baudrate 波特率 9600 115200...
  * @retval UART模块号
  */
 uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate, UART_ParityMode_Type crc)
@@ -796,10 +779,35 @@ uint8_t UART_QuickInit(uint32_t MAP, uint32_t baudrate, UART_ParityMode_Type crc
 
     return pq->ip;
 }
+uint8_t UART_QuickInit_old(uint32_t MAP, uint32_t baudrate)
+{
+    uint8_t i;
+    UART_InitTypeDef Init;
+    map_t * pq = (map_t*)&(MAP);
+    Init.baudrate = baudrate;
+    Init.instance = pq->ip;
+    Init.parityMode = kUART_ParityDisabled;
+    Init.bitPerChar = kUART_8BitsPerChar;
+    
+    /* init pinmux */
+    for(i = 0; i < pq->pin_cnt; i++)
+    {
+        PORT_PinMuxConfig(pq->io, pq->pin_start + i, (PORT_PinMux_Type) pq->mux); 
+    }
+    
+    /* init UART */
+    UART_Init(&Init);
+    
+    /* default: disable hardware buffer */
+    UART_EnableTxFIFO(pq->ip, false);
+    UART_EnableRxFIFO(pq->ip, false);
+    
+    return pq->ip;
+}
 
-//! @}
-
-//! @}
+/**
+ * @brief  系统中断函数，该函数调用用户注册的回调函数，用户无需使用
+ */
 static void UART_IRQ_Handler(uint32_t instance)
 {
     uint16_t ch;
@@ -838,7 +846,7 @@ static void UART_IRQ_Handler(uint32_t instance)
             UART_CallBackRxTable[instance](ch);
         }
     }
-
+    
     if(UARTBase[instance]->S1 & UART_S1_OR_MASK)
     {
         dummy = UARTBase[instance]->D;
@@ -852,6 +860,9 @@ static void UART_IRQ_Handler(uint32_t instance)
 //            UART_CallBackRxTable[instance](0xFFFF);
 //        }  
 //    }
+    
+
+        
 }
 /**
  * @brief  系统UART0接收和发送的中断函数，用户无需使用
@@ -985,7 +996,7 @@ void UART_SetDMATxMode(uint32_t instance, bool status)
 {
     /* init DMA */
     uint8_t dma_chl;
-
+    
     if(status)
     {
         dma_chl = DMA_ChlAlloc();
@@ -995,13 +1006,13 @@ void UART_SetDMATxMode(uint32_t instance, bool status)
         DMA_InitStruct.triggerSourceMode = kDMA_TriggerSource_Normal;
         DMA_InitStruct.minorLoopByteCnt = 1;
         DMA_InitStruct.majorLoopCnt = 0;
-
+            
         DMA_InitStruct.sAddr = NULL;
-        DMA_InitStruct.sLastAddrAdj = 0;
+        DMA_InitStruct.sLastAddrAdj = 0; 
         DMA_InitStruct.sAddrOffset = 1;
         DMA_InitStruct.sDataWidth = kDMA_DataWidthBit_8;
         DMA_InitStruct.sMod = kDMA_ModuloDisable;
-
+        
         DMA_InitStruct.dAddr = (uint32_t)_UART_DMA_sAddrTable[instance]; 
         DMA_InitStruct.dLastAddrAdj = 0;
         DMA_InitStruct.dAddrOffset = 0;
@@ -1009,13 +1020,13 @@ void UART_SetDMATxMode(uint32_t instance, bool status)
         DMA_InitStruct.dMod = kDMA_ModuloDisable;
 
         DMA_Init(&DMA_InitStruct);
-        DMA2UARTChlTable[instance] = dma_chl;
+        DMA2UARTChlTable[instance] = dma_chl; 
     }
     else
     {
         DMA_ChlFree(DMA2UARTChlTable[instance]);
     }
-
+    
     /* */
     UART_ITDMAConfig(instance, kUART_DMA_Tx, status);
 }
@@ -1038,7 +1049,7 @@ void UART_DMASendByte(uint32_t instance, uint8_t* buf, uint32_t size)
 {
     DMA_SetSourceAddress(DMA2UARTChlTable[instance], (uint32_t)buf);
     DMA_SetMajorLoopCounter(DMA2UARTChlTable[instance], size);
-
+    
     /* start transfer */
     DMA_EnableRequest(DMA2UARTChlTable[instance]);
 }

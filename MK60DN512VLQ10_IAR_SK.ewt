@@ -206,6 +206,9 @@
       <name>$PROJ_DIR$\Software\App\Module_Queue\Module_Queue.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\Software\App\Module_shell\Module_shell.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\Software\App\Module_NET\Module_tcp.c</name>
     </file>
     <file>
@@ -231,10 +234,16 @@
           <name>$PROJ_DIR$\Software\BSP\Devices\inc\at24cxx.h</name>
         </file>
         <file>
+          <name>$PROJ_DIR$\Software\BSP\Devices\inc\enet_phy.h</name>
+        </file>
+        <file>
           <name>$PROJ_DIR$\Software\BSP\Devices\inc\ili9320.h</name>
         </file>
         <file>
           <name>$PROJ_DIR$\Software\BSP\Devices\inc\IS61WV25616.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\BSP\Devices\inc\w25qxx.h</name>
         </file>
       </group>
       <group>
@@ -254,19 +263,40 @@
         <file>
           <name>$PROJ_DIR$\Software\BSP\Devices\src\IS61WV25616.c</name>
         </file>
+        <file>
+          <name>$PROJ_DIR$\Software\BSP\Devices\src\w25qxx.c</name>
+        </file>
       </group>
     </group>
     <group>
       <name>Drivers</name>
       <group>
-        <name>inc</name>
-      </group>
-      <group>
-        <name>src</name>
+        <name>shell</name>
+        <file>
+          <name>$PROJ_DIR$\Software\shell\shell.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\shell\shell.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\shell\shell_autocomplete.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\shell\shell_cmdhelp.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\shell\shell_cmdhist.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\Software\shell\shell_config.h</name>
+        </file>
       </group>
     </group>
     <group>
       <name>Library</name>
+      <file>
+        <name>$PROJ_DIR$\Software\BSP\Library\src\adc.c</name>
+      </file>
       <file>
         <name>$PROJ_DIR$\Software\BSP\Library\src\can.c</name>
       </file>

@@ -66,17 +66,17 @@ uint8_t SDFont_Init(void)
         myfree(SRAMEX, uni_oem);
         
         return 1;
+    } else {
+        UGBKSIZE=uni_oem->fsize;
+        
+        f_lseek(uni_oem,1);
+        
+        UGBKADDR = uni_oem->dsect;
+        
+        f_close(uni_oem);
+        
+        myfree(SRAMEX, uni_oem);
     }
-    
-    UGBKSIZE=uni_oem->fsize;
-    
-    f_lseek(uni_oem,1);
-    
-    UGBKADDR = uni_oem->dsect;
-    
-    f_close(uni_oem);
-    
-    myfree(SRAMEX, uni_oem);
     return 0;
 }
 

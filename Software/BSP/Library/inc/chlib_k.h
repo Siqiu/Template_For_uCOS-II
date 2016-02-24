@@ -13,6 +13,20 @@
 #ifdef __cplusplus
  extern "C" {
 #endif
+
+#define USE_OF_CAN                  1
+#define USE_OF_UART                 0
+#define USE_OF_RTC                  1
+#define USE_OF_PIT                  1
+#define USE_OF_MEMARY               0
+#define USE_OF_LWIP                 0
+#define USE_OF_ADC                  0
+#define USE_OF_GUI                  0
+#define USE_OF_I2C                  1
+#define USE_OF_SD                   0
+#define USE_OF_SHELL                1
+     
+     
      
 /* libray driver */
 #include "common.h"
@@ -71,6 +85,7 @@
 #include "GUI.h"
 #include "IS61WV25616.h"
 #include "lwipopts.h"
+#include "shell.h"
 #ifdef __cplusplus
 }
 #endif

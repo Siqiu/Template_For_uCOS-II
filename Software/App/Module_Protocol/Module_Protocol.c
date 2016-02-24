@@ -14,16 +14,13 @@
 */
 #include "Module_Protocol.h"
 
-extern struct Pile_state Pile_State;
-
-extern uint8_t	Pcak_Pile_State_All_Flag;
-extern bool	Rev_Flag;
-
-extern bool	Can1_Rev_Flag;
-extern uint8_t	Can1_Buf[8];
-extern uint8_t UART_Buffer[UART1_RXD_MAX];
-
-extern uint8_t Only_ID[12];
+extern struct   Pile_state Pile_State;
+extern uint8_t  Pcak_Pile_State_All_Flag;
+extern uint8_t  Can1_Buf[8];
+extern uint8_t  UART_Buffer[UART1_RXD_MAX];
+extern uint8_t  Only_ID[12];
+extern uint8_t  Power_meter_addr[6];
+extern bool     Can1_Rev_Flag;
 
 PROTOCOL pile_info[5];
 extern USART_CtrolBlock uart;
@@ -32,6 +29,7 @@ extern USART_CtrolBlock uart;
 
 
 struct BMS bms;
+struct Power_meter_struct power_m_s;
 /* Public  functions ---------------------------------------------------------*/
 
 
@@ -44,34 +42,33 @@ struct BMS bms;
 *******************************************************************************/
 void UardDmaFlow(void)
 {
-	if(Can1_Rev_Flag)
-	{
+	if (Can1_Rev_Flag) {
 		Can1_Rev_Flag = false;
 	}
 
-	if(uart.CommStatus & RXD_END)
-	{
+	if (uart.CommStatus & RXD_END) {
         
-        if((UART_Buffer[0] ==0x23) & (UART_Buffer[1] == 0x23))                  //true win protocols
-		{
+        if ((UART_Buffer[0] ==0x23) & (UART_Buffer[1] == 0x23)) {                  //true win protocols
 			CheckPack_True_win();
 		}
 			
         
-        if(UART_Buffer[0] == 0x7E)                                              //BMS protocols
-		{
+        if (UART_Buffer[0] == 0x7E) {                                              //BMS protocols		
 			    CheckPack_Bms();
                 log_w_xinhua(false);
 		}
+
+        if ((UART_Buffer[0]==0xFE) & (UART_Buffer[2]==0xFE) &                       //power meter protocols
+             (UART_Buffer[3]==0xFE)& (UART_Buffer[4]==0x68)) {
+            CheckPack_Power_meter();
+        }
         uart.TxdPackLength = 0;
         uart.RxdByteCnt = 0;
         uart.CommStatus &= ~RXD_END;
 	}
 
-	if((Pile_State.Wait_Flag)|(Pile_State.Open))
-	{
-		if(Pcak_Pile_State_All_Flag|Pile_State.Open)
-		{
+	if ((Pile_State.Wait_Flag)|(Pile_State.Open)) {
+		if (Pcak_Pile_State_All_Flag|Pile_State.Open) {
 			Pcak_Pile_State_All();
 			Pile_State.Wait_Flag = 0;
 			Pcak_Pile_State_All_Flag = 0;
@@ -583,29 +580,6 @@ static uint16_t Bms_06_Warning(uint8_t *buf)
 				}
 			case 4:
 				{
-//					if(*buf & 0x01)
-//						bms.Warning. = 1;
-//
-//					if(*buf & 0x02)
-//						bms.Warning. = 1;
-//
-//					if(*buf & 0x04)
-//						bms.Warning. = 1;
-//
-//					if(*buf & 0x08)
-//						bms.Warning. = 1;
-//
-//					if(*buf & 0x10)
-//						bms.Warning. = 1;
-//
-//					if(*buf & 0x20)
-//						bms.Warning. = 1;
-//
-//					if(*buf & 0x40)
-//						bms.Warning. = 1;
-//
-//					if(*buf & 0x80)
-//						bms.Warning. = 1;
 					break;
 				}
 			case 5:
@@ -934,7 +908,7 @@ void Protocol_S_DGUS(uint8_t type, uint8_t *buf, uint16_t len)
  * Limitation:
  */
 /**
- * Purpose:/**
+ * Purpose:
  * Purpose: follow Protocol DL/T645-2007
  * Params:
  *  @uint8_t   addr     prower meter address
@@ -942,14 +916,59 @@ void Protocol_S_DGUS(uint8_t type, uint8_t *buf, uint16_t len)
  * Return:
  * Limitation:
  */
+/**
  * Params:
  *  @
  * Return:
  * Limitation:
  */
-void CheckPack_Power_meter()
+PWRESULT CheckPack_Power_meter(void)
 {
+    uint8_t *ptr = UART_Buffer;
+    uint8_t ctl_code[4];//ctl code domain
+    uint8_t power[4];
+    /* check frame head one */
+    if ((*ptr++) != 0xFE) return PW_HEAD_1_ERR;
+    if ((*ptr++) != 0xFE) return PW_HEAD_1_ERR;
+    if ((*ptr++) != 0xFE) return PW_HEAD_1_ERR;
+    if ((*ptr++) != 0xFE) return PW_HEAD_1_ERR;
+
+    /* power meter address */
+    uint16_t i;
+    uint8_t *ptrr = ptr;
+    for (i=0; i<1; i++) {//client num
+        if ((*ptrr++) == Power_meter_addr[0]) return PW_ADDR_ERR;
+        if ((*ptrr++) == Power_meter_addr[1]) return PW_ADDR_ERR;
+        if ((*ptrr++) == Power_meter_addr[2]) return PW_ADDR_ERR;
+        if ((*ptrr++) == Power_meter_addr[3]) return PW_ADDR_ERR;
+        if ((*ptrr++) == Power_meter_addr[4]) return PW_ADDR_ERR;
+        if ((*ptrr++) == Power_meter_addr[5]) return PW_ADDR_ERR;
+    }
+    ptr+=7;
+    /* check frame head two */
+    if ((*ptr++) != 0x68) return PW_HEAD_2_ERR;
+    switch(*ptr++){
+        case 0x91:
+            {
+                *ptr++;//data domain length
+                ctl_code[3] = (*ptr++) - 0x33;
+                ctl_code[2] = (*ptr++) - 0x33;
+                ctl_code[1] = (*ptr++) - 0x33;
+                ctl_code[0] = (*ptr++) - 0x33;
+
+                power[3] = (*ptr++) - 0x33;
+                power[2] = (*ptr++) - 0x33;
+                power[1] = (*ptr++) - 0x33;
+                power[0] = (*ptr++) - 0x33;
+                break;
+            }
+        default:
+            return PW_OPERATIONCODE_ERR;
+    }
+    power_m_s.power = (CONVERT_0X_10(power[0])*10000) + (CONVERT_0X_10(power[1])*1000) + (CONVERT_0X_10(power[2])*100) + (CONVERT_0X_10(power[3]));
+    return PW_OK;
 }
+
 /**
  * Purpose: follow Protocol DL/T645-2007 CRC_Check
  * Params:
@@ -971,7 +990,7 @@ static uint8_t	crc_power_meter(uint16_t size, uint8_t* ptr)
 	return total;
 }
 //FE FE FE FE 68 80 02 00 10 14 00 68 11 04 33 33 34 33 58 16 
-//FE FE FE FE 68 80 02 00 10 14 00 68 91 08 33 33 34 33 5B 34 33 33 
+//FE FE FE FE 68 80 02 00 10 14 00 68 91 08 33 33 34 33 5B 34 33 33 D1 16
 /**
  * Purpose: follow Protocol DL/T645-2007
  * Params:
@@ -1014,7 +1033,7 @@ void Protocol_S_Power_meter(uint8_t* addr, uint8_t ctrl_ID)
                 (*ptr++) = 0x04;/* len */
                 (*ptr++) = (0x00 + 0x33);
                 (*ptr++) = (0x00 + 0x33);
-                (*ptr++) = (0x01 + 0x33);FE FE FE FE 68 80 02 00 10 14 00 68 11 04 33 33 34 33 58 16 
+                (*ptr++) = (0x01 + 0x33);//FE FE FE FE 68 80 02 00 10 14 00 68 11 04 33 33 34 33 58 16 
                 (*ptr++) = (0x00 + 0x33);
                 send_len += 5;
                 break;       

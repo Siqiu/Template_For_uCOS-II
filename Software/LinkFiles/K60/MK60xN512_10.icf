@@ -38,3 +38,6 @@ place in FlashConfig_region {section FlashConfig};
 place in ROM_region   { readonly };
 
 place in RAM_region   { readwrite, block CSTACK, block HEAP };
+
+keep { section FSymTab };
+keep { section VSymTab };

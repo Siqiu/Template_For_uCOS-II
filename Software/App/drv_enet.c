@@ -14,6 +14,7 @@
 #include "lwip/init.h"
 #include "netif/etharp.h"
 
+#include "lwip_comm.h"
 #include "drv_enet.h"
 #if DEBUG
 #else

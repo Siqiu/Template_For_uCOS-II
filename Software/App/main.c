@@ -41,10 +41,10 @@
 #define TASK_5_STK_SIZE             (TASK_STK_SIZE*2)
 
 #define PRIO_START                  (4)                                         /* 开始任务 */
-#define PRIO_MBOX                   (8)                                         /* 邮箱接收显示任务 */
-#define PRIO_SEM                    (9)                                         /* 信号量接收显示任务 */
-#define PRIO_POST                   (10)                                        /* 邮箱 信号量投递任务 */
-#define PRIO_TIME                   (11)                                        /* 计时任务 */
+#define PRIO_APP_01                 (8)
+#define PRIO_APP_02                 (20)                                        /* SHELL terminal 除空闲任务，优先级最低 */
+#define PRIO_APP_03                 (10)
+#define PRIO_APP_04                 (11)
 
 #define PRIO_Family_Energy_Storage  (12)                                        /* 家庭储能2.5°电 */
 
@@ -56,17 +56,23 @@
 */
 OS_STK  STK_START[TASK_0_STK_SIZE];
 
-OS_STK  STK_MBOX[TASK_1_STK_SIZE];
-OS_STK  STK_SEM[TASK_2_STK_SIZE];
-OS_STK  STK_POST[TASK_3_STK_SIZE];
-OS_STK  STK_TIME[TASK_4_STK_SIZE];
+OS_STK  STK_APP_01[TASK_1_STK_SIZE];
+OS_STK  STK_APP_02[TASK_2_STK_SIZE];
+OS_STK  STK_APP_03[TASK_3_STK_SIZE];
+OS_STK  STK_APP_04[TASK_4_STK_SIZE];
 OS_STK  STK_Family_Energy_Storage[TASK_5_STK_SIZE];                             /* file operation need 256kb */
 
 
 
-extern uint8_t      Only_ID[12];
-extern uint16_t     debug;
-extern uint8_t      log_w;
+extern uint8_t  Only_ID[12];
+extern uint8_t  Power_meter_addr[6];
+extern uint16_t debug;
+extern uint8_t  log_w;
+
+extern OS_MEM *initBuffer;
+extern uint8_t initPart[8][6];
+extern uint8_t *userPtr;
+extern OS_MEM_DATA memInfo;
 /*
 *********************************************************************************************************
 *                                         FUNCTION PROTOTYPES
@@ -90,31 +96,31 @@ static void Task_Start(void *pdata);
 
 /*******************************************************************************
   * @函数名称		Task_MBOX
-  * @函数说明		邮箱接收函数任务
+  * @函数说明		喂看门狗和解析数据
   * @输入参数		无
   * @输出参数		无
   * @返回参数		无
 *******************************************************************************/
-void Task_Mbox(void *pdata)
+void Task_APP_01(void *pdata)
 {
 #if OS_CRITICAL_METHOD == 3
-	OS_CPU_SR cpu_sr;
+    OS_CPU_SR cpu_sr;
 #endif
     OS_ENTER_CRITICAL();
     OS_EXIT_CRITICAL();
     pdata = pdata;
-	for(;;)
-	{
+    for(;;)
+    {
         //OS_ENTER_CRITICAL();
-        
-		WDOG_Refresh();
-        
+
+        WDOG_Refresh();
+
         //OS_EXIT_CRITICAL();
-        
-		UardDmaFlow();
-        
-		OSTimeDlyHMSM(0, 0, 0, 10);
-	}
+
+        UardDmaFlow();
+
+        OSTimeDlyHMSM(0, 0, 0, 10);
+    }
 }
 /*
 *********************************************************************************************************
@@ -128,88 +134,117 @@ void Task_Mbox(void *pdata)
 *********************************************************************************************************
 */
 /*******************************************************************************
-  * @函数名称		Task_SEM
-  * @函数说明		信号量测试，显示函数
+  * @函数名称		Task_APP_02
+  * @函数说明		SHELL
   * @输入参数		无
   * @输出参数		无
   * @返回参数		无
 *******************************************************************************/
-void Task_Sem(void *pdata)
+void Task_APP_02(void *pdata)
 {
     pdata=pdata;
-        
+
     //OSENET_Init();
     //OSLwIP_Init();
     //tcp_serv();       //yes
     //udp_serv();       //yes
     //udp_client(10);   //yes
     //tcp_client();     //yes
-	for(;;)
-	{
-		OSTimeDlyHMSM(0, 0, 1, 0);
-	}
+    for(;;)
+    {
+        shell_main_loop("SHELL>>");
+        OSTimeDlyHMSM(0, 0, 0, 10);
+    }
 }
 
 /*******************************************************************************
-  * @函数名称		Task_Post
-  * @函数说明		邮箱投递，信号量投递任务
+  * @函数名称		Task_APP_03
+  * @函数说明		充电机充电桩发送任务
   * @输入参数		无
   * @输出参数		无
   * @返回参数		无
 *******************************************************************************/
-void Task_Post(void *pdata)
+void Task_APP_03(void *pdata)
 {
     pdata = pdata;
-    
+
     OSStatInit();                   											/* 统计任务初始化 */
-	
+
     for(;;)
-	{
-		Pile_Send(0x01,READ_pile_info);
-		OSTimeDlyHMSM(0, 0, 0, 300);
-		Pile_Send(0x02,READ_pile_info);
-		OSTimeDlyHMSM(0, 0, 0, 300);
-		Pile_Send(0x03,READ_pile_info);
-		OSTimeDlyHMSM(0, 0, 0, 300);
-		Pile_Send(0x04,READ_pile_info);
+    {
+        Pile_Send(0x01,READ_pile_info);
+        OSTimeDlyHMSM(0, 0, 0, 300);
+        Pile_Send(0x02,READ_pile_info);
+        OSTimeDlyHMSM(0, 0, 0, 300);
+        Pile_Send(0x03,READ_pile_info);
+        OSTimeDlyHMSM(0, 0, 0, 300);
+        Pile_Send(0x04,READ_pile_info);
         OSTimeDlyHMSM(0, 0, 0, 300);
         /* 铁城充电机 */
         Pile_Send_Tcchager(MESAGE_1,480,1500,true);
 
         OSTimeDlyHMSM(0, 0, 2, 0);
-	}
+    }
 }
 
 /*******************************************************************************
-  * @函数名称		Task_Time
-  * @函数说明		邮箱投递，信号量投递任务
+  * @函数名称		Task_APP_04
+  * @函数说明		无
   * @输入参数		无
   * @输出参数		无
   * @返回参数		无
 *******************************************************************************/
-void Task_Time(void *pdata)
+void Task_APP_04(void *pdata)
 {
     pdata = pdata;
-	for(;;)
-	{
-        if(debug){
+    uint8_t time = 0;
+    uint8_t	err; 
+    for(;;)
+    {
+#if 0//DEBUG
+        if(time == 0)
+		{
+			userPtr = OSMemGet(initBuffer,&err);
+		}	
+		/* 申请到内存之后便可以操作这块内存(userPtr指针)，注意不要越界 */
+		
+		time++;
+		if(time > 4)
+		{
+			/* 执行四次之后释放内存 */
+			OSMemPut(initBuffer,userPtr);
+			time = 0;
+		}
+		/* 打印内存的分配情况，观察OSAddr和OSFreeList指针的变化 */
+		OSMemQuery(initBuffer,&memInfo);
+		printf("OSAddr 		= 0x%x\r\n",memInfo.OSAddr);
+		printf("OSFreeList 	= 0x%x\r\n",memInfo.OSFreeList);
+		printf("OSNBlks 	= %d\r\n",memInfo.OSNBlks);
+		printf("OSBlkSize 	= %d\r\n",memInfo.OSBlkSize);
+		printf("OSNFree 	= %d\r\n",memInfo.OSNFree);
+		printf("OSNUsed 	= %d\r\n",memInfo.OSNUsed);
+
+        if(debug)
+        {
             debug--;
             printf("\nSRAMIN %d\n",my_mem_perused(SRAMIN));
             printf("\nSRAMEX %d\n",my_mem_perused(SRAMEX));
-            uint8_t address[] = {0x80,0x02,0x00,0x10,0x14,0x00};
-            Protocol_S_Power_meter(address,0x11);
+            Protocol_S_Power_meter(Power_meter_addr,0x11);
         }
-        server_sent(debug);
-        GPIO_ToggleBit(HW_GPIOE, 6);
-#if DEBUG
-		RTC_DateTime_Type td = {0};
+
         
-		RTC_GetTime(&td);
-        
-		printf("%d-%d-%d %d:%d:%d\r\n", td.year, td.month, td.day, td.hour, td.minute, td.second);
+        /* 如果ADC转换完成 */
+        if(ADC_IsConversionCompleted(HW_ADC0, kADC_MuxA) == 0)
+        {
+            /* 读取ADC的值  kADC_MuxA是每个ADC通道的转换器 默认都是 kADC_MuxA  MuxB 一般不能用于软件触发 */
+            printf("ADC[19]:%04d\r\n", ADC_ReadValue(HW_ADC0, kADC_MuxA));
+        }
 #endif
-		OSTimeDlyHMSM(0, 0, 1, 0);
-	}
+        //run light
+        GPIO_ToggleBit(HW_GPIOE,6);
+        GPIO_ToggleBit(HW_GPIOE,12);
+        OSTimeDlyHMSM(0, 0, 1, 0);
+    }
 }
 
 /*******************************************************************************
@@ -223,30 +258,27 @@ void Task_Family_Energy_Storage(void *pdata)
 {
     pdata = pdata;
     uint16_t cnt = 0;
-    //usb_connect(true);
-//#if OS_CRITICAL_METHOD == 3
-//	OS_CPU_SR cpu_sr;
-//#endif
-//    OS_ENTER_CRITICAL();
-//    OS_EXIT_CRITICAL();
-	for(;;)
-	{
-//        cnt++;
-//        if (!log_w) {
-//            if (bms_check_warning()) {
-//                log_w_xinhua(true);
-//                log_w = 1;
-//            }
-//            Send_BMS(1);
-//        }
-//
-//        if (cnt==5) {
-//            cnt = 0;
-//            Send_BMS(1);
-//            log_w = 0;
-//        }
+    for(;;)
+    {
+        cnt++;
+        if (!log_w)
+        {
+            if (bms_check_warning())
+            {
+                log_w_xinhua(true);
+                log_w = 1;
+            }
+            Send_BMS(1);
+        }
+
+        if (cnt==5)
+        {
+            cnt = 0;
+            Send_BMS(1);
+            log_w = 0;
+        }
         OSTimeDlyHMSM(0, 0, 1, 0);
-	}
+    }
 }
 
 
@@ -276,53 +308,54 @@ void Task_Family_Energy_Storage(void *pdata)
 static void Task_Start(void *pdata)
 {
 #if OS_CRITICAL_METHOD == 3
-	OS_CPU_SR cpu_sr;
+    OS_CPU_SR cpu_sr;
 #endif
     OS_ENTER_CRITICAL();
-    
-	pdata = pdata;
+
+    pdata = pdata;
+#if USE_OF_LWIP
+
     OSENET_Init();
     OSLwIP_Init();
+    
+#endif
     uint8_t	err;                                                                //错误信息
     OSTaskNameSet(PRIO_START, (uint8_t*)"Task_Start",&err);
     OSTaskNameSet(TCPIP_THREAD_PRIO, (uint8_t*)"TCPIP",&err);
 #if 1
-    //建立邮箱接收显示任务
-    OSTaskCreate(Task_Mbox,(void *)0,
-                &STK_MBOX[TASK_1_STK_SIZE-1],
-                PRIO_MBOX);
-	OSTaskNameSet(PRIO_MBOX, (uint8_t*)"UardDmaFlow",&err);
+    OSTaskCreate(Task_APP_01,(void *)0,
+                 &STK_APP_01[TASK_1_STK_SIZE-1],
+                 PRIO_APP_01);
+    OSTaskNameSet(PRIO_APP_01, (uint8_t*)"UardDmaFlow",&err);
 #endif
 #if 1
-	//建立信号量接收显示任务
-	OSTaskCreate(Task_Sem,(void *)0,
-				 &STK_SEM[TASK_2_STK_SIZE-1],
-				 PRIO_SEM);
-	OSTaskNameSet(PRIO_SEM, (uint8_t*)"Delay",&err);
+    OSTaskCreate(Task_APP_02,(void *)0,
+                 &STK_APP_02[TASK_2_STK_SIZE-1],
+                 PRIO_APP_02);
+    OSTaskNameSet(PRIO_APP_02, (uint8_t*)"SHEEL",&err);
 #endif
 #if 1
-	//建立邮箱，信号量投递任务
-	OSTaskCreate(Task_Post,(void *)0,
-				 &STK_POST[TASK_3_STK_SIZE-1],
-				 PRIO_POST);
-	OSTaskNameSet(PRIO_POST, (uint8_t*)"Can_Post",&err);
+    //充电机充电桩发送任务
+    OSTaskCreate(Task_APP_03,(void *)0,
+                 &STK_APP_03[TASK_3_STK_SIZE-1],
+                 PRIO_APP_03);
+    OSTaskNameSet(PRIO_APP_03, (uint8_t*)"Can_Post",&err);
 #endif
 #if 1
-	//建立时间
-	OSTaskCreate(Task_Time,(void *)0,
-				 &STK_TIME[TASK_4_STK_SIZE-1],
-				 PRIO_TIME);
-	OSTaskNameSet(PRIO_TIME, (uint8_t*)"Time_to_one",&err);
+    OSTaskCreate(Task_APP_04,(void *)0,
+                 &STK_APP_04[TASK_4_STK_SIZE-1],
+                 PRIO_APP_04);
+    OSTaskNameSet(PRIO_APP_04, (uint8_t*)"Time_to_one",&err);
 #endif
 #if 1
     //家庭储能
-	OSTaskCreate(Task_Family_Energy_Storage,(void *)0,
-				 &STK_Family_Energy_Storage[TASK_5_STK_SIZE-1],
-				 PRIO_Family_Energy_Storage);
-	OSTaskNameSet(PRIO_Family_Energy_Storage, (uint8_t*)"2.5kwh",&err);
+    OSTaskCreate(Task_Family_Energy_Storage,(void *)0,
+                 &STK_Family_Energy_Storage[TASK_5_STK_SIZE-1],
+                 PRIO_Family_Energy_Storage);
+    OSTaskNameSet(PRIO_Family_Energy_Storage, (uint8_t*)"2.5kwh",&err);
 #endif
-	//挂起起始任务.
-	OSTaskSuspend(PRIO_START);
+    //挂起起始任务.
+    OSTaskSuspend(PRIO_START);
     OS_EXIT_CRITICAL();
 }
 
@@ -341,22 +374,36 @@ static void Task_Start(void *pdata)
 
 int main(void)
 {
-	bsp_init();
+    bsp_init();
 #if 0
+    DelayInit();																/* 延迟初始化 */
+    SYSTICK_Init(1000*1000/OS_TICKS_PER_SEC);									/* 滴答时钟 */
+
+    SYSTICK_ITConfig(true);														/* 开启SysTick中断 */
+    GPIO_QuickInit(HW_GPIOE, 12, kGPIO_Mode_OPP);								/* 配置GPIO */
+    GPIO_SetBit(HW_GPIOE, 12);
     while(1)
     {
         WDOG_Refresh();
-        GPIO_ToggleBit(HW_GPIOE, 6);
-        DelayMs(500);
+        GPIO_ResetBit(HW_GPIOE, 12);
+        DelayMs(5000);
     }
 #endif
     OSInit();
-	OSTaskCreate(Task_Start,(void *)0,
-							&STK_START[TASK_0_STK_SIZE-1],
-							PRIO_START);
+#if 0
+    uint8_t	err;
+    /* 建立一个内存分区，注意内存分区的个数在os_cfg.h中有定义 */
+    initBuffer = OSMemCreate(initPart,8,6,&err);//(mem start addr, 块个数, 每块的大小)
+    if (initBuffer != (OS_MEM *)0)
+        printf("get memory successfully\r\n");
+    printf("0x%x\r\n", initPart);
+#endif
+    OSTaskCreate(Task_Start,(void *)0,
+                 &STK_START[TASK_0_STK_SIZE-1],
+                 PRIO_START);
     SYSTICK_Cmd(true);
-    
+
     OSStart();
-    
+
     while(1);
 }

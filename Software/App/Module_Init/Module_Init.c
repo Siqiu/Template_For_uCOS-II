@@ -17,12 +17,20 @@
 struct Pile_state Pile_State = {0};
 
 uint8_t		Only_ID[12] = {0};//{'T','S','H','P','D','S','M','I','C','0','0','1'};//唯一ID
+uint8_t     Power_meter_addr[6] = {0xAA,0xAA,0xAA,0xAA,0xAA,0xAA};//{0x80,0x02,0x00,0x10,0x14,0x00};
 uint8_t		Can1_Buf[8] = {0};
 uint8_t     log_w;
 uint8_t		Can1_Buf_Flag[2] = {0xFF,0xFF};
 uint8_t		Pcak_Pile_State_All_Flag;
 uint16_t	Stitic_Time_Cnt;
 bool		Can1_Rev_Flag;
+
+
+/* Global vars */
+OS_MEM *initBuffer;
+uint8_t initPart[8][6];
+uint8_t *userPtr;
+OS_MEM_DATA memInfo;
 
 uint32_t    UGBKSIZE;
 uint32_t    UGBKADDR;
